@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function OrgPage({
@@ -15,7 +16,8 @@ export default async function OrgPage({
         </CardHeader>
         <CardContent>
           <p className="text-slate-400">
-            Bienvenue dans l&apos;espace dédié à l&apos;organisation <strong className="text-sky-400">{orgId}</strong>.
+            Bienvenue dans l&apos;espace dédié à l&apos;organisation{" "}
+            <strong className="text-sky-400">{orgId}</strong>.
           </p>
         </CardContent>
       </Card>

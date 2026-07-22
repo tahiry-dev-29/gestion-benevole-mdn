@@ -1,6 +1,9 @@
 "use client";
 
 import React from "react";
+import { LogOut, Settings, User } from "lucide-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,10 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, LogOut, Settings } from "lucide-react";
 
-export function UserDropdown({ user }: { user?: { name: string; email: string; avatar?: string } }) {
+export function UserDropdown({
+  user,
+}: {
+  user?: { name: string; email: string; avatar?: string };
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
@@ -23,10 +28,17 @@ export function UserDropdown({ user }: { user?: { name: string; email: string; a
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-slate-800 text-slate-200">
+      <DropdownMenuContent
+        align="end"
+        className="w-56 bg-slate-900 border-slate-800 text-slate-200"
+      >
         <DropdownMenuLabel>
-          <div className="font-medium text-white">{user?.name || "Mon Compte"}</div>
-          <div className="text-xs text-slate-400 font-normal">{user?.email || "user@example.com"}</div>
+          <div className="font-medium text-white">
+            {user?.name || "Mon Compte"}
+          </div>
+          <div className="text-xs text-slate-400 font-normal">
+            {user?.email || "user@example.com"}
+          </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-slate-800" />
         <DropdownMenuItem className="focus:bg-slate-800 cursor-pointer">

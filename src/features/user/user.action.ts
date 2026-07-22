@@ -1,6 +1,6 @@
 "use server";
 
-import { userSchema, UserInput } from "./user.schema";
+import { UserInput, userSchema } from "./user.schema";
 
 export async function createUserAction(data: UserInput) {
   const validated = userSchema.parse(data);

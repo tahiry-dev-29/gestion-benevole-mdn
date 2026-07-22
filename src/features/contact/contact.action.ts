@@ -1,6 +1,6 @@
 "use server";
 
-import { contactSchema, ContactInput } from "./contact.schema";
+import { ContactInput, contactSchema } from "./contact.schema";
 
 export async function sendContactMessageAction(data: ContactInput) {
   const validated = contactSchema.parse(data);

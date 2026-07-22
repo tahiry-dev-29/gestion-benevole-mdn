@@ -1,6 +1,14 @@
 import React from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
 import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface UserItem {
   id: number;
@@ -25,7 +33,10 @@ export function UserList({ users = [] }: { users?: UserItem[] }) {
         <TableBody>
           {users.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center text-slate-400 py-6">
+              <TableCell
+                colSpan={4}
+                className="text-center text-slate-400 py-6"
+              >
                 Aucun bénévole enregistré.
               </TableCell>
             </TableRow>

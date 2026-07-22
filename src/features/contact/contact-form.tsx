@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
 import { sendContactMessageAction } from "./contact.action";
 
 export function ContactForm() {
@@ -21,9 +23,14 @@ export function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md bg-slate-900/60 p-6 rounded-xl border border-slate-800">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 max-w-md bg-slate-900/60 p-6 rounded-xl border border-slate-800"
+    >
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Nom</label>
+        <label className="block text-sm font-medium text-slate-300 mb-1">
+          Nom
+        </label>
         <Input
           value={formData.nom}
           onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
@@ -33,7 +40,9 @@ export function ContactForm() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
+        <label className="block text-sm font-medium text-slate-300 mb-1">
+          Email
+        </label>
         <Input
           type="email"
           value={formData.email}
@@ -44,10 +53,14 @@ export function ContactForm() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Message</label>
+        <label className="block text-sm font-medium text-slate-300 mb-1">
+          Message
+        </label>
         <textarea
           value={formData.message}
-          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, message: e.target.value })
+          }
           placeholder="Votre message..."
           rows={4}
           required
@@ -57,7 +70,11 @@ export function ContactForm() {
       <Button type="submit" className="w-full bg-sky-500 hover:bg-sky-600">
         Envoyer le message
       </Button>
-      {status && <p className="text-sm text-sky-400 text-center font-medium mt-2">{status}</p>}
+      {status && (
+        <p className="text-sm text-sky-400 text-center font-medium mt-2">
+          {status}
+        </p>
+      )}
     </form>
   );
 }
