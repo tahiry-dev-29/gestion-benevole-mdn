@@ -1,0 +1,99 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  BENEVOLE
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  nom          String
+  prenom       String
+  email        String        @unique
+  password     String
+  role         Role          @default(BENEVOLE)
+  photo        String?
+  date_entree  DateTime      @default(now())
+  presences    Presence[]
+  observations Observation[]
+  credits      Credit[]
+  activites    Activite[]
+  partages     Partage[]
+  temoignages  Temoignage[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Presence {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  date          DateTime @db.Date
+  heure_arrivee String?
+  heure_depart  String?
+  statut        String   @default("PRESENT")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Observation {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  mois      Int
+  annee     Int
+  contenu   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Credit {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  montant   Float
+  date      DateTime @default(now())
+  motif     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Activite {
+  id          Int      @id @default(autoincrement())
+  user_id     Int?
+  user        User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  titre       String
+  description String
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Partage {
+  id               Int      @id @default(autoincrement())
+  user_id          Int?
+  user             User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  titre            String
+  contenu          String
+  date_publication DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Temoignage {
+  id         Int      @id @default(autoincrement())
+  user_id    Int?
+  user       User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  nom_auteur String
+  contenu    String
+  statut     String   @default("EN_ATTENTE") // EN_ATTENTE, APPROUVE, REJETE
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
