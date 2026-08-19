@@ -1,0 +1,7 @@
+# non-code, no prettier parser
+.nvmrc
+.gitignore
+public/sw.js
+public/workbox-*.js
+.agents
+.claude

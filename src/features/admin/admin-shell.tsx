@@ -1,20 +1,33 @@
 "use client";
 
-import { createContext, type ReactNode,useContext, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import { cn } from "@/lib/utils";
 
 import { AdminHeader } from "./admin-header";
 import { AdminSidebar } from "./admin-sidebar";
 
+type Theme = "dark" | "light";
+const ADMIN_THEME_KEY = "admin-theme";
+
 type SidebarContextValue = {
   collapsed: boolean;
   toggle: () => void;
+  theme: Theme;
+  toggleTheme: () => void;
 };
 
 const SidebarContext = createContext<SidebarContextValue>({
   collapsed: false,
   toggle: () => {},
+  theme: "dark",
+  toggleTheme: () => {},
 });
 
 export function useSidebar() {
@@ -23,10 +36,38 @@ export function useSidebar() {
 
 export function AdminShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() =>
+    typeof window !== "undefined"
+      ? (localStorage.getItem(ADMIN_THEME_KEY) as Theme | null) ?? "dark"
+      : "dark"
+  );
+
+  // Admin-only theme: toggle .dark on <html> while in the admin section,
+  // restore the public default (dark) when leaving.
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    return () => {
+      document.documentElement.classList.add("dark");
+    };
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((current) => {
+      const next: Theme = current === "dark" ? "light" : "dark";
+      localStorage.setItem(ADMIN_THEME_KEY, next);
+      document.documentElement.classList.toggle("dark", next === "dark");
+      return next;
+    });
+  };
 
   return (
     <SidebarContext.Provider
-      value={{ collapsed, toggle: () => setCollapsed((c) => !c) }}
+      value={{
+        collapsed,
+        toggle: () => setCollapsed((c) => !c),
+        theme,
+        toggleTheme,
+      }}
     >
       <div className="flex min-h-screen bg-muted/30">
         <aside
