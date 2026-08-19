@@ -26,6 +26,7 @@ import {
 import { adminNav } from "./admin.data";
 import { useSidebar } from "./admin-shell";
 import { AdminSidebar } from "./admin-sidebar";
+import { ThemeToggle } from "./theme-toggle";
 
 function useCurrentTitle() {
   const pathname = usePathname();
@@ -96,6 +97,8 @@ export function AdminHeader() {
           <ExternalLink className="size-4" />
           Retour au site
         </Button>
+
+        <ThemeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger
