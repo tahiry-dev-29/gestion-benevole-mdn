@@ -50,7 +50,7 @@ export function UserDropdown({
         <DropdownMenuSeparator className="bg-slate-800" />
         <DropdownMenuItem
           className="focus:bg-slate-800 cursor-pointer text-red-400"
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={() => signOut({ callbackUrl: "/" })}
         >
           <LogOut className="w-4 h-4 mr-2" /> Déconnexion
         </DropdownMenuItem>

@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { OAuthButtons } from "@/components/o-auth-buttons";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,30 +18,31 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { type LoginInput,loginSchema } from "@/features/auth/auth.schema";
+import { type LoginInput, loginSchema } from "@/features/auth/auth.schema";
 
 export function LoginForm({
   className,
-  auth0Enabled = false,
   ...props
-}: React.ComponentPropsWithoutRef<"div"> & {
-  auth0Enabled?: boolean;
-}) {
+}: React.ComponentPropsWithoutRef<"div">) {
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    resolver: zodResolver(loginSchema) as any,
+    defaultValues: { email: "", password: "", rememberMe: false },
   });
+
+  const rememberMe = watch("rememberMe");
 
   const onSubmit = handleSubmit(async (values) => {
     const result = await signIn("credentials", {
       email: values.email,
       password: values.password,
+      callbackUrl: "/admin",
       redirect: false,
     });
 
@@ -52,36 +52,26 @@ export function LoginForm({
     }
 
     toast.success("Connexion réussie !");
-    router.push("/admin");
+    router.push(result?.url ?? "/admin");
   });
 
   return (
     <div className={className} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Bon retour !</CardTitle>
+          <CardTitle className="text-xl">Connexion Administration</CardTitle>
           <CardDescription>
-            Connectez-vous avec votre compte ou vos identifiants
+            Entrez vos identifiants pour accéder à l&apos;espace admin
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {auth0Enabled ? (
-            <>
-              <OAuthButtons enabled={auth0Enabled} />
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-card px-2 text-muted-foreground">
-                  ou
-                </span>
-              </div>
-            </>
-          ) : null}
           <form onSubmit={onSubmit} className="grid gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="admin@mdn.com"
                 autoComplete="email"
                 aria-invalid={!!errors.email}
                 {...register("email")}
@@ -93,9 +83,7 @@ export function LoginForm({
               ) : null}
             </div>
             <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Mot de passe</Label>
-              </div>
+              <Label htmlFor="password">Mot de passe</Label>
               <Input
                 id="password"
                 type="password"
@@ -109,6 +97,21 @@ export function LoginForm({
                 </p>
               ) : null}
             </div>
+            <div className="flex items-center justify-between">
+              <label
+                htmlFor="rememberMe"
+                className="flex cursor-pointer items-center gap-2 text-sm"
+              >
+                <input
+                  id="rememberMe"
+                  type="checkbox"
+                  className="size-4 rounded border-input bg-background"
+                  checked={rememberMe}
+                  {...register("rememberMe")}
+                />
+                Se souvenir de moi (7 jours)
+              </label>
+            </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -116,15 +119,6 @@ export function LoginForm({
               {isSubmitting ? "Connexion..." : "Se connecter"}
             </Button>
           </form>
-          <div className="text-center text-sm">
-            Pas encore de compte ?{" "}
-            <a
-              href="/register"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              S&apos;inscrire
-            </a>
-          </div>
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">

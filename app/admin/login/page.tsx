@@ -3,9 +3,8 @@ import { GalleryVerticalEnd } from "lucide-react";
 
 import { LoginForm } from "@/components/login-form";
 import { Toaster } from "@/components/ui/sonner";
-import { isAuth0Enabled } from "@/lib/oauth";
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
       <Toaster richColors position="top-right" />
@@ -16,7 +15,7 @@ export default function LoginPage() {
           </div>
           Gestion Bénévole
         </Link>
-        <LoginForm auth0Enabled={isAuth0Enabled()} />
+        <LoginForm />
       </div>
     </div>
   );

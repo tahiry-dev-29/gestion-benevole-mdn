@@ -3,12 +3,10 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { OAuthButtons } from "@/components/o-auth-buttons";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,11 +25,8 @@ import {
 
 export function RegisterForm({
   className,
-  auth0Enabled = false,
   ...props
-}: React.ComponentPropsWithoutRef<"div"> & {
-  auth0Enabled?: boolean;
-}) {
+}: React.ComponentPropsWithoutRef<"div">) {
   const router = useRouter();
 
   const {
@@ -55,9 +50,11 @@ export function RegisterForm({
 
     if (!result.success) {
       if (result.issues && typeof result.issues === "object") {
-        const fieldErrors = (result.issues as {
-          fieldErrors?: Record<string, { message?: string }[]>;
-        }).fieldErrors;
+        const fieldErrors = (
+          result.issues as {
+            fieldErrors?: Record<string, { message?: string }[]>;
+          }
+        ).fieldErrors;
         const firstField = (name: string) => fieldErrors?.[name]?.[0]?.message;
         const prenom = firstField("prenom");
         const nom = firstField("nom");
@@ -74,42 +71,18 @@ export function RegisterForm({
       return;
     }
 
-    const signInResult = await signIn("credentials", {
-      email: values.email,
-      password: values.password,
-      redirect: false,
-    });
-
-    if (signInResult?.error) {
-      toast.success("Compte créé ! Vous pouvez maintenant vous connecter.");
-      router.push("/login");
-      return;
-    }
-
-    toast.success("Compte créé et connexion réussie !");
-    router.push("/admin");
+    toast.success("Compte créé ! Vous pouvez maintenant vous connecter.");
+    router.push("/admin/login");
   });
 
   return (
     <div className={className} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Créer un compte</CardTitle>
-          <CardDescription>
-            Inscrivez-vous en tant que bénévole
-          </CardDescription>
+          <CardTitle className="text-xl">Créer un compte bénévole</CardTitle>
+          <CardDescription>Inscrivez-vous en tant que bénévole</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          {auth0Enabled ? (
-            <>
-              <OAuthButtons enabled={auth0Enabled} />
-              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-card px-2 text-muted-foreground">
-                  ou
-                </span>
-              </div>
-            </>
-          ) : null}
           <form onSubmit={onSubmit} className="grid gap-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
@@ -137,7 +110,9 @@ export function RegisterForm({
                   {...register("nom")}
                 />
                 {errors.nom ? (
-                  <p className="text-xs text-destructive">{errors.nom.message}</p>
+                  <p className="text-xs text-destructive">
+                    {errors.nom.message}
+                  </p>
                 ) : null}
               </div>
             </div>
@@ -197,7 +172,7 @@ export function RegisterForm({
           <div className="mt-4 text-center text-sm">
             Déjà un compte ?{" "}
             <a
-              href="/login"
+              href="/admin/login"
               className="underline underline-offset-4 hover:text-primary"
             >
               Se connecter
