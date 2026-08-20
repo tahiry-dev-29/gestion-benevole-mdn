@@ -7,6 +7,7 @@ import {
   ExternalLink,
   LogOut,
   Menu,
+  Package as PackageIcon,
   PanelLeft,
   Settings,
   User,
@@ -29,18 +30,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useSidebar } from "@/components/ui/sidebar";
 
-import { adminNav } from "./admin.data";
-import { useSidebar } from "./admin-shell";
-import { AdminSidebar } from "./admin-sidebar";
+import { adminNavGroups } from "./admin.data";
 import { ThemeToggle } from "./theme-toggle";
 
 function useCurrentTitle() {
   const pathname = usePathname();
-  const match = adminNav.find((item) =>
-    item.href === "/admin"
-      ? pathname === "/admin"
-      : pathname.startsWith(item.href)
+  const allItems = adminNavGroups.flatMap((g) => g.items);
+  const match = allItems.find((item) =>
+    item.url === "/admin" ? pathname === "/admin" : pathname.startsWith(item.url)
   );
   return match?.title ?? "Administration";
 }
@@ -48,7 +47,7 @@ function useCurrentTitle() {
 export function AdminHeader() {
   const [open, setOpen] = useState(false);
   const title = useCurrentTitle();
-  const { toggle } = useSidebar();
+  const { toggleSidebar } = useSidebar();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b bg-card/50 px-4 backdrop-blur supports-[backdrop-filter]:bg-card/50">
@@ -57,7 +56,7 @@ export function AdminHeader() {
           variant="outline"
           size="icon"
           aria-label="Réduire le menu"
-          onClick={toggle}
+          onClick={toggleSidebar}
           className="hidden md:inline-flex"
         >
           <PanelLeft className="size-4" />
@@ -84,7 +83,7 @@ export function AdminHeader() {
               onClick={() => setOpen(false)}
               className="block h-full"
             >
-              <AdminSidebar />
+              <AdminSidebarMobile />
             </Link>
           </SheetContent>
         </Sheet>
@@ -153,5 +152,60 @@ export function AdminHeader() {
         </DropdownMenu>
       </div>
     </header>
+  );
+}
+
+function AdminSidebarMobile() {
+  const pathname = usePathname();
+  const allItems = adminNavGroups.flatMap((g) => g.items);
+
+  function isActive(url: string) {
+    return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url);
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex h-16 items-center gap-2.5 px-5 border-b">
+        <div className="flex aspect-square size-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 text-primary-foreground shadow-sm">
+          <PackageIcon className="size-5" />
+        </div>
+        <div className="grid flex-1 text-left text-sm leading-tight">
+          <span className="truncate font-semibold">Gestion Bénévole</span>
+          <span className="truncate text-xs">Espace administration</span>
+        </div>
+      </div>
+      <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+        {adminNavGroups.map((group) => (
+          <div key={group.label}>
+            <h3 className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {group.label}
+            </h3>
+            <ul className="space-y-1">
+              {group.items.map((item) => (
+                <li key={item.url}>
+                  <Link
+                    href={item.url}
+                    onClick={() => {}}
+className={isActive(item.url) ? "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors bg-accent font-medium text-accent-foreground" : "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors text-muted-foreground hover:bg-accent hover:text-accent-foreground"}
+                  >
+                    {item.icon && <item.icon className="size-4 shrink-0" />}
+                    <span>{item.title}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div className="pt-4 border-t">
+          <Link
+            href="/admin/profil"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          >
+            <User className="size-4" />
+            Mon profil
+          </Link>
+        </div>
+      </nav>
+    </div>
   );
 }

@@ -1,106 +1,66 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Package } from "lucide-react";
+import { usePathname } from "next/navigation"
+import { Package } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { NavMain } from "@/components/nav-main"
+import { NavUser } from "@/components/nav-user"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar"
 
-import { adminNavGroups } from "./admin.data";
+import { adminNavGroups, adminUser } from "./admin.data"
+import { GestionGroup } from "./gestion-group"
 
-function isActive(pathname: string, href: string) {
-  return href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+function isActive(pathname: string, url: string) {
+  return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url)
 }
 
-export function AdminSidebar({ collapsed = false }: { collapsed?: boolean }) {
-  const pathname = usePathname();
+export function AdminSidebar() {
+  const pathname = usePathname()
+
+  const groups = adminNavGroups.map((group) => ({
+    label: group.label,
+    items: group.items.map((item) => ({
+      ...item,
+      isActive: isActive(pathname, item.url),
+    })),
+  }))
 
   return (
-    <div className="flex h-full flex-col">
-      <div
-        className={cn(
-          "flex h-16 items-center gap-2.5 px-5",
-          collapsed && "justify-center px-0"
-        )}
-      >
-        <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 text-primary-foreground shadow-sm">
-          <Package className="size-5" />
-        </div>
-        {!collapsed && (
-          <div className="leading-tight">
-            <span className="block text-sm font-bold tracking-tight">
-              Gestion Benevole
-            </span>
-            <span className="block text-xs text-muted-foreground">
-              Espace administration
-            </span>
-          </div>
-        )}
-      </div>
-
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
-        {adminNavGroups.map((group) => (
-          <div key={group.label} className="space-y-1">
-            {!collapsed && (
-              <p className="px-3 pb-1 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground/70">
-                {group.label}
-              </p>
-            )}
-            {group.items.map((item) => {
-              const active = isActive(pathname, item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  title={collapsed ? item.title : undefined}
-                  className={cn(
-                    "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                    collapsed && "justify-center px-0",
-                    active
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                >
-                  {active && (
-                    <span className="absolute inset-y-1.5 left-0 w-1 rounded-full bg-primary" />
-                  )}
-                  <item.icon
-                    className={cn(
-                      "size-4 shrink-0 transition-transform group-hover:scale-105",
-                      active && "text-primary"
-                    )}
-                  />
-                  {!collapsed && item.title}
-                </Link>
-              );
-            })}
-          </div>
+    <Sidebar collapsible="icon" className="bg-card border-r h-full">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" className="pointer-events-none">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <Package className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">Gestion Bénévole</span>
+                <span className="truncate text-xs">Espace administration</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent className="overflow-y-auto overscroll-contain [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent">
+        <GestionGroup />
+        {groups.map((group) => (
+          <NavMain key={group.label} label={group.label} items={group.items} />
         ))}
-      </nav>
-
-      <div className="border-t p-3">
-        <div
-          className={cn(
-            "flex items-center gap-3 rounded-lg bg-muted/60 px-3 py-2.5",
-            collapsed && "justify-center px-0"
-          )}
-        >
-          <Avatar size="sm">
-            <AvatarFallback className="bg-primary/15 text-xs font-semibold text-primary">
-              MD
-            </AvatarFallback>
-          </Avatar>
-          {!collapsed && (
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-sm font-medium">Marie Dupont</p>
-              <p className="truncate text-xs text-muted-foreground">
-                Administratrice
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={adminUser} />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  )
 }
