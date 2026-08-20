@@ -92,8 +92,8 @@ capacité suffisante ou reporté sur S1.
 - [x] Schéma initial : `User`, `Presence`, `Observation`, `Credit`, `Activite`,
       `Partage`, `Temoignage` + enum `Role` (ADMIN/BENEVOLE) (CDC §3.2)
 - [x] Relations FK + `onDelete` cohérents
-- [ ] Générer les migrations initiales + appliquer sur DB locale (`prisma migrate dev`)
-- [ ] Seed : 1 compte `ADMIN` + 1 bénévole test (mot de passe hashé bcrypt)
+- [x] Générer les migrations initiales + appliquer sur DB locale (`prisma migrate dev`)
+- [x] Seed : 1 compte `ADMIN` + 1 bénévole test (mot de passe hashé bcrypt)
 
 **Implémentation :** `prisma/schema.prisma`, `prisma/migrations/`, `src/lib/prisma.ts`.
 
@@ -126,7 +126,7 @@ capacité suffisante ou reporté sur S1.
 - [ ] Service worker actif en production (`disable` uniquement en dev)
 - [ ] Test d'installabilité (Lighthouse / DevTools Application)
 
-**Implémentation :** `public/manifest.json`, `public/icons/*`, `next.config.ts` (withPWA).
+**Implémentation :** `public/manifest.json`, `public/icons/*`, `next.config.ts` (withPWA). ✅ Icônes générées (icon-192x192.png, icon-512x512.png).
 
 #### Acceptation (Gherkin)
 
