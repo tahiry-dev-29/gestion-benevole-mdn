@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,20 +10,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { users } from "@/features/admin/admin.data";
 import { PageHeader } from "@/features/admin/page-header";
 import { TableCard } from "@/features/admin/table-card";
+import { users } from "@/features/users/user.data";
 
 export default function UsersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
         title="Utilisateurs"
-        description="Gérez les comptes et les rôles des utilisateurs."
+        description="Comptes et rôles des utilisateurs de l'association."
         action={
           <Button size="sm">
-            <Plus className="size-4" />
-            Ajouter un utilisateur
+            <Users className="size-4" />
+            Gérer les utilisateurs
           </Button>
         }
       />
@@ -48,7 +48,9 @@ export default function UsersPage() {
                   {u.email}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={u.role === "ADMIN" ? "default" : "secondary"}>
+                  <Badge
+                    variant={u.role === "ADMIN" ? "default" : "secondary"}
+                  >
                     {u.role === "ADMIN" ? "Admin" : "Bénévole"}
                   </Badge>
                 </TableCell>

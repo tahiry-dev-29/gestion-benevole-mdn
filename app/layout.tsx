@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { SessionProvider } from "@/components/session-provider";
+import { auth } from "@/lib/auth";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,18 +21,22 @@ export const metadata: Metadata = {
   description: "Gestion des bénévoles et des activités associatives",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang="fr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <SessionProvider session={session}>{children}</SessionProvider>
+      </body>
     </html>
   );
 }

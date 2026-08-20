@@ -1,11 +1,15 @@
 import {
+  BarChart3,
   CalendarCheck,
   CalendarDays,
+  ClipboardList,
   Coins,
   Eye,
   LayoutDashboard,
   type LucideIcon,
   MessageSquare,
+  Package,
+  Settings,
   Share2,
   UserCheck,
   Users,
@@ -13,108 +17,91 @@ import {
 
 export type NavItem = {
   title: string;
-  href: string;
-  icon: LucideIcon;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  items?: { title: string; url: string }[];
 };
-
-export const adminNav: NavItem[] = [
-  { title: "Tableau de bord", href: "/admin", icon: LayoutDashboard },
-  { title: "Utilisateurs", href: "/admin/users", icon: Users },
-  { title: "Bénévoles", href: "/admin/volunteers", icon: UserCheck },
-  { title: "Présences", href: "/admin/presences", icon: CalendarCheck },
-  { title: "Activités", href: "/admin/activities", icon: CalendarDays },
-  { title: "Crédits", href: "/admin/credits", icon: Coins },
-  { title: "Observations", href: "/admin/observations", icon: Eye },
-  { title: "Partages", href: "/admin/partages", icon: Share2 },
-  { title: "Témoignages", href: "/admin/temoignages", icon: MessageSquare },
-];
 
 export type NavGroup = {
   label: string;
+  icon?: LucideIcon;
+  dropdown?: boolean;
   items: NavItem[];
 };
 
+export const adminGestionItems: NavItem[] = [
+  {
+    title: "Utilisateurs",
+    url: "/admin/users",
+    icon: Users,
+    items: [{ title: "Liste des utilisateurs", url: "/admin/users" }],
+  },
+  {
+    title: "Gestion bénévole",
+    url: "/admin/volunteers",
+    icon: UserCheck,
+    items: [{ title: "Bénévoles", url: "/admin/volunteers" }],
+  },
+  {
+    title: "Présences",
+    url: "/admin/presences",
+    icon: CalendarCheck,
+    items: [{ title: "Pointage journalier", url: "/admin/presences" }],
+  },
+  {
+    title: "Activités",
+    url: "/admin/activities",
+    icon: CalendarDays,
+    items: [{ title: "Liste des activités", url: "/admin/activities" }],
+  },
+  {
+    title: "Crédits",
+    url: "/admin/credits",
+    icon: Coins,
+    items: [{ title: "Liste des crédits", url: "/admin/credits" }],
+  },
+  {
+    title: "Observations",
+    url: "/admin/observations",
+    icon: Eye,
+    items: [{ title: "Observations mensuelles", url: "/admin/observations" }],
+  },
+];
+
 export const adminNavGroups: NavGroup[] = [
   {
-    label: "Général",
+    label: "Navigation",
     items: [
-      { title: "Tableau de bord", href: "/admin", icon: LayoutDashboard },
+      { title: "Tableau de bord", url: "/admin", icon: LayoutDashboard },
+      { title: "Suivi du projet", url: "/admin/sprints", icon: ClipboardList },
     ],
   },
   {
-    label: "Gestion",
+    label: "Communication",
     items: [
-      { title: "Utilisateurs", href: "/admin/users", icon: Users },
-      { title: "Bénévoles", href: "/admin/benevoles", icon: UserCheck },
-      { title: "Présences", href: "/admin/presences", icon: CalendarCheck },
-      { title: "Activités", href: "/admin/activites", icon: CalendarDays },
-      { title: "Crédits", href: "/admin/credits", icon: Coins },
-      { title: "Observations", href: "/admin/observations", icon: Eye },
-      { title: "Partages", href: "/admin/partages", icon: Share2 },
-      { title: "Témoignages", href: "/admin/temoignages", icon: MessageSquare },
+      { title: "Partages", url: "/admin/partages", icon: Share2 },
+      { title: "Témoignages", url: "/admin/temoignages", icon: MessageSquare },
+    ],
+  },
+  {
+    label: "Système",
+    items: [
+      { title: "Statistiques", url: "/admin/statistiques", icon: BarChart3 },
+      { title: "Paramètres", url: "/admin/parametres", icon: Settings },
     ],
   },
 ];
 
-export type UserMock = {
-  id: number;
-  nom: string;
-  prenom: string;
-  email: string;
-  role: "ADMIN" | "BENEVOLE";
-  date_entree: string;
+export const adminTeams = [
+  { name: "Gestion Bénévole", logo: Package, plan: "Espace administration" },
+];
+
+export const adminUser = {
+  name: "Marie Dupont",
+  email: "marie.dupont@asso.fr",
+  avatar: "",
 };
-
-export const users: UserMock[] = [
-  {
-    id: 1,
-    nom: "Dupont",
-    prenom: "Marie",
-    email: "marie.dupont@asso.fr",
-    role: "ADMIN",
-    date_entree: "2026-01-12",
-  },
-  {
-    id: 2,
-    nom: "Martin",
-    prenom: "Jean",
-    email: "jean.martin@asso.fr",
-    role: "BENEVOLE",
-    date_entree: "2026-02-03",
-  },
-  {
-    id: 3,
-    nom: "Bernard",
-    prenom: "Sophie",
-    email: "sophie.bernard@asso.fr",
-    role: "BENEVOLE",
-    date_entree: "2026-02-20",
-  },
-  {
-    id: 4,
-    nom: "Lefevre",
-    prenom: "Pierre",
-    email: "pierre.lefevre@asso.fr",
-    role: "BENEVOLE",
-    date_entree: "2026-03-08",
-  },
-  {
-    id: 5,
-    nom: "Morel",
-    prenom: "Claire",
-    email: "claire.morel@asso.fr",
-    role: "BENEVOLE",
-    date_entree: "2026-03-15",
-  },
-  {
-    id: 6,
-    nom: "Petit",
-    prenom: "Luc",
-    email: "luc.petit@asso.fr",
-    role: "ADMIN",
-    date_entree: "2026-04-01",
-  },
-];
 
 export type PresenceMock = {
   id: number;
