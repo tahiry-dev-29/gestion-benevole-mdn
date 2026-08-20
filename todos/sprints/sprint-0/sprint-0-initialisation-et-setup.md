@@ -31,17 +31,17 @@ capacité suffisante ou reporté sur S1.
 
 ## 🎫 Sprint Board
 
-| Story                                 | Dev         | Points | Backlog | En cours | Test | Fait |
-| ------------------------------------- | ----------- | ------ | ------- | -------- | ---- | ---- |
-| S0.1 — Dépôt & branches               | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
-| S0.2 — Scaffold Next.js               | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
-| S0.3 — Tailwind v4 + shadcn           | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
-| S0.4 — PostgreSQL + Prisma            | Lead+Back1  | 5      | ☑       | ☐        | ☐    | ☐    |
-| S0.5 — Variables d'environnement      | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
-| S0.6 — PWA de base                    | Front2      | 5      | ☑       | ☐        | ☐    | ☐    |
-| S0.7 — Hébergement                    | Lead        | 8      | ☐       | ☐        | ☐    | ☐    |
-| S0.8 — CI/CD GitHub Actions           | Lead        | 5      | ☐       | ☐        | ☐    | ☐    |
-| S0.9 — (Option) Page `/admin/sprints` | Lead+Front1 | 8      | ☐       | ☐        | ☐    | ☐    |
+| Story                                 | Status | Dev         | Points | Backlog | En cours | Test | Fait |
+| ------------------------------------- | ------ | ----------- | ------ | ------- | -------- | ---- | ---- |
+| S0.1 — Dépôt & branches               | ⚪     | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
+| S0.2 — Scaffold Next.js               | ⚪     | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
+| S0.3 — Tailwind v4 + shadcn           | ⚪     | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
+| S0.4 — PostgreSQL + Prisma            | ⚪     | Lead+Back1  | 5      | ☑       | ☐        | ☐    | ☐    |
+| S0.5 — Variables d'environnement      | ⚪     | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
+| S0.6 — PWA de base                    | ⚪     | Front2      | 5      | ☑       | ☐        | ☐    | ☐    |
+| S0.7 — Hébergement                    | ⚪     | Lead        | 8      | ☐       | ☐        | ☐    | ☐    |
+| S0.8 — CI/CD GitHub Actions           | ⚪     | Lead        | 5      | ☐       | ☐        | ☐    | ☐    |
+| S0.9 — (Option) Page `/admin/sprints` | ⚪     | Lead+Front1 | 8      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 

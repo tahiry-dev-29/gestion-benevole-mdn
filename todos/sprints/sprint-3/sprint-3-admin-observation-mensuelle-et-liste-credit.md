@@ -26,14 +26,14 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 ## 🎫 Sprint Board
 
-| Story                            | Dev    | Points | Backlog | En cours | Test | Fait |
-| -------------------------------- | ------ | ------ | ------- | -------- | ---- | ---- |
-| S3.1 — API Liste Crédit          | Back1  | 8      | ☐       | ☐        | ☐    | ☐    |
-| S3.2 — Export CSV/PDF (option)   | Back2  | 3      | ☐       | ☐        | ☐    | ☐    |
-| S3.3 — API Observation mensuelle | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S3.4 — UI Observations par mois  | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S3.5 — UI Liste Crédit           | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S3.6 — Tests fonctionnels        | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| Story                            | Status | Dev    | Points | Backlog | En cours | Test | Fait |
+| -------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
+| S3.1 — API Liste Crédit          | ⚪     | Back1  | 8      | ☐       | ☐        | ☐    | ☐    |
+| S3.2 — Export CSV/PDF (option)   | ⚪     | Back2  | 3      | ☐       | ☐        | ☐    | ☐    |
+| S3.3 — API Observation mensuelle | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S3.4 — UI Observations par mois  | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S3.5 — UI Liste Crédit           | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S3.6 — Tests fonctionnels        | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 

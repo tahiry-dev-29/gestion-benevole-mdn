@@ -27,15 +27,15 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 ## 🎫 Sprint Board
 
-| Story                                   | Dev    | Points | Backlog | En cours | Test | Fait |
-| --------------------------------------- | ------ | ------ | ------- | -------- | ---- | ---- |
-| S4.1 — API Activité (CRUD/publication)  | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.2 — API Partage (CRUD/publication)   | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.3 — Admin Modération (UI)            | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.4 — UI publique Activités            | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.5 — UI publique Partages             | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.6 — Optimisation images (next/image) | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S4.7 — Tests fonctionnels               | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| Story                                   | Status | Dev    | Points | Backlog | En cours | Test | Fait |
+| --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
+| S4.1 — API Activité (CRUD/publication)  | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S4.2 — API Partage (CRUD/publication)   | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S4.3 — Admin Modération (UI)            | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S4.4 — UI publique Activités            | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S4.5 — UI publique Partages             | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S4.6 — Optimisation images (next/image) | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
+| S4.7 — Tests fonctionnels               | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 

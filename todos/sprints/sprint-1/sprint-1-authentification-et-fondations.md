@@ -33,19 +33,19 @@ reportable en S2 si besoin (S1.11 priorisé S2 possible).
 
 ## 🎫 Sprint Board
 
-| Story                                   | Dev    | Points | Backlog | En cours | Test | Fait |
-| --------------------------------------- | ------ | ------ | ------- | -------- | ---- | ---- |
-| S1.1 — Schéma finalisé + migrations     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.2 — API Auth (register/login/logout) | Back1  | 8      | ☐       | ☐        | ☐    | ☐    |
-| S1.3 — Middleware & RBAC                | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.4 — UI Page de connexion             | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.5 — Layout Admin (sidebar/navbar)    | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.6 — Layout Public (header/footer)    | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.7 — Service worker / offline shell   | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.8 — Tests fonctionnels               | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
-| S1.9 — API Gestion Utilisateur          | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.10 — UI Gestion Utilisateur          | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S1.11 — Inviter & reset mdp             | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
+| Story                                   | Status | Dev    | Points | Backlog | En cours | Test | Fait |
+| --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
+| S1.1 — Schéma finalisé + migrations     | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.2 — API Auth (register/login/logout) | ⚪     | Back1  | 8      | ☐       | ☐        | ☐    | ☐    |
+| S1.3 — Middleware & RBAC                | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.4 — UI Page de connexion             | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.5 — Layout Admin (sidebar/navbar)    | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.6 — Layout Public (header/footer)    | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.7 — Service worker / offline shell   | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.8 — Tests fonctionnels               | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| S1.9 — API Gestion Utilisateur          | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.10 — UI Gestion Utilisateur          | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S1.11 — Inviter & reset mdp             | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 

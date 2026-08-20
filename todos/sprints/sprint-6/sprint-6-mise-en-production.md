@@ -25,13 +25,13 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 
 ## 🎫 Sprint Board
 
-| Story                                   | Dev    | Points | Backlog | En cours | Test | Fait |
-| --------------------------------------- | ------ | ------ | ------- | -------- | ---- | ---- |
-| S6.1 — Environnement de production      | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
-| S6.2 — Migration DB + déploiement final | Lead   | 5      | ☐       | ☐        | ☐    | ☐    |
-| S6.3 — Vérification finale (checklist)  | Équipe | 5      | ☐       | ☐        | ☐    | ☐    |
-| S6.4 — Formation & passation            | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
-| S6.5 — Rétrospective globale + clôture  | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| Story                                   | Status | Dev    | Points | Backlog | En cours | Test | Fait |
+| --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
+| S6.1 — Environnement de production      | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
+| S6.2 — Migration DB + déploiement final | ⚪     | Lead   | 5      | ☐       | ☐        | ☐    | ☐    |
+| S6.3 — Vérification finale (checklist)  | ⚪     | Équipe | 5      | ☐       | ☐        | ☐    | ☐    |
+| S6.4 — Formation & passation            | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
+| S6.5 — Rétrospective globale + clôture  | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 
