@@ -55,8 +55,8 @@ capacité suffisante ou reporté sur S1.
 #### Tâches
 
 - [x] Dépôt GitHub `gestion-benevole-mdn` créé + 3 collaborateurs invités
-- [x] Branches `main` + `dev` (workflow feature branches)
-- [ ] Règles de protection de `main` : PR obligatoire + revue du Lead
+- [x] Branche `main` avec règles de protection (PR obligatoire + revue du Lead)
+- [x] Workflow feature branches : chaque développeur crée sa branche `feature/*` à partir de `main`
 
 #### Acceptation (Gherkin)
 
