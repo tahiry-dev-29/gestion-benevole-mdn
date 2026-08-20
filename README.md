@@ -4,16 +4,16 @@ Application de gestion des bénévoles pour la Maison du Numérique. Construite 
 
 ## 🚀 Stack Technique
 
-| Layer | Technologies |
-|-------|--------------|
-| **Framework** | Next.js 16.2.11 (App Router, Server Components) |
-| **Language** | TypeScript 5, React 19.2.4 |
-| **Styling** | Tailwind CSS v4, shadcn/ui, lucide-react |
-| **Database** | PostgreSQL + Prisma 7 ORM |
-| **Auth** | NextAuth.js v4 (credentials, rôles ADMIN/BENEVOLE) |
-| **State/Query** | TanStack Query (React Query) v5, React Hook Form + Zod |
-| **PWA** | @ducanh2912/next-pwa (service worker, manifest) |
-| **Quality** | ESLint 9, Prettier, Husky, lint-staged, TypeScript strict |
+| Layer           | Technologies                                              |
+| --------------- | --------------------------------------------------------- |
+| **Framework**   | Next.js 16.2.11 (App Router, Server Components)           |
+| **Language**    | TypeScript 5, React 19.2.4                                |
+| **Styling**     | Tailwind CSS v4, shadcn/ui, lucide-react                  |
+| **Database**    | PostgreSQL + Prisma 7 ORM                                 |
+| **Auth**        | NextAuth.js v4 (credentials, rôles ADMIN/BENEVOLE)        |
+| **State/Query** | TanStack Query (React Query) v5, React Hook Form + Zod    |
+| **PWA**         | @ducanh2912/next-pwa (service worker, manifest)           |
+| **Quality**     | ESLint 9, Prettier, Husky, lint-staged, TypeScript strict |
 
 ## 📁 Structure du Projet
 
@@ -104,10 +104,10 @@ pnpm prepare                      # Installe Husky hooks
 
 ## 🔐 Comptes de Test (après seed)
 
-| Rôle | Email | Mot de passe |
-|------|-------|--------------|
-| ADMIN | admin@benevol.local | admin123 |
-| BENEVOLE | benevole@benevol.local | benevole123 |
+| Rôle     | Email                  | Mot de passe |
+| -------- | ---------------------- | ------------ |
+| ADMIN    | admin@benevol.local    | admin123     |
+| BENEVOLE | benevole@benevol.local | benevole123  |
 
 ## 🗄️ Modèle de Données (Prisma)
 
@@ -121,15 +121,15 @@ pnpm prepare                      # Installe Husky hooks
 
 ## 📦 Roadmap des Sprints
 
-| Sprint | Périmètre | Durée | Statut |
-|--------|-----------|-------|--------|
-| 0 | Initialisation & Setup | 1 sem | 🔵 En cours |
-| 1 | Authentification & Fondations | 2 sem | ⚪ À venir |
-| 2 | Admin : Info perso & Présence | 2 sem | ⚪ À venir |
-| 3 | Admin : Observation & Crédits | 2 sem | ⚪ À venir |
-| 4 | Public : Activité & Partage | 2 sem | ⚪ À venir |
-| 5 | Public : Témoignage & PWA | 2 sem | ⚪ À venir |
-| 6 | Mise en production | 1 sem | ⚪ À venir |
+| Sprint | Périmètre                     | Durée | Statut      |
+| ------ | ----------------------------- | ----- | ----------- |
+| 0      | Initialisation & Setup        | 1 sem | 🔵 En cours |
+| 1      | Authentification & Fondations | 2 sem | ⚪ À venir  |
+| 2      | Admin : Info perso & Présence | 2 sem | ⚪ À venir  |
+| 3      | Admin : Observation & Crédits | 2 sem | ⚪ À venir  |
+| 4      | Public : Activité & Partage   | 2 sem | ⚪ À venir  |
+| 5      | Public : Témoignage & PWA     | 2 sem | ⚪ À venir  |
+| 6      | Mise en production            | 1 sem | ⚪ À venir  |
 
 Détails : [`todos/sprints/ROADMAP.md`](todos/sprints/ROADMAP.md)
 

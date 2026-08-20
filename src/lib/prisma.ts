@@ -5,7 +5,8 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-const isPrismaPostgres = process.env.DATABASE_URL?.startsWith("prisma+postgres://");
+const isPrismaPostgres =
+  process.env.DATABASE_URL?.startsWith("prisma+postgres://");
 
 const createClient = () => {
   if (isPrismaPostgres) {

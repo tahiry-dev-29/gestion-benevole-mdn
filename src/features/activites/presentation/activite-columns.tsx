@@ -1,7 +1,15 @@
 "use client";
 
-import type { Column,ColumnDef } from "@tanstack/react-table";
-import { ArrowDown,ArrowUp, ChevronsUpDown, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import type { Column, ColumnDef } from "@tanstack/react-table";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronsUpDown,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -83,7 +91,9 @@ export function getActiviteColumns({
         return (
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="ghost" size="icon" aria-label="Actions" />}
+              render={
+                <Button variant="ghost" size="icon" aria-label="Actions" />
+              }
             >
               <MoreHorizontal className="size-4" />
             </DropdownMenuTrigger>
@@ -96,7 +106,10 @@ export function getActiviteColumns({
                 <Pencil className="size-4" /> Modifier
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={() => onDelete(a)}>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => onDelete(a)}
+              >
                 <Trash2 className="size-4" /> Supprimer
               </DropdownMenuItem>
             </DropdownMenuContent>

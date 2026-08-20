@@ -31,7 +31,13 @@ function toEntity(a: {
 }
 
 export const activiteRepository: IActiviteRepository = {
-  async list({ q, page = 1, pageSize = 10, sortBy = "date", sortDir = "desc" } = {}) {
+  async list({
+    q,
+    page = 1,
+    pageSize = 10,
+    sortBy = "date",
+    sortDir = "desc",
+  } = {}) {
     const where = q
       ? {
           OR: [
@@ -75,7 +81,9 @@ export const activiteRepository: IActiviteRepository = {
       where: { id },
       data: {
         ...(input.titre !== undefined ? { titre: input.titre } : {}),
-        ...(input.description !== undefined ? { description: input.description } : {}),
+        ...(input.description !== undefined
+          ? { description: input.description }
+          : {}),
         ...(input.date !== undefined ? { date: new Date(input.date) } : {}),
       },
     });

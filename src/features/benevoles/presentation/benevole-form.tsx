@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Controller,useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
@@ -96,7 +96,9 @@ export function BenevoleForm({
 
   const submit = handleSubmit((values) => {
     if (!isEdit && !values.password) {
-      setError("password", { message: "Le mot de passe est requis pour un nouveau bénévole" });
+      setError("password", {
+        message: "Le mot de passe est requis pour un nouveau bénévole",
+      });
       return;
     }
     onSubmit(values);
@@ -106,7 +108,9 @@ export function BenevoleForm({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>{isEdit ? "Modifier le bénévole" : "Nouveau bénévole"}</SheetTitle>
+          <SheetTitle>
+            {isEdit ? "Modifier le bénévole" : "Nouveau bénévole"}
+          </SheetTitle>
           <SheetDescription>
             {isEdit
               ? "Mettez à jour les informations du bénévole."
@@ -114,7 +118,10 @@ export function BenevoleForm({
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={submit} className="flex flex-1 flex-col gap-4 overflow-y-auto px-4">
+        <form
+          onSubmit={submit}
+          className="flex flex-1 flex-col gap-4 overflow-y-auto px-4"
+        >
           <div className="flex flex-col gap-2">
             <Label htmlFor="nom">Nom</Label>
             <Input id="nom" {...register("nom")} aria-invalid={!!errors.nom} />
@@ -125,15 +132,26 @@ export function BenevoleForm({
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="prenom">Prénom</Label>
-            <Input id="prenom" {...register("prenom")} aria-invalid={!!errors.prenom} />
+            <Input
+              id="prenom"
+              {...register("prenom")}
+              aria-invalid={!!errors.prenom}
+            />
             {errors.prenom ? (
-              <p className="text-xs text-destructive">{errors.prenom.message}</p>
+              <p className="text-xs text-destructive">
+                {errors.prenom.message}
+              </p>
             ) : null}
           </div>
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" {...register("email")} aria-invalid={!!errors.email} />
+            <Input
+              id="email"
+              type="email"
+              {...register("email")}
+              aria-invalid={!!errors.email}
+            />
             {errors.email ? (
               <p className="text-xs text-destructive">{errors.email.message}</p>
             ) : null}
@@ -150,7 +168,9 @@ export function BenevoleForm({
               aria-invalid={!!errors.password}
             />
             {errors.password ? (
-              <p className="text-xs text-destructive">{errors.password.message}</p>
+              <p className="text-xs text-destructive">
+                {errors.password.message}
+              </p>
             ) : null}
           </div>
 
@@ -180,7 +200,11 @@ export function BenevoleForm({
         </form>
 
         <SheetFooter className="flex-row gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isPending}
+          >
             Annuler
           </Button>
           <Button onClick={submit} disabled={isPending} className="gap-2">

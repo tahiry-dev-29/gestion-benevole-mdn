@@ -1,7 +1,15 @@
 "use client";
 
-import type { Column,ColumnDef } from "@tanstack/react-table";
-import { ArrowDown,ArrowUp, ChevronsUpDown, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import type { Column, ColumnDef } from "@tanstack/react-table";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronsUpDown,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -75,14 +83,18 @@ export function getBenevoleColumns({
       accessorKey: "role",
       header: ({ column }) => <SortHeader column={column} label="Rôle" />,
       cell: ({ row }) => (
-        <Badge variant={row.original.role === "ADMIN" ? "default" : "secondary"}>
+        <Badge
+          variant={row.original.role === "ADMIN" ? "default" : "secondary"}
+        >
           {row.original.role}
         </Badge>
       ),
     },
     {
       accessorKey: "dateEntree",
-      header: ({ column }) => <SortHeader column={column} label="Date d'entrée" />,
+      header: ({ column }) => (
+        <SortHeader column={column} label="Date d'entrée" />
+      ),
       cell: ({ row }) => formatDate(row.original.dateEntree),
     },
     {
@@ -93,7 +105,9 @@ export function getBenevoleColumns({
         return (
           <DropdownMenu>
             <DropdownMenuTrigger
-              render={<Button variant="ghost" size="icon" aria-label="Actions" />}
+              render={
+                <Button variant="ghost" size="icon" aria-label="Actions" />
+              }
             >
               <MoreHorizontal className="size-4" />
             </DropdownMenuTrigger>
@@ -106,7 +120,10 @@ export function getBenevoleColumns({
                 <Pencil className="size-4" /> Modifier
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={() => onDelete(b)}>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => onDelete(b)}
+              >
                 <Trash2 className="size-4" /> Supprimer
               </DropdownMenuItem>
             </DropdownMenuContent>

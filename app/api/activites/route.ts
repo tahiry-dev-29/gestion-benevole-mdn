@@ -9,11 +9,20 @@ export async function GET(request: Request) {
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const pageSize = Math.max(1, Number(searchParams.get("pageSize")) || 10);
   const sortBy =
-    (["titre", "date"] as const).find((f) => f === searchParams.get("sortBy")) ?? "date";
+    (["titre", "date"] as const).find(
+      (f) => f === searchParams.get("sortBy")
+    ) ?? "date";
   const sortDir =
-    (["asc", "desc"] as const).find((d) => d === searchParams.get("sortDir")) ?? "desc";
+    (["asc", "desc"] as const).find((d) => d === searchParams.get("sortDir")) ??
+    "desc";
 
-  const result = await activiteRepository.list({ q, page, pageSize, sortBy, sortDir });
+  const result = await activiteRepository.list({
+    q,
+    page,
+    pageSize,
+    sortBy,
+    sortDir,
+  });
   return NextResponse.json(result);
 }
 

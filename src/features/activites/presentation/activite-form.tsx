@@ -75,7 +75,9 @@ export function ActiviteForm({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>{isEdit ? "Modifier l'activité" : "Nouvelle activité"}</SheetTitle>
+          <SheetTitle>
+            {isEdit ? "Modifier l'activité" : "Nouvelle activité"}
+          </SheetTitle>
           <SheetDescription>
             {isEdit
               ? "Mettez à jour les informations de l'activité."
@@ -83,10 +85,17 @@ export function ActiviteForm({
           </SheetDescription>
         </SheetHeader>
 
-        <form onSubmit={submit} className="flex flex-1 flex-col gap-4 overflow-y-auto px-4">
+        <form
+          onSubmit={submit}
+          className="flex flex-1 flex-col gap-4 overflow-y-auto px-4"
+        >
           <div className="flex flex-col gap-2">
             <Label htmlFor="titre">Titre</Label>
-            <Input id="titre" {...register("titre")} aria-invalid={!!errors.titre} />
+            <Input
+              id="titre"
+              {...register("titre")}
+              aria-invalid={!!errors.titre}
+            />
             {errors.titre ? (
               <p className="text-xs text-destructive">{errors.titre.message}</p>
             ) : null}
@@ -102,13 +111,20 @@ export function ActiviteForm({
               className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
             {errors.description ? (
-              <p className="text-xs text-destructive">{errors.description.message}</p>
+              <p className="text-xs text-destructive">
+                {errors.description.message}
+              </p>
             ) : null}
           </div>
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="date">Date</Label>
-            <Input id="date" type="date" {...register("date")} aria-invalid={!!errors.date} />
+            <Input
+              id="date"
+              type="date"
+              {...register("date")}
+              aria-invalid={!!errors.date}
+            />
             {errors.date ? (
               <p className="text-xs text-destructive">{errors.date.message}</p>
             ) : null}
@@ -116,7 +132,11 @@ export function ActiviteForm({
         </form>
 
         <SheetFooter className="flex-row gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isPending}
+          >
             Annuler
           </Button>
           <Button onClick={submit} disabled={isPending} className="gap-2">

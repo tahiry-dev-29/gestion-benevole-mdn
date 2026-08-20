@@ -1,12 +1,11 @@
 "use client";
 
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type { CreateBenevoleDto, UpdateBenevoleDto } from "../application/benevole.schema";
+import type {
+  CreateBenevoleDto,
+  UpdateBenevoleDto,
+} from "../application/benevole.schema";
 import type { Benevole } from "../domain/benevole.entity";
 
 export type BenevoleQueryParams = {
@@ -59,7 +58,13 @@ export function useCreateBenevole() {
 export function useUpdateBenevole() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, input }: { id: number; input: UpdateBenevoleDto }) => {
+    mutationFn: async ({
+      id,
+      input,
+    }: {
+      id: number;
+      input: UpdateBenevoleDto;
+    }) => {
       const res = await fetch(`/api/benevoles/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

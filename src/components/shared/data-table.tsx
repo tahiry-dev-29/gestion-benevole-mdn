@@ -4,14 +4,19 @@ import * as React from "react";
 import {
   type ColumnDef,
   flexRender,
-   getCoreRowModel,
-   getPaginationRowModel,
-   getSortedRowModel,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   type PaginationState,
   type SortingState,
-   useReactTable,
+  useReactTable,
 } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +34,9 @@ interface DataTableProps<TData, TValue> {
   total?: number;
   pageCount?: number;
   sorting?: SortingState;
-  onSortingChange?: (updater: SortingState | ((old: SortingState) => SortingState)) => void;
+  onSortingChange?: (
+    updater: SortingState | ((old: SortingState) => SortingState)
+  ) => void;
   pagination?: PaginationState;
   onPaginationChange?: (
     updater: PaginationState | ((old: PaginationState) => PaginationState)
@@ -71,7 +78,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-4">
-      {toolbar ? <div className="flex flex-wrap items-center gap-2">{toolbar}</div> : null}
+      {toolbar ? (
+        <div className="flex flex-wrap items-center gap-2">{toolbar}</div>
+      ) : null}
 
       <div className="overflow-hidden rounded-xl border bg-card">
         <div className="overflow-x-auto">
@@ -83,7 +92,10 @@ export function DataTable<TData, TValue>({
                     <TableHead key={header.id} className="whitespace-nowrap">
                       {header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -92,7 +104,10 @@ export function DataTable<TData, TValue>({
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center text-muted-foreground"
+                  >
                     Chargement…
                   </TableCell>
                 </TableRow>
@@ -101,14 +116,20 @@ export function DataTable<TData, TValue>({
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="whitespace-nowrap">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center text-muted-foreground"
+                  >
                     {emptyMessage}
                   </TableCell>
                 </TableRow>

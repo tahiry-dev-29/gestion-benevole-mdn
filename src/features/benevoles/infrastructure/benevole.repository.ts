@@ -43,7 +43,13 @@ function toEntity(user: {
 
 export const benevoleRepository: IBenevoleRepository = {
   async list(params: ListBenevolesParams = {}) {
-    const { q, page = 1, pageSize = 10, sortBy = "nom", sortDir = "asc" } = params;
+    const {
+      q,
+      page = 1,
+      pageSize = 10,
+      sortBy = "nom",
+      sortDir = "asc",
+    } = params;
     const where = q
       ? {
           OR: [

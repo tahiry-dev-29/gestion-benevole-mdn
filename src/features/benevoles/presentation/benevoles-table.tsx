@@ -56,7 +56,9 @@ export function BenevolesTable() {
   const updateMutation = useUpdateBenevole();
   const deleteMutation = useDeleteBenevole();
   const isPending =
-    createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    deleteMutation.isPending;
 
   const columns = React.useMemo(
     () =>
@@ -117,7 +119,13 @@ export function BenevolesTable() {
         title="Bénévoles"
         description="Gérez les membres bénévoles de l'association."
         action={
-          <Button onClick={() => { setEditing(null); setFormOpen(true); }} className="gap-2">
+          <Button
+            onClick={() => {
+              setEditing(null);
+              setFormOpen(true);
+            }}
+            className="gap-2"
+          >
             <Plus className="size-4" /> Ajouter
           </Button>
         }
@@ -132,7 +140,10 @@ export function BenevolesTable() {
         onSortingChange={setSorting}
         pagination={{ pageIndex, pageSize: PAGE_SIZE }}
         onPaginationChange={(updater) => {
-          const next = typeof updater === "function" ? updater({ pageIndex, pageSize: PAGE_SIZE }) : updater;
+          const next =
+            typeof updater === "function"
+              ? updater({ pageIndex, pageSize: PAGE_SIZE })
+              : updater;
           setPageIndex(next.pageIndex);
         }}
         isLoading={isLoading}

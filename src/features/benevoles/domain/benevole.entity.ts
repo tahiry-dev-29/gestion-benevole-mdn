@@ -32,7 +32,9 @@ export type CreateBenevoleInput = {
 export type UpdateBenevoleInput = Partial<CreateBenevoleInput>;
 
 export interface IBenevoleRepository {
-  list(params: ListBenevolesParams): Promise<{ data: Benevole[]; total: number }>;
+  list(
+    params: ListBenevolesParams
+  ): Promise<{ data: Benevole[]; total: number }>;
   getById(id: number): Promise<Benevole | null>;
   create(input: CreateBenevoleInput): Promise<Benevole>;
   update(id: number, input: UpdateBenevoleInput): Promise<Benevole>;

@@ -6,7 +6,9 @@ export const createBenevoleSchema = z.object({
   nom: z.string().min(1, "Le nom est requis").max(100),
   prenom: z.string().min(1, "Le prénom est requis").max(100),
   email: z.string().email("Adresse email invalide"),
-  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
+  password: z
+    .string()
+    .min(6, "Le mot de passe doit contenir au moins 6 caractères"),
   role: roleEnum.default("BENEVOLE"),
   dateEntree: z.string().optional(),
 });

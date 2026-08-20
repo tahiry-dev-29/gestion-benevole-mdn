@@ -24,7 +24,9 @@ export type CreateActiviteInput = {
 export type UpdateActiviteInput = Partial<CreateActiviteInput>;
 
 export interface IActiviteRepository {
-  list(params: ListActivitesParams): Promise<{ data: Activite[]; total: number }>;
+  list(
+    params: ListActivitesParams
+  ): Promise<{ data: Activite[]; total: number }>;
   getById(id: number): Promise<Activite | null>;
   create(input: CreateActiviteInput): Promise<Activite>;
   update(id: number, input: UpdateActiviteInput): Promise<Activite>;

@@ -10,7 +10,10 @@ export async function GET(_request: Request, { params }: Context) {
   const benevole = await benevoleRepository.getById(Number(id));
 
   if (!benevole) {
-    return NextResponse.json({ error: "Bénévole introuvable" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Bénévole introuvable" },
+      { status: 404 }
+    );
   }
   return NextResponse.json(benevole);
 }
@@ -31,7 +34,10 @@ export async function PUT(request: Request, { params }: Context) {
     const updated = await benevoleRepository.update(Number(id), parsed.data);
     return NextResponse.json(updated);
   } catch {
-    return NextResponse.json({ error: "Bénévole introuvable" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Bénévole introuvable" },
+      { status: 404 }
+    );
   }
 }
 
@@ -42,6 +48,9 @@ export async function DELETE(_request: Request, { params }: Context) {
     await benevoleRepository.remove(Number(id));
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: "Bénévole introuvable" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Bénévole introuvable" },
+      { status: 404 }
+    );
   }
 }

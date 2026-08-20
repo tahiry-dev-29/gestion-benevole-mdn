@@ -2,7 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type { CreateActiviteDto, UpdateActiviteDto } from "../application/activite.schema";
+import type {
+  CreateActiviteDto,
+  UpdateActiviteDto,
+} from "../application/activite.schema";
 import type { Activite } from "../domain/activite.entity";
 
 export type ActiviteQueryParams = {
@@ -55,7 +58,13 @@ export function useCreateActivite() {
 export function useUpdateActivite() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, input }: { id: number; input: UpdateActiviteDto }) => {
+    mutationFn: async ({
+      id,
+      input,
+    }: {
+      id: number;
+      input: UpdateActiviteDto;
+    }) => {
       const res = await fetch(`/api/activites/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

@@ -13,9 +13,16 @@ export async function GET(request: Request) {
       (f) => f === searchParams.get("sortBy")
     ) ?? "nom";
   const sortDir =
-    (["asc", "desc"] as const).find((d) => d === searchParams.get("sortDir")) ?? "asc";
+    (["asc", "desc"] as const).find((d) => d === searchParams.get("sortDir")) ??
+    "asc";
 
-  const result = await benevoleRepository.list({ q, page, pageSize, sortBy, sortDir });
+  const result = await benevoleRepository.list({
+    q,
+    page,
+    pageSize,
+    sortBy,
+    sortDir,
+  });
   return NextResponse.json(result);
 }
 
