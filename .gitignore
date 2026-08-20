@@ -45,3 +45,8 @@ next-env.d.ts
 # agent skills IDE symlinks
 .claude/skills
 .windsurf/skills
+
+# PWA (next-pwa build artifacts — rebuilt on `next build`)
+/public/sw.js
+/public/workbox-*.js
+
