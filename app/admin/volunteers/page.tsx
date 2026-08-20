@@ -31,35 +31,35 @@ export default function VolunteersPage() {
       />
 
       <TableCard>
-            <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nom</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead>Date d&apos;entrée</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nom</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Statut</TableHead>
+              <TableHead>Date d&apos;entrée</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {benevoles.map((u) => (
+              <TableRow key={u.id}>
+                <TableCell className="font-medium">
+                  {u.prenom} {u.nom}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {u.email}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="default">Actif</Badge>
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {u.date_entree}
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {benevoles.map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell className="font-medium">
-                    {u.prenom} {u.nom}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {u.email}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="default">Actif</Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {u.date_entree}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          </TableCard>
+            ))}
+          </TableBody>
+        </Table>
+      </TableCard>
     </div>
   );
 }

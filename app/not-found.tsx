@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Package } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,8 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Package } from "lucide-react";
-import Link from "next/link";
 
 export default function NotFoundPage() {
   return (
@@ -21,12 +22,16 @@ export default function NotFoundPage() {
             404
           </CardTitle>
           <CardDescription className="text-base">
-            La page que vous cherchez n'existe pas ou a été déplacée.
+            La page que vous cherchez n&apos;existe pas ou a été déplacée.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-3">
-          <Button className="w-full" nativeButton={false} render={<Link href="/" />}>
-            Retour à l'accueil
+          <Button
+            className="w-full"
+            nativeButton={false}
+            render={<Link href="/" />}
+          >
+            Retour à l&apos;accueil
           </Button>
         </CardContent>
       </Card>

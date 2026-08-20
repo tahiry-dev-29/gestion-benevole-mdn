@@ -15,10 +15,8 @@ import { PageHeader } from "@/features/admin/page-header";
 import { TableCard } from "@/features/admin/table-card";
 
 function statusBadge(statut: string) {
-  if (statut === "APPROUVE")
-    return <Badge variant="default">Approuvé</Badge>;
-  if (statut === "REJETE")
-    return <Badge variant="outline">Rejeté</Badge>;
+  if (statut === "APPROUVE") return <Badge variant="default">Approuvé</Badge>;
+  if (statut === "REJETE") return <Badge variant="outline">Rejeté</Badge>;
   return <Badge variant="secondary">En attente</Badge>;
 }
 
@@ -37,27 +35,27 @@ export default function TemoignagesPage() {
       />
 
       <TableCard>
-            <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Auteur</TableHead>
-                <TableHead>Contenu</TableHead>
-                <TableHead>Statut</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Auteur</TableHead>
+              <TableHead>Contenu</TableHead>
+              <TableHead>Statut</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {temoignages.map((t) => (
+              <TableRow key={t.id}>
+                <TableCell className="font-medium">{t.nom_auteur}</TableCell>
+                <TableCell className="max-w-md text-muted-foreground">
+                  {t.contenu}
+                </TableCell>
+                <TableCell>{statusBadge(t.statut)}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {temoignages.map((t) => (
-                <TableRow key={t.id}>
-                  <TableCell className="font-medium">{t.nom_auteur}</TableCell>
-                  <TableCell className="max-w-md text-muted-foreground">
-                    {t.contenu}
-                  </TableCell>
-                  <TableCell>{statusBadge(t.statut)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          </TableCard>
+            ))}
+          </TableBody>
+        </Table>
+      </TableCard>
     </div>
   );
 }

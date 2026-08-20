@@ -16,7 +16,11 @@ export function ThemeToggle() {
       aria-label="Changer le thème clair/sombre"
       onClick={toggleTheme}
     >
-      {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+      {theme === "dark" ? (
+        <Sun className="size-4" />
+      ) : (
+        <Moon className="size-4" />
+      )}
     </Button>
   );
 }

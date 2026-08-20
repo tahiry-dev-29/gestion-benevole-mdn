@@ -28,31 +28,31 @@ export default function PartagesPage() {
       />
 
       <TableCard>
-            <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Titre</TableHead>
-                <TableHead>Contenu</TableHead>
-                <TableHead>Publication</TableHead>
-                <TableHead>Auteur</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Titre</TableHead>
+              <TableHead>Contenu</TableHead>
+              <TableHead>Publication</TableHead>
+              <TableHead>Auteur</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {partages.map((p) => (
+              <TableRow key={p.id}>
+                <TableCell className="font-medium">{p.titre}</TableCell>
+                <TableCell className="max-w-md text-muted-foreground">
+                  {p.contenu}
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {p.date_publication}
+                </TableCell>
+                <TableCell>{p.auteur ?? "—"}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {partages.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell className="font-medium">{p.titre}</TableCell>
-                  <TableCell className="max-w-md text-muted-foreground">
-                    {p.contenu}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {p.date_publication}
-                  </TableCell>
-                  <TableCell>{p.auteur ?? "—"}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          </TableCard>
+            ))}
+          </TableBody>
+        </Table>
+      </TableCard>
     </div>
   );
 }

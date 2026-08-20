@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Package } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,8 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Package } from "lucide-react";
-import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -26,8 +27,12 @@ export default function HomePage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-3">
-          <Button className="w-full" nativeButton={false} render={<Link href="/admin" />}>
-            Accéder à l'espace administration
+          <Button
+            className="w-full"
+            nativeButton={false}
+            render={<Link href="/admin" />}
+          >
+            Accéder à l&apos;espace administration
           </Button>
         </CardContent>
       </Card>

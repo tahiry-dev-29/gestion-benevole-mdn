@@ -28,31 +28,31 @@ export default function ActivitiesPage() {
       />
 
       <TableCard>
-            <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Titre</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Responsable</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Titre</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Responsable</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {activities.map((a) => (
+              <TableRow key={a.id}>
+                <TableCell className="font-medium">{a.titre}</TableCell>
+                <TableCell className="max-w-xs truncate text-muted-foreground">
+                  {a.description}
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {a.date}
+                </TableCell>
+                <TableCell>{a.responsable ?? "—"}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {activities.map((a) => (
-                <TableRow key={a.id}>
-                  <TableCell className="font-medium">{a.titre}</TableCell>
-                  <TableCell className="max-w-xs truncate text-muted-foreground">
-                    {a.description}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {a.date}
-                  </TableCell>
-                  <TableCell>{a.responsable ?? "—"}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          </TableCard>
+            ))}
+          </TableBody>
+        </Table>
+      </TableCard>
     </div>
   );
 }
