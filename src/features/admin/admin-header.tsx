@@ -3,7 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, LogOut, Menu, PanelLeft, Settings, User } from "lucide-react";
+import {
+  ExternalLink,
+  LogOut,
+  Menu,
+  PanelLeft,
+  Settings,
+  User,
+} from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

@@ -45,31 +45,31 @@ export default function ObservationsPage() {
       />
 
       <TableCard>
-            <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Bénévole</TableHead>
-                <TableHead>Période</TableHead>
-                <TableHead>Contenu</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Bénévole</TableHead>
+              <TableHead>Période</TableHead>
+              <TableHead>Contenu</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {observations.map((o) => (
+              <TableRow key={o.id}>
+                <TableCell className="font-medium">{o.benevole}</TableCell>
+                <TableCell>
+                  <Badge variant="outline">
+                    {mois[o.mois]} {o.annee}
+                  </Badge>
+                </TableCell>
+                <TableCell className="max-w-md text-muted-foreground">
+                  {o.contenu}
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {observations.map((o) => (
-                <TableRow key={o.id}>
-                  <TableCell className="font-medium">{o.benevole}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {mois[o.mois]} {o.annee}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="max-w-md text-muted-foreground">
-                    {o.contenu}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          </TableCard>
+            ))}
+          </TableBody>
+        </Table>
+      </TableCard>
     </div>
   );
 }

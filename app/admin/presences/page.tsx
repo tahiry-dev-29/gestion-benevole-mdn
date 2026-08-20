@@ -15,10 +15,8 @@ import { PageHeader } from "@/features/admin/page-header";
 import { TableCard } from "@/features/admin/table-card";
 
 function statusBadge(statut: string) {
-  if (statut === "PRESENT")
-    return <Badge variant="default">Présent</Badge>;
-  if (statut === "RETARD")
-    return <Badge variant="secondary">Retard</Badge>;
+  if (statut === "PRESENT") return <Badge variant="default">Présent</Badge>;
+  if (statut === "RETARD") return <Badge variant="secondary">Retard</Badge>;
   return <Badge variant="outline">Absent</Badge>;
 }
 
@@ -37,31 +35,31 @@ export default function PresencesPage() {
       />
 
       <TableCard>
-            <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Bénévole</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Arrivée</TableHead>
-                <TableHead>Départ</TableHead>
-                <TableHead>Statut</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Bénévole</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Arrivée</TableHead>
+              <TableHead>Départ</TableHead>
+              <TableHead>Statut</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {presences.map((p) => (
+              <TableRow key={p.id}>
+                <TableCell className="font-medium">{p.benevole}</TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {p.date}
+                </TableCell>
+                <TableCell>{p.heure_arrivee ?? "—"}</TableCell>
+                <TableCell>{p.heure_depart ?? "—"}</TableCell>
+                <TableCell>{statusBadge(p.statut)}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {presences.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell className="font-medium">{p.benevole}</TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {p.date}
-                  </TableCell>
-                  <TableCell>{p.heure_arrivee ?? "—"}</TableCell>
-                  <TableCell>{p.heure_depart ?? "—"}</TableCell>
-                  <TableCell>{statusBadge(p.statut)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          </TableCard>
+            ))}
+          </TableBody>
+        </Table>
+      </TableCard>
     </div>
   );
 }

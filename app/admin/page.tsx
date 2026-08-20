@@ -1,9 +1,4 @@
-import {
-  AlertCircle,
-  Calendar,
-  ClipboardCheck,
-  Users,
-} from "lucide-react";
+import { AlertCircle, Calendar, ClipboardCheck, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,7 +78,11 @@ export default function AdminPage() {
           <CardContent className="space-y-4">
             {[
               { label: "Bénévoles", value: 38, color: "bg-primary" },
-              { label: "Administrateurs", value: 4, color: "bg-muted-foreground/40" },
+              {
+                label: "Administrateurs",
+                value: 4,
+                color: "bg-muted-foreground/40",
+              },
               { label: "En attente", value: 5, color: "bg-destructive" },
             ].map((row) => (
               <div key={row.label}>

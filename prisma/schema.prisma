@@ -1,14 +1,10 @@
-datasource db {
-  provider = "postgresql"
-}
-
 generator client {
   provider = "prisma-client-js"
+  seed     = "npx tsx prisma/seed.ts"
 }
 
-enum Role {
-  ADMIN
-  BENEVOLE
+datasource db {
+  provider = "postgresql"
 }
 
 model User {
@@ -20,79 +16,84 @@ model User {
   role         Role          @default(BENEVOLE)
   photo        String?
   date_entree  DateTime      @default(now())
-  presences    Presence[]
-  observations Observation[]
-  credits      Credit[]
-  activites    Activite[]
-  partages     Partage[]
-  temoignages  Temoignage[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  activites    Activite[]
+  credits      Credit[]
+  observations Observation[]
+  partages     Partage[]
+  presences    Presence[]
+  temoignages  Temoignage[]
 }
 
 model Presence {
   id            Int      @id @default(autoincrement())
   user_id       Int
-  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   date          DateTime @db.Date
   heure_arrivee String?
   heure_depart  String?
   statut        String   @default("PRESENT")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Observation {
   id        Int      @id @default(autoincrement())
   user_id   Int
-  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   mois      Int
   annee     Int
   contenu   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Credit {
   id        Int      @id @default(autoincrement())
   user_id   Int
-  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   montant   Float
   date      DateTime @default(now())
   motif     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Activite {
   id          Int      @id @default(autoincrement())
   user_id     Int?
-  user        User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
   titre       String
   description String
   date        DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User?    @relation(fields: [user_id], references: [id])
 }
 
 model Partage {
   id               Int      @id @default(autoincrement())
   user_id          Int?
-  user             User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
   titre            String
   contenu          String
   date_publication DateTime @default(now())
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  user             User?    @relation(fields: [user_id], references: [id])
 }
 
 model Temoignage {
   id         Int      @id @default(autoincrement())
   user_id    Int?
-  user       User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
   nom_auteur String
   contenu    String
-  statut     String   @default("EN_ATTENTE") // EN_ATTENTE, APPROUVE, REJETE
+  statut     String   @default("EN_ATTENTE")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [user_id], references: [id])
+}
+
+enum Role {
+  ADMIN
+  BENEVOLE
 }

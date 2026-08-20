@@ -38,7 +38,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState<Theme>(() =>
     typeof window !== "undefined"
-      ? (localStorage.getItem(ADMIN_THEME_KEY) as Theme | null) ?? "dark"
+      ? ((localStorage.getItem(ADMIN_THEME_KEY) as Theme | null) ?? "dark")
       : "dark"
   );
 
