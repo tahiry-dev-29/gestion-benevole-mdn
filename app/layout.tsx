@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { SessionProvider } from "@/components/session-provider";
-import { auth } from "@/lib/auth";
+import { AuthProvider } from "@/features/auth/auth-provider";
 
 import "./globals.css";
 
@@ -35,7 +34,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

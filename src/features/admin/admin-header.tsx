@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   ExternalLink,
   LogOut,
@@ -110,10 +111,10 @@ export function AdminHeader() {
             <DropdownMenuLabel>
               <div className="flex flex-col">
                 <span className="text-sm font-medium text-foreground">
-                  Marie Dupont
+                  Administrateur
                 </span>
                 <span className="text-xs font-normal text-muted-foreground">
-                  marie.dupont@asso.fr
+                  admin@mdn.com
                 </span>
               </div>
             </DropdownMenuLabel>
@@ -131,7 +132,10 @@ export function AdminHeader() {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
               <LogOut className="size-4" />
               Se déconnecter
             </DropdownMenuItem>

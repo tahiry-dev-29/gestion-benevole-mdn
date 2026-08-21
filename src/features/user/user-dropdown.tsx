@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { signOut } from "next-auth/react";
 import { LogOut, Settings, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -48,7 +48,10 @@ export function UserDropdown({
           <Settings className="w-4 h-4 mr-2" /> Paramètres
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-slate-800" />
-        <DropdownMenuItem className="focus:bg-slate-800 cursor-pointer text-red-400">
+        <DropdownMenuItem
+          className="focus:bg-slate-800 cursor-pointer text-red-400"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
           <LogOut className="w-4 h-4 mr-2" /> Déconnexion
         </DropdownMenuItem>
       </DropdownMenuContent>

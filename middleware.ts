@@ -1,49 +1,46 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+
+const NEXT_PUBLIC_PATHS = ["/login", "/register", "/api", "/_next", "/admin"];
+
+function isPublic(pathname: string) {
+  return (
+    NEXT_PUBLIC_PATHS.some(
+      (p) => pathname === p || pathname.startsWith(`${p}/`)
+    ) || pathname === "/"
+  );
+}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Routes publiques (pas d'authentification requise)
-  const publicRoutes = [
-    "/api/auth",
-    "/api/public",
-    "/_next",
-    "/static",
-    "/favicon.ico",
-    "/robots.txt",
-    "/sitemap.xml",
-    "/manifest.json",
-    "/login",
-    "/register",
-    "/reset-password",
-  ];
+  const token = await getToken({ req: request });
 
-  // Vérifier si la route est publique
-  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
+  // Routes protégées : non connecté -> /login
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/dashboard")
+  ) {
+    if (!token) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(url);
+    }
 
-  // Route publique - pas de vérification nécessaire
-  if (isPublicRoute) {
+    // RBAC : seuls les ADMIN accèdent à /admin
+    if (pathname.startsWith("/admin") && token.role !== "ADMIN") {
+      return NextResponse.rewrite(new URL("/forbidden", request.url));
+    }
     return NextResponse.next();
   }
 
-  // Routes admin protégées
-  const isAdminRoute = pathname.startsWith("/admin");
-
-  // Récupérer le token d'authentification
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-
-  // Si pas de token et accès à une route protégée, rediriger vers login
-  if (!token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // Si accès admin mais pas le rôle ADMIN, rediriger vers dashboard
-  if (isAdminRoute && token.role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (!isPublic(pathname) && !token) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
@@ -51,15 +48,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths that are not:
-     * - api/auth (NextAuth routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico (favicon)
-     * - robots.txt (search engine config)
-     * - manifest.json (PWA manifest)
-     */
-    "/((?!api/auth|_next/static|_next/image|favicon.ico|robots.txt|manifest.json).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
