@@ -157,7 +157,6 @@ export function AdminHeader() {
 
 function AdminSidebarMobile() {
   const pathname = usePathname();
-  const allItems = adminNavGroups.flatMap((g) => g.items);
 
   function isActive(url: string) {
     return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url);

@@ -64,7 +64,7 @@ function HoverDropdownItem({ item }: { item: NavItem }) {
   return (
     <div onMouseEnter={openMenu} onMouseLeave={closeMenu}>
       <DropdownMenu open={open} onOpenChange={setOpen}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger>
           <SidebarMenuButton
             isActive={item.isActive}
             tooltip={item.title}

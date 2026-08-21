@@ -1,32 +1,31 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react"
+import { Moon, Sun } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 
-const ADMIN_THEME_KEY = "admin-theme";
-type Theme = "dark" | "light";
+type Theme = "dark" | "light"
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() =>
     typeof window !== "undefined"
       ? ((localStorage.getItem("admin-theme") as Theme | null) ?? "dark")
       : "dark"
-  );
+  )
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
+    document.documentElement.classList.toggle("dark", theme === "dark")
+  }, [theme])
 
   const toggleTheme = () => {
     setTheme((current) => {
-      const next: Theme = current === "dark" ? "light" : "dark";
-      localStorage.setItem("admin-theme", next);
-      document.documentElement.classList.toggle("dark", next === "dark");
-      return next;
-    });
-  };
+      const next: Theme = current === "dark" ? "light" : "dark"
+      localStorage.setItem("admin-theme", next)
+      document.documentElement.classList.toggle("dark", next === "dark")
+      return next
+    })
+  }
 
   return (
     <Button
@@ -41,5 +40,5 @@ export function ThemeToggle() {
         <Moon className="size-4" />
       )}
     </Button>
-  );
+  )
 }

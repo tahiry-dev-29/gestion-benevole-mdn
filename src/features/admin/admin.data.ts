@@ -315,3 +315,18 @@ export const dashboardStats = [
   { label: "Tâches complétées", value: "156", change: "+24%", trend: "up" },
   { label: "En attente", value: "5", change: "-2", trend: "down" },
 ];
+
+export const users = [
+  { id: 1, prenom: "Jean", nom: "Martin", email: "jean.martin@asso.fr", role: "BENEVOLE", date_entree: "2025-01-15" },
+  { id: 2, prenom: "Sophie", nom: "Bernard", email: "sophie.bernard@asso.fr", role: "BENEVOLE", date_entree: "2025-03-22" },
+  { id: 3, prenom: "Pierre", nom: "Lefevre", email: "pierre.lefevre@asso.fr", role: "BENEVOLE", date_entree: "2024-11-10" },
+  { id: 4, prenom: "Claire", nom: "Morel", email: "claire.morel@asso.fr", role: "BENEVOLE", date_entree: "2025-06-05" },
+  { id: 5, prenom: "Luc", nom: "Petit", email: "luc.petit@asso.fr", role: "BENEVOLE", date_entree: "2025-02-28" },
+  { id: 6, prenom: "Marie", nom: "Dupont", email: "marie.dupont@asso.fr", role: "ADMIN", date_entree: "2024-09-01" },
+  { id: 7, prenom: "Thomas", nom: "Durand", email: "thomas.durand@asso.fr", role: "BENEVOLE", date_entree: "2025-07-12" },
+  { id: 8, prenom: "Julie", nom: "Roux", email: "julie.roux@asso.fr", role: "BENEVOLE", date_entree: "2025-04-18" },
+  { id: 9, prenom: "Nicolas", nom: "Moreau", email: "nicolas.moreau@asso.fr", role: "BENEVOLE", date_entree: "2024-12-03" },
+  { id: 10, prenom: "Emma", nom: "Fournier", email: "emma.fournier@asso.fr", role: "BENEVOLE", date_entree: "2025-05-30" },
+  { id: 11, prenom: "Antoine", nom: "Girard", email: "antoine.girard@asso.fr", role: "BENEVOLE", date_entree: "2025-08-14" },
+  { id: 12, prenom: "Léa", nom: "Lefort", email: "lea.lefort@asso.fr", role: "BENEVOLE", date_entree: "2025-01-20" },
+];
