@@ -20,11 +20,13 @@ export type NavItem = {
   url: string;
   icon?: LucideIcon;
   isActive?: boolean;
-  items?: { title: string; url: string; icon?: LucideIcon }[];
+  items?: { title: string; url: string }[];
 };
 
 export type NavGroup = {
   label: string;
+  icon?: LucideIcon;
+  dropdown?: boolean;
   items: NavItem[];
 };
 

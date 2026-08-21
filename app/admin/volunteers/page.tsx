@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { UserCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { users } from "@/features/admin/admin.data";
 import { PageHeader } from "@/features/admin/page-header";
 import { TableCard } from "@/features/admin/table-card";
+import { users } from "@/features/users/user.data";
 
 const benevoles = users.filter((u) => u.role === "BENEVOLE");
 
@@ -20,12 +20,12 @@ export default function VolunteersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Bénévoles"
-        description="Suivez les bénévoles et leur engagement."
+        title="Gestion bénévole"
+        description="Suivez les bénévoles, leur présence et leur engagement."
         action={
           <Button size="sm">
-            <Plus className="size-4" />
-            Ajouter un bénévole
+            <UserCheck className="size-4" />
+            Gérer les bénévoles
           </Button>
         }
       />

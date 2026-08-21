@@ -8,7 +8,6 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   const adminPassword = await bcryptjs.hash("admin123", 10);
   const benevolePassword = await bcryptjs.hash("benevole123", 10);
-
   await prisma.user.upsert({
     where: { email: "admin@benevol.local" },
     update: {},

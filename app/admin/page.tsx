@@ -10,9 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dashboardStats, users } from "@/features/admin/admin.data";
+import { dashboardStats } from "@/features/admin/admin.data";
 import { StatCard } from "@/features/admin/stat-card";
 import { TableCard } from "@/features/admin/table-card";
+import { users } from "@/features/users/user.data";
 
 const statIcons = [Users, Calendar, ClipboardCheck, AlertCircle];
 

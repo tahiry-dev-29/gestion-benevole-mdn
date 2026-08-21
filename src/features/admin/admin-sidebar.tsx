@@ -28,10 +28,18 @@ export function AdminSidebar() {
 
   const groups = adminNavGroups.map((group) => ({
     label: group.label,
-    items: group.items.map((item) => ({
-      ...item,
-      isActive: isActive(pathname, item.url),
-    })),
+    items: group.items.map((item) => {
+      const activeChildUrl = item.items?.find((child) =>
+        isActive(pathname, child.url)
+      )?.url;
+      return {
+        ...item,
+        isActive: item.items?.length
+          ? Boolean(activeChildUrl)
+          : isActive(pathname, item.url),
+        activeChildUrl: item.items?.length ? activeChildUrl ?? null : null,
+      };
+    }),
   }))
 
   return (

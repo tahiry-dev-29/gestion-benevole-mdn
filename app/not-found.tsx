@@ -26,12 +26,8 @@ export default function NotFoundPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-3">
-          <Button
-            className="w-full"
-            nativeButton={false}
-            render={<Link href="/" />}
-          >
-            Retour à l&apos;accueil
+          <Button className="w-full" asChild>
+            <Link href="/">Retour à l&apos;accueil</Link>
           </Button>
         </CardContent>
       </Card>
