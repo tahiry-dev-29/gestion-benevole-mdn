@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
-import { AdminShell } from "@/features/admin/admin-shell";
+import { AdminLayoutWrapper } from "@/features/admin/admin-layout-wrapper";
 import { QueryProvider } from "@/features/admin/query-provider";
 
 export default function AdminLayout({
@@ -7,7 +7,7 @@ export default function AdminLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <QueryProvider>
-      <AdminShell>{children}</AdminShell>
+      <AdminLayoutWrapper>{children}</AdminLayoutWrapper>
       <Toaster richColors position="top-right" />
     </QueryProvider>
   );

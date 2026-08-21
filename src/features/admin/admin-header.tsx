@@ -133,8 +133,8 @@ export function AdminHeader() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              variant="destructive"
-              onClick={() => signOut({ callbackUrl: "/" })}
+              className="text-destructive focus:text-destructive"
+              onClick={() => signOut({ callbackUrl: "/admin/login" })}
             >
               <LogOut className="size-4" />
               Se déconnecter
@@ -143,59 +143,5 @@ export function AdminHeader() {
         </DropdownMenu>
       </div>
     </header>
-  );
-}
-
-function AdminSidebarMobile() {
-  const pathname = usePathname();
-
-  function isActive(url: string) {
-    return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url);
-  }
-
-  return (
-    <div className="flex flex-col h-full">
-      <div className="flex h-16 items-center gap-2.5 px-5 border-b">
-        <div className="flex aspect-square size-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 text-primary-foreground shadow-sm">
-          <PackageIcon className="size-5" />
-        </div>
-        <div className="grid flex-1 text-left text-sm leading-tight">
-          <span className="truncate font-semibold">Gestion Bénévole</span>
-          <span className="truncate text-xs">Espace administration</span>
-        </div>
-      </div>
-      <nav className="flex-1 overflow-y-auto p-4 space-y-6">
-        {adminNavGroups.map((group) => (
-          <div key={group.label}>
-            <h3 className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {group.label}
-            </h3>
-            <ul className="space-y-1">
-              {group.items.map((item) => (
-                <li key={item.url}>
-                  <Link
-                    href={item.url}
-                    onClick={() => {}}
-className={isActive(item.url) ? "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors bg-accent font-medium text-accent-foreground" : "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors text-muted-foreground hover:bg-accent hover:text-accent-foreground"}
-                  >
-                    {item.icon && <item.icon className="size-4 shrink-0" />}
-                    <span>{item.title}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-        <div className="pt-4 border-t">
-          <Link
-            href="/admin/profil"
-            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-          >
-            <User className="size-4" />
-            Mon profil
-          </Link>
-        </div>
-      </nav>
-    </div>
   );
 }

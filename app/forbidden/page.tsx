@@ -13,12 +13,8 @@ export default function ForbiddenPage() {
       <p className="text-sm text-muted-foreground text-center">
         Vous n&apos;avez pas les droits nécessaires pour accéder à cette page.
       </p>
-      <Button
-        className="w-full sm:w-auto"
-        nativeButton={false}
-        render={<Link href="/" />}
-      >
-        Retour à l&apos;accueil
+      <Button className="w-full sm:w-auto" asChild>
+        <Link href="/">Retour à l&apos;accueil</Link>
       </Button>
     </main>
   );

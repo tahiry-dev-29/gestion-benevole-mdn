@@ -32,7 +32,7 @@ export function LoginForm({
     watch,
     formState: { errors, isSubmitting },
   } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema) as any,
+    resolver: zodResolver(loginSchema) as never,
     defaultValues: { email: "", password: "", rememberMe: false },
   });
 
@@ -42,7 +42,7 @@ export function LoginForm({
     const result = await signIn("credentials", {
       email: values.email,
       password: values.password,
-      callbackUrl: "/admin",
+      callbackUrl: "/admin/dashboard",
       redirect: false,
     });
 
@@ -52,7 +52,7 @@ export function LoginForm({
     }
 
     toast.success("Connexion réussie !");
-    router.push(result?.url ?? "/admin");
+    router.push(result?.url ?? "/admin/dashboard");
   });
 
   return (

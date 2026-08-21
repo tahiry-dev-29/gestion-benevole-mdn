@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const NEXT_PUBLIC_PATHS = ["/login", "/register", "/api", "/_next", "/admin"];
+const NEXT_PUBLIC_PATHS = ["/admin/login", "/api", "/_next"];
 
 function isPublic(pathname: string) {
   return (
@@ -17,20 +17,22 @@ export async function middleware(request: NextRequest) {
 
   const token = await getToken({ req: request });
 
-  // Routes protégées : non connecté -> /login
-  if (
-    pathname.startsWith("/admin") ||
-    pathname.startsWith("/dashboard")
-  ) {
+  // Routes protégées : non connecté -> /admin/login
+  if (pathname.startsWith("/admin")) {
+    // Allow /admin/login without auth
+    if (pathname.startsWith("/admin/login")) {
+      return NextResponse.next();
+    }
+
     if (!token) {
       const url = request.nextUrl.clone();
-      url.pathname = "/login";
+      url.pathname = "/admin/login";
       url.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(url);
     }
 
     // RBAC : seuls les ADMIN accèdent à /admin
-    if (pathname.startsWith("/admin") && token.role !== "ADMIN") {
+    if (token.role !== "ADMIN") {
       return NextResponse.rewrite(new URL("/forbidden", request.url));
     }
     return NextResponse.next();
@@ -38,7 +40,7 @@ export async function middleware(request: NextRequest) {
 
   if (!isPublic(pathname) && !token) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/admin/login";
     url.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(url);
   }

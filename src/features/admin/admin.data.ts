@@ -73,7 +73,7 @@ export const adminNavGroups: NavGroup[] = [
   {
     label: "Navigation",
     items: [
-      { title: "Tableau de bord", url: "/admin", icon: LayoutDashboard },
+      { title: "Tableau de bord", url: "/admin/dashboard", icon: LayoutDashboard },
       { title: "Suivi du projet", url: "/admin/sprints", icon: ClipboardList },
     ],
   },

@@ -2,6 +2,8 @@
 
 import { type ReactNode, useEffect } from "react"
 
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+
 import { AdminHeader } from "./admin-header"
 import { AdminSidebar } from "./admin-sidebar"
 
@@ -14,12 +16,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <div className="flex min-h-screen bg-muted/30">
+    <SidebarProvider>
       <AdminSidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <SidebarInset>
         <AdminHeader />
         <main className="flex-1 p-4 md:p-6">{children}</main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
