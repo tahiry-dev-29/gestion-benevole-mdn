@@ -1,27 +1,29 @@
-import type { AuthOptions, SessionStrategy } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import type { AuthOptions, SessionStrategy, DefaultSession, JWT } from "next-auth";
 
 import { prisma } from "@/lib/prisma";
+import { UserRole } from "@/types";
 
-interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-  nom: string;
-  prenom: string;
-  role: "ADMIN" | "BENEVOLE";
-  photo: string | null;
-}
+// Extend les types pour inclure nos champs personnalisés
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      nom: string;
+      prenom: string;
+      role: UserRole;
+      photo: string | null;
+    } & DefaultSession["user"];
+  }
 
-interface CustomJWT {
-  sub: string;
-  name: string;
-  email: string;
-  nom: string;
-  prenom: string;
-  role: "ADMIN" | "BENEVOLE";
-  photo: string | null;
+  interface JWT {
+    sub: string;
+    nom: string;
+    prenom: string;
+    role: UserRole;
+    photo: string | null;
+  }
 }
 
 export const authOptions: AuthOptions = {
@@ -37,6 +39,7 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
+        // Rechercher l'utilisateur dans la base de données
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
@@ -47,6 +50,7 @@ export const authOptions: AuthOptions = {
           return null;
         }
 
+        // Vérifier le mot de passe
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
 
         if (!isPasswordValid) {
@@ -59,9 +63,9 @@ export const authOptions: AuthOptions = {
           name: `${user.prenom} ${user.nom}`,
           nom: user.nom,
           prenom: user.prenom,
-          role: user.role as "ADMIN" | "BENEVOLE",
+          role: user.role as UserRole,
           photo: user.photo,
-        } as AuthUser;
+        };
       },
     }),
   ],
@@ -69,29 +73,27 @@ export const authOptions: AuthOptions = {
     strategy: "jwt" as SessionStrategy,
   },
   callbacks: {
-    async session({ session, token }) {
-      const customToken = token as unknown as CustomJWT;
-      if (customToken) {
-        (session.user as Record<string, unknown>).id = customToken.sub;
-        (session.user as Record<string, unknown>).name = customToken.name;
-        (session.user as Record<string, unknown>).email = customToken.email;
-        (session.user as Record<string, unknown>).nom = customToken.nom;
-        (session.user as Record<string, unknown>).prenom = customToken.prenom;
-        (session.user as Record<string, unknown>).role = customToken.role;
-        (session.user as Record<string, unknown>).photo = customToken.photo;
+    async session({ token, session }) {
+      if (token) {
+        session.user.id = token.sub;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.nom = token.nom;
+        session.user.prenom = token.prenom;
+        session.user.role = token.role;
+        session.user.photo = token.photo;
       }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
-        const authUser = user as unknown as AuthUser;
-        token.sub = authUser.id;
-        token.name = authUser.name;
-        token.email = authUser.email;
-        token.nom = authUser.nom;
-        token.prenom = authUser.prenom;
-        token.role = authUser.role;
-        token.photo = authUser.photo;
+        token.sub = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.nom = (user as Record<string, unknown>).nom as string;
+        token.prenom = (user as Record<string, unknown>).prenom as string;
+        token.role = (user as Record<string, unknown>).role as UserRole;
+        token.photo = (user as Record<string, unknown>).photo as string | null;
       }
       return token;
     },

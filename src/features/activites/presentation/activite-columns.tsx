@@ -90,12 +90,10 @@ export function getActiviteColumns({
         const a = row.original;
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button variant="ghost" size="icon" aria-label="Actions" />
-              }
-            >
-              <MoreHorizontal className="size-4" />
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Actions">
+                <MoreHorizontal className="size-4" />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
@@ -107,7 +105,7 @@ export function getActiviteColumns({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                variant="destructive"
+                className="text-destructive focus:bg-destructive/10 focus:text-destructive"
                 onClick={() => onDelete(a)}
               >
                 <Trash2 className="size-4" /> Supprimer

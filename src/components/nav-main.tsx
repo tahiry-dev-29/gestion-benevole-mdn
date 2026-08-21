@@ -74,7 +74,7 @@ function HoverDropdownItem({ item }: { item: NavItem }) {
             <span className="flex-1 truncate group-data-[collapsible=icon]:hidden">
               {item.title}
             </span>
-            <ChevronRight className="ml-auto size-4 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
+            <ChevronRight className="ml-auto size-4 shrink-0 transition-transform duration-200 group-data-[collapsible=icon]:hidden" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -86,11 +86,11 @@ function HoverDropdownItem({ item }: { item: NavItem }) {
           onMouseLeave={closeMenu}
         >
           {item.items?.map((subItem) => (
-            <DropdownMenuItem key={subItem.url}>
+            <DropdownMenuItem key={subItem.url} asChild>
               <Link
                 href={subItem.url}
                 className={cn(
-                  "flex w-full items-center gap-2 cursor-pointer",
+                  "cursor-pointer gap-2",
                   (subItem.isActive ?? item.activeChildUrl === subItem.url) &&
                     "bg-accent font-medium text-accent-foreground"
                 )}

@@ -7,8 +7,6 @@ import {
   ExternalLink,
   LogOut,
   Menu,
-  Package as PackageIcon,
-  PanelLeft,
   Settings,
   User,
 } from "lucide-react";
@@ -30,61 +28,52 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useSidebar } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 import { adminNavGroups } from "./admin.data";
 import { ThemeToggle } from "./theme-toggle";
 
+function isActive(pathname: string, url: string) {
+  return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url);
+}
+
 function useCurrentTitle() {
   const pathname = usePathname();
-  const allItems = adminNavGroups.flatMap((g) => g.items);
-  const match = allItems.find((item) =>
-    item.url === "/admin" ? pathname === "/admin" : pathname.startsWith(item.url)
-  );
-  return match?.title ?? "Administration";
+  if (pathname === "/admin/profil") return "Mon profil";
+  const item = adminNavGroups
+    .flatMap((group) => group.items)
+    .find((item) =>
+      item.items?.length
+        ? item.items.some((child) => isActive(pathname, child.url))
+        : isActive(pathname, item.url)
+    );
+  const child = item?.items?.find((c) => isActive(pathname, c.url));
+  return item?.title ?? child?.title ?? "Administration";
 }
 
 export function AdminHeader() {
   const [open, setOpen] = useState(false);
   const title = useCurrentTitle();
-  const { toggleSidebar } = useSidebar();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b bg-card/50 px-4 backdrop-blur supports-[backdrop-filter]:bg-card/50">
       <div className="flex min-w-0 items-center gap-3">
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label="Réduire le menu"
-          onClick={toggleSidebar}
-          className="hidden md:inline-flex"
-        >
-          <PanelLeft className="size-4" />
-        </Button>
+        <SidebarTrigger className="hidden md:inline-flex" />
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger
-            render={
-              <Button
-                variant="outline"
-                size="icon"
-                aria-label="Ouvrir le menu"
-                className="md:hidden"
-              />
-            }
-          >
-            <Menu className="size-4" />
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Ouvrir le menu"
+              className="md:hidden"
+            >
+              <Menu className="size-4" />
+            </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
             <SheetHeader className="sr-only">
               <SheetTitle>Navigation administrateur</SheetTitle>
             </SheetHeader>
-            <Link
-              href="/admin"
-              onClick={() => setOpen(false)}
-              className="block h-full"
-            >
-              <AdminSidebarMobile />
-            </Link>
           </SheetContent>
         </Sheet>
         <h1 className="truncate text-base font-semibold tracking-tight">
@@ -93,35 +82,29 @@ export function AdminHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          nativeButton={false}
-          render={<Link href="/" />}
-          className="hidden sm:inline-flex"
-        >
-          <ExternalLink className="size-4" />
-          Retour au site
+        <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
+          <Link href="/">
+            <ExternalLink className="size-4" />
+            Retour au site
+          </Link>
         </Button>
 
         <ThemeToggle />
 
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Menu du compte"
-                className="rounded-full"
-              />
-            }
-          >
-            <Avatar size="sm">
-              <AvatarFallback className="bg-primary/15 text-xs font-semibold text-primary">
-                MD
-              </AvatarFallback>
-            </Avatar>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Menu du compte"
+              className="rounded-full"
+            >
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary/15 text-xs font-semibold text-primary">
+                  MD
+                </AvatarFallback>
+              </Avatar>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuLabel>
@@ -135,16 +118,20 @@ export function AdminHeader() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="size-4" />
-              Profil
+            <DropdownMenuItem asChild>
+              <Link href="/admin/profil">
+                <User className="size-4" />
+                Profil
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="size-4" />
-              Paramètres
+            <DropdownMenuItem asChild>
+              <Link href="/admin/parametres">
+                <Settings className="size-4" />
+                Paramètres
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
               <LogOut className="size-4" />
               Se déconnecter
             </DropdownMenuItem>

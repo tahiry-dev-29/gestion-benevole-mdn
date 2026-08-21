@@ -85,12 +85,13 @@ export function TeamSwitcher({
                   {itemsLabel}
                 </DropdownMenuLabel>
                 {items.map((item) => (
-                  <DropdownMenuItem key={item.url}>
+                  <DropdownMenuItem key={item.url} asChild>
                     <Link
                       href={item.url}
                       className={cn(
-                        "flex w-full items-center gap-2 cursor-pointer",
-                        isActive(item.url) && "bg-accent font-medium text-accent-foreground"
+                        "cursor-pointer gap-2",
+                        isActive(item.url) &&
+                          "bg-accent font-medium text-accent-foreground"
                       )}
                     >
                       {item.icon && (

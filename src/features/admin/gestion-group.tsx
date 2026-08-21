@@ -40,17 +40,17 @@ export function GestionGroup() {
         <SidebarGroupLabel>Gestion</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
-<DropdownMenu>
-              <DropdownMenuTrigger>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                size="lg"
-                isActive={Boolean(activeItem)}
-                tooltip="Gestion"
-                className="justify-center"
-              >
-                <FolderClosed />
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
+                  size="lg"
+                  isActive={Boolean(activeItem)}
+                  tooltip="Gestion"
+                  className="justify-center"
+                >
+                  <FolderClosed />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="right"
                 align="start"
@@ -58,11 +58,11 @@ export function GestionGroup() {
                 className="w-56 rounded-lg"
               >
                 {adminGestionItems.map((item) => (
-                  <DropdownMenuItem key={item.url}>
+                  <DropdownMenuItem key={item.url} asChild>
                     <Link
                       href={item.url}
                       className={cn(
-                        "flex w-full items-center gap-2 cursor-pointer",
+                        "cursor-pointer gap-2",
                         isActive(pathname, item.url) &&
                           "bg-accent font-medium text-accent-foreground"
                       )}
@@ -75,10 +75,10 @@ export function GestionGroup() {
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <span className="flex w-full items-center gap-2 font-medium text-muted-foreground">
+                <DropdownMenuItem className="gap-2 p-2">
+                  <div className="font-medium text-muted-foreground">
                     Tout afficher
-                  </span>
+                  </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -94,7 +94,7 @@ export function GestionGroup() {
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 isActive={Boolean(activeItem)}
                 tooltip="Gestion"
@@ -111,11 +111,11 @@ export function GestionGroup() {
               className="w-56 rounded-lg"
             >
               {adminGestionItems.map((item) => (
-                <DropdownMenuItem key={item.url}>
+                <DropdownMenuItem key={item.url} asChild>
                   <Link
                     href={item.url}
                     className={cn(
-                      "flex w-full items-center gap-2 cursor-pointer",
+                      "cursor-pointer gap-2",
                       isActive(pathname, item.url) &&
                         "bg-accent font-medium text-accent-foreground"
                     )}
@@ -128,10 +128,10 @@ export function GestionGroup() {
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <span className="flex w-full items-center gap-2 font-medium text-muted-foreground">
+              <DropdownMenuItem className="gap-2 p-2">
+                <div className="font-medium text-muted-foreground">
                   Tout afficher
-                </span>
+                </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
