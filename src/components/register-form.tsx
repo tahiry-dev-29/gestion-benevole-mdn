@@ -72,7 +72,7 @@ export function RegisterForm({
     }
 
     toast.success("Compte créé ! Vous pouvez maintenant vous connecter.");
-    router.push("/admin/login");
+    router.push("/login");
   });
 
   return (
@@ -172,7 +172,7 @@ export function RegisterForm({
           <div className="mt-4 text-center text-sm">
             Déjà un compte ?{" "}
             <a
-              href="/admin/login"
+              href="/login"
               className="underline underline-offset-4 hover:text-primary"
             >
               Se connecter

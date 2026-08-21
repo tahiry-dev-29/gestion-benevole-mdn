@@ -134,7 +134,7 @@ export function AdminHeader() {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
-              onClick={() => signOut({ callbackUrl: "/admin/login" })}
+              onClick={() => signOut({ callbackUrl: "/login" })}
             >
               <LogOut className="size-4" />
               Se déconnecter

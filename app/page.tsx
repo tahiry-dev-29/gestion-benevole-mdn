@@ -27,7 +27,7 @@ export default function HomePage() {
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-3">
           <Button className="w-full" asChild>
-            <Link href="/admin/login">Espace administration</Link>
+            <Link href="/login">Espace administration</Link>
           </Button>
         </CardContent>
       </Card>

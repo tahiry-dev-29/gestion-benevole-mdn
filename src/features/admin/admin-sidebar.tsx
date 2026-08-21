@@ -1,7 +1,7 @@
 "use client"
 
+import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Package } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -20,7 +20,7 @@ import { adminNavGroups, adminUser } from "./admin.data"
 import { GestionGroup } from "./gestion-group"
 
 function isActive(pathname: string, url: string) {
-  return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url)
+  return url === "/admin/dashboard" ? pathname === "/admin/dashboard" : pathname.startsWith(url)
 }
 
 export function AdminSidebar() {
@@ -48,9 +48,7 @@ export function AdminSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="pointer-events-none">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <Package className="size-4" />
-              </div>
+              <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg" />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">Gestion Bénévole</span>
                 <span className="truncate text-xs">Espace administration</span>

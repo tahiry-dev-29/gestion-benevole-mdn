@@ -15,8 +15,8 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/admin/login",
-    error: "/admin/login?error=access_denied",
+    signIn: "/login",
+    error: "/login?error=access_denied",
   },
   providers: [
     CredentialsProvider({
