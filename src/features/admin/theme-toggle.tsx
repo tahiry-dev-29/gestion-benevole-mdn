@@ -1,13 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import { useSidebar } from "./admin-shell";
+import { useAdminTheme } from "./admin-theme";
 
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useSidebar();
+  const { theme, toggleTheme } = useAdminTheme();
 
   return (
     <Button

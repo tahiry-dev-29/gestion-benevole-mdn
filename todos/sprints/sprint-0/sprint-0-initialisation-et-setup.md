@@ -31,17 +31,17 @@ capacité suffisante ou reporté sur S1.
 
 ## 🎫 Sprint Board
 
-| Story                                 | Dev         | Points | Backlog | En cours | Test | Fait |
-| ------------------------------------- | ----------- | ------ | ------- | -------- | ---- | ---- |
-| S0.1 — Dépôt & branches               | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
-| S0.2 — Scaffold Next.js               | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
-| S0.3 — Tailwind v4 + shadcn           | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
-| S0.4 — PostgreSQL + Prisma            | Lead+Back1  | 5      | ☑       | ☐        | ☐    | ☐    |
-| S0.5 — Variables d'environnement      | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
-| S0.6 — PWA de base                    | Front2      | 5      | ☑       | ☐        | ☐    | ☐    |
-| S0.7 — Hébergement                    | Lead        | 8      | ☐       | ☐        | ☐    | ☐    |
-| S0.8 — CI/CD GitHub Actions           | Lead        | 5      | ☐       | ☐        | ☐    | ☐    |
-| S0.9 — (Option) Page `/admin/sprints` | Lead+Front1 | 8      | ☐       | ☐        | ☐    | ☐    |
+| Story                                 | Status | Dev         | Points | Backlog | En cours | Test | Fait |
+| ------------------------------------- | ------ | ----------- | ------ | ------- | -------- | ---- | ---- |
+| S0.1 — Dépôt & branches               | ⚪     | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
+| S0.2 — Scaffold Next.js               | ⚪     | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
+| S0.3 — Tailwind v4 + shadcn           | ⚪     | Lead        | 3      | ☑       | ☐        | ☐    | ☐    |
+| S0.4 — PostgreSQL + Prisma            | ⚪     | Lead+Back1  | 5      | ☑       | ☐        | ☐    | ☐    |
+| S0.5 — Variables d'environnement      | ⚪     | Lead        | 2      | ☑       | ☐        | ☐    | ☐    |
+| S0.6 — PWA de base                    | ⚪     | Front2      | 5      | ☑       | ☐        | ☐    | ☐    |
+| S0.7 — Hébergement                    | ⚪     | Lead        | 8      | ☐       | ☐        | ☐    | ☐    |
+| S0.8 — CI/CD GitHub Actions           | ⚪     | Lead        | 5      | ☐       | ☐        | ☐    | ☐    |
+| S0.9 — (Option) Page `/admin/sprints` | ⚪     | Lead+Front1 | 8      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 
@@ -55,8 +55,8 @@ capacité suffisante ou reporté sur S1.
 #### Tâches
 
 - [x] Dépôt GitHub `gestion-benevole-mdn` créé + 3 collaborateurs invités
-- [x] Branches `main` + `dev` (workflow feature branches)
-- [ ] Règles de protection de `main` : PR obligatoire + revue du Lead
+- [x] Branche `main` avec règles de protection (PR obligatoire + revue du Lead)
+- [x] Workflow feature branches : chaque développeur crée sa branche `feature/*` à partir de `main`
 
 #### Acceptation (Gherkin)
 
@@ -92,8 +92,8 @@ capacité suffisante ou reporté sur S1.
 - [x] Schéma initial : `User`, `Presence`, `Observation`, `Credit`, `Activite`,
       `Partage`, `Temoignage` + enum `Role` (ADMIN/BENEVOLE) (CDC §3.2)
 - [x] Relations FK + `onDelete` cohérents
-- [ ] Générer les migrations initiales + appliquer sur DB locale (`prisma migrate dev`)
-- [ ] Seed : 1 compte `ADMIN` + 1 bénévole test (mot de passe hashé bcrypt)
+- [x] Générer les migrations initiales + appliquer sur DB locale (`prisma migrate dev`)
+- [x] Seed : 1 compte `ADMIN` + 1 bénévole test (mot de passe hashé bcrypt)
 
 **Implémentation :** `prisma/schema.prisma`, `prisma/migrations/`, `src/lib/prisma.ts`.
 
@@ -126,7 +126,7 @@ capacité suffisante ou reporté sur S1.
 - [ ] Service worker actif en production (`disable` uniquement en dev)
 - [ ] Test d'installabilité (Lighthouse / DevTools Application)
 
-**Implémentation :** `public/manifest.json`, `public/icons/*`, `next.config.ts` (withPWA).
+**Implémentation :** `public/manifest.json`, `public/icons/*`, `next.config.ts` (withPWA). ✅ Icônes générées (icon-192x192.png, icon-512x512.png).
 
 #### Acceptation (Gherkin)
 

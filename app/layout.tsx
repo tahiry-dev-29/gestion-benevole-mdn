@@ -20,11 +20,13 @@ export const metadata: Metadata = {
   description: "Gestion des bénévoles et des activités associatives",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html
       lang="fr"

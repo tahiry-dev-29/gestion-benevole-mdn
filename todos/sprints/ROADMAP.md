@@ -13,15 +13,15 @@
 
 ## 🗓️ Roadmap des Sprints
 
-| Sprint | Périmètre                                    | Durée      | Statut                          | Backlog Scrum                                                                                                                          |
-| ------ | -------------------------------------------- | ---------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| 0      | Initialisation & Setup                       | 1 semaine  | 🔵 En cours (2 cases restantes) | [sprint-0/sprint-0-initialisation-et-setup.md](./sprint-0/sprint-0-initialisation-et-setup.md)                                         |
-| 1      | Authentification & Fondations                | 2 semaines | ⚪ À venir                      | [sprint-1/sprint-1-authentification-et-fondations.md](./sprint-1/sprint-1-authentification-et-fondations.md)                           |
-| 2      | Admin : Info perso & Présence journalière    | 2 semaines | ⚪ À venir                      | [sprint-2/sprint-2-admin-info-perso-et-presence-journaliere.md](./sprint-2/sprint-2-admin-info-perso-et-presence-journaliere.md)       |
-| 3      | Admin : Observation mensuelle & Liste Crédit | 2 semaines | ⚪ À venir                      | [sprint-3/sprint-3-admin-observation-mensuelle-et-liste-credit.md](./sprint-3/sprint-3-admin-observation-mensuelle-et-liste-credit.md) |
-| 4      | Public : Activité & Partage                  | 2 semaines | ⚪ À venir                      | [sprint-4/sprint-4-public-activite-et-partage.md](./sprint-4/sprint-4-public-activite-et-partage.md)                                   |
-| 5      | Public : Témoignage & Finalisation PWA       | 2 semaines | ⚪ À venir                      | [sprint-5/sprint-5-public-temoignage-et-finalisation-pwa.md](./sprint-5/sprint-5-public-temoignage-et-finalisation-pwa.md)             |
-| 6      | Mise en production                           | 1 semaine  | ⚪ À venir                      | [sprint-6/sprint-6-mise-en-production.md](./sprint-6/sprint-6-mise-en-production.md)                                                   |
+| Sprint | Périmètre                                    | Durée      | Statut                                                     | Backlog Scrum                                                                                                                          |
+| ------ | -------------------------------------------- | ---------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | Initialisation & Setup                       | 1 semaine  | ✅ Terminé (cases S0.1–S0.8 validées, 2 options reportées) | [sprint-0/sprint-0-initialisation-et-setup.md](./sprint-0/sprint-0-initialisation-et-setup.md)                                         |
+| 1      | Authentification & Fondations                | 2 semaines | ⚪ À venir                                                 | [sprint-1/sprint-1-authentification-et-fondations.md](./sprint-1/sprint-1-authentification-et-fondations.md)                           |
+| 2      | Admin : Info perso & Présence journalière    | 2 semaines | ⚪ À venir                                                 | [sprint-2/sprint-2-admin-info-perso-et-presence-journaliere.md](./sprint-2/sprint-2-admin-info-perso-et-presence-journaliere.md)       |
+| 3      | Admin : Observation mensuelle & Liste Crédit | 2 semaines | ⚪ À venir                                                 | [sprint-3/sprint-3-admin-observation-mensuelle-et-liste-credit.md](./sprint-3/sprint-3-admin-observation-mensuelle-et-liste-credit.md) |
+| 4      | Public : Activité & Partage                  | 2 semaines | ⚪ À venir                                                 | [sprint-4/sprint-4-public-activite-et-partage.md](./sprint-4/sprint-4-public-activite-et-partage.md)                                   |
+| 5      | Public : Témoignage & Finalisation PWA       | 2 semaines | ⚪ À venir                                                 | [sprint-5/sprint-5-public-temoignage-et-finalisation-pwa.md](./sprint-5/sprint-5-public-temoignage-et-finalisation-pwa.md)             |
+| 6      | Mise en production                           | 1 semaine  | ⚪ À venir                                                 | [sprint-6/sprint-6-mise-en-production.md](./sprint-6/sprint-6-mise-en-production.md)                                                   |
 
 ## ✅ Sprint 0 — état des lieux (checklist migrée)
 

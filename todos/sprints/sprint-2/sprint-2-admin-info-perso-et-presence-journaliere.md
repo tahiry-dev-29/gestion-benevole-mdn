@@ -27,14 +27,14 @@ quotidien fiable avec historique. Les données restent privées au propriétaire
 
 ## 🎫 Sprint Board
 
-| Story                                | Dev    | Points | Backlog | En cours | Test | Fait |
-| ------------------------------------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S2.1 — API CRUD Info perso           | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S2.2 — Upload photo de profil        | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S2.3 — API Présence journalière      | Back2  | 8      | ☐       | ☐        | ☐    | ☐    |
-| S2.4 — UI Fiche info perso           | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S2.5 — UI Présence + liste bénévoles | Front1 | 8      | ☐       | ☐        | ☐    | ☐    |
-| S2.6 — Tests fonctionnels            | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| Story                                | Status | Dev    | Points | Backlog | En cours | Test | Fait |
+| ------------------------------------ | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
+| S2.1 — API CRUD Info perso           | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S2.2 — Upload photo de profil        | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S2.3 — API Présence journalière      | ⚪     | Back2  | 8      | ☐       | ☐        | ☐    | ☐    |
+| S2.4 — UI Fiche info perso           | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S2.5 — UI Présence + liste bénévoles | ⚪     | Front1 | 8      | ☐       | ☐        | ☐    | ☐    |
+| S2.6 — Tests fonctionnels            | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 

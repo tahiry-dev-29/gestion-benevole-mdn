@@ -27,15 +27,15 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 ## 🎫 Sprint Board
 
-| Story                                         | Dev    | Points | Backlog | En cours | Test | Fait |
-| --------------------------------------------- | ------ | ------ | ------- | -------- | ---- | ---- |
-| S5.1 — API Témoignage (soumission/modération) | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S5.2 — UI publique Témoignages                | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S5.3 — Formulaire soumission (public)         | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S5.4 — Modération admin (témoignages)         | Front1 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S5.5 — Finalisation PWA (offline, splash)     | Front2 | 8      | ☐       | ☐        | ☐    | ☐    |
-| S5.6 — Audit Lighthouse                       | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
-| S5.7 — Tests globaux + bugs                   | Équipe | 3      | ☐       | ☐        | ☐    | ☐    |
+| Story                                         | Status | Dev    | Points | Backlog | En cours | Test | Fait |
+| --------------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
+| S5.1 — API Témoignage (soumission/modération) | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S5.2 — UI publique Témoignages                | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
+| S5.3 — Formulaire soumission (public)         | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S5.4 — Modération admin (témoignages)         | ⚪     | Front1 | 3      | ☐       | ☐        | ☐    | ☐    |
+| S5.5 — Finalisation PWA (offline, splash)     | ⚪     | Front2 | 8      | ☐       | ☐        | ☐    | ☐    |
+| S5.6 — Audit Lighthouse                       | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
+| S5.7 — Tests globaux + bugs                   | ⚪     | Équipe | 3      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 
