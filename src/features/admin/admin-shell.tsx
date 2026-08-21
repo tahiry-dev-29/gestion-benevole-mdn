@@ -1,22 +1,25 @@
-"use client";
+"use client"
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { type ReactNode, useEffect } from "react"
 
-import { AdminHeader } from "./admin-header";
-import { AdminSidebar } from "./admin-sidebar";
-import { AdminThemeProvider } from "./admin-theme";
+import { AdminHeader } from "./admin-header"
+import { AdminSidebar } from "./admin-sidebar"
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+export function AdminShell({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    document.documentElement.classList.add("dark")
+    return () => {
+      document.documentElement.classList.add("dark")
+    }
+  }, [])
+
   return (
-    <SidebarProvider className="h-screen">
-      <AdminThemeProvider>
-        <AdminSidebar />
-
-        <SidebarInset className="flex h-full flex-col">
-          <AdminHeader />
-          <main className="flex-1 p-4 md:p-6">{children}</main>
-        </SidebarInset>
-      </AdminThemeProvider>
-    </SidebarProvider>
-  );
+    <div className="flex min-h-screen bg-muted/30">
+      <AdminSidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AdminHeader />
+        <main className="flex-1 p-4 md:p-6">{children}</main>
+      </div>
+    </div>
+  )
 }
