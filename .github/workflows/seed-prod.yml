@@ -1,0 +1,67 @@
+name: Seed Production DB
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Tape "seed" pour confirmer le lancement sur la PRODUCTION'
+        required: true
+      dry_run:
+        description: 'Dry run (sans écrire en base)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  seed:
+    name: Seed Production Database
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify confirmation
+        if: inputs.confirm != 'seed'
+        run: |
+          echo "❌ Confirmation requise. Tu dois taper 'seed' pour lancer."
+          echo "   Tu as tapé: ${{ inputs.confirm }}"
+          exit 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install:
+            - install: --frozen-lockfile
+
+      - name: Prisma generate
+        run: pnpm prisma:generate
+
+      - name: Run migrations
+        run: pnpm prisma:migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Seed (dry run)
+        if: inputs.dry_run == true
+        run: |
+          echo "🔍 DRY RUN — aucune écriture en base"
+          echo "DATABASE_URL: ${{ vars.DATABASE_URL }}"
+          echo "Le seed suivant serait exécuté :"
+          cat prisma/seed.ts
+
+      - name: Seed (production)
+        if: inputs.dry_run == false
+        run: pnpm prisma:db:seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
