@@ -1,21 +1,131 @@
 # Gestion Bénévole — Maison du Numérique
 
-Application de gestion des bénévoles pour la Maison du Numérique. Construite avec Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, shadcn/ui, Prisma ORM (PostgreSQL), et NextAuth.js.
+Application de gestion des bénévoles pour la **Maison du Numérique (MDN) Madagascar**. PWA installable, responsive, utilisable partiellement hors-ligne.
 
-## 🚀 Stack Technique
+**Objectif :** Centraliser la gestion des bénévoles (présence, suivi, crédits) et offrir une vitrine publique de leurs activités, partages et témoignages.
 
-| Layer           | Technologies                                              |
-| --------------- | --------------------------------------------------------- |
-| **Framework**   | Next.js 16.2.11 (App Router, Server Components)           |
-| **Language**    | TypeScript 5, React 19.2.4                                |
-| **Styling**     | Tailwind CSS v4, shadcn/ui, lucide-react                  |
-| **Database**    | PostgreSQL + Prisma 7 ORM                                 |
-| **Auth**        | NextAuth.js v4 (credentials, rôles ADMIN/BENEVOLE)        |
-| **State/Query** | TanStack Query (React Query) v5, React Hook Form + Zod    |
-| **PWA**         | @ducanh2912/next-pwa (service worker, manifest)           |
-| **Quality**     | ESLint 9, Prettier, Husky, lint-staged, TypeScript strict |
+---
 
-## 📦 Installation
+## Stack Technique
+
+| Composant           | Technologie                                        |
+| ------------------- | -------------------------------------------------- |
+| **Framework**       | Next.js 16.2.11 (App Router, Server Components)    |
+| **Language**        | TypeScript 5, React 19.2.4                         |
+| **Styling**         | Tailwind CSS v4, shadcn/ui, lucide-react           |
+| **Base de données** | PostgreSQL + Prisma 7 ORM                          |
+| **Auth**            | NextAuth.js v4 (credentials, rôles ADMIN/BENEVOLE) |
+| **State/Query**     | TanStack Query v5, React Hook Form + Zod           |
+| **PWA**             | @ducanh2912/next-pwa (service worker, manifest)    |
+| **Quality**         | ESLint 9, Prettier, Husky, lint-staged             |
+
+---
+
+## Architecture
+
+Architecture **feature-driven** (domain-driven) avec séparation claire entre routing et logique métier :
+
+```
+app/                    → Routing (Next.js App Router)
+src/                    → Logique métier (features, components, lib)
+prisma/                 → Schema BDD + migrations + seed
+```
+
+### Diagramme d'architecture
+
+```mermaid
+flowchart TB
+    subgraph Frontend["Frontend (Next.js)"]
+        UI[shadcn/ui + Tailwind]
+        RC[React Components]
+        RQ[TanStack Query]
+    end
+
+    subgraph Backend["Backend (Next.js API)"]
+        API[API Routes]
+        Auth[NextAuth.js]
+        SA[Server Actions]
+    end
+
+    subgraph Data["Data Layer"]
+        Prisma[Prisma ORM]
+        PG[(PostgreSQL)]
+    end
+
+    UI --> RC --> RQ
+    RQ --> API
+    RQ --> SA
+    API --> Auth
+    API --> Prisma
+    SA --> Prisma
+    Prisma --> PG
+```
+
+### Modèle de Données (ERD)
+
+```mermaid
+erDiagram
+    USER ||--o{ PRESENCE : effectue
+    USER ||--o{ OBSERVATION : recoit
+    USER ||--o{ CREDIT : cumule
+    USER ||--o{ ACTIVITE : publie
+    USER ||--o{ PARTAGE : publie
+    USER ||--o{ TEMOIGNAGE : redige
+
+    USER {
+        int id PK
+        string nom
+        string prenom
+        string email
+        string role
+        date date_entree
+    }
+    PRESENCE {
+        int id PK
+        int user_id FK
+        date date
+        time heure_arrivee
+        time heure_depart
+        string statut
+    }
+    OBSERVATION {
+        int id PK
+        int user_id FK
+        int mois
+        int annee
+        string contenu
+    }
+    CREDIT {
+        int id PK
+        int user_id FK
+        float montant
+        date date
+        string motif
+    }
+    ACTIVITE {
+        int id PK
+        string titre
+        string description
+        date date
+    }
+    PARTAGE {
+        int id PK
+        int user_id FK
+        string titre
+        string contenu
+        date date_publication
+    }
+    TEMOIGNAGE {
+        int id PK
+        string nom_auteur
+        string contenu
+        string statut
+    }
+```
+
+---
+
+## Getting Started
 
 ### Prérequis
 
@@ -25,7 +135,7 @@ Application de gestion des bénévoles pour la Maison du Numérique. Construite 
 | **pnpm**       | ≥ 9             | `pnpm -v`        |
 | **PostgreSQL** | ≥ 14            | `psql --version` |
 
-### Étapes
+### Installation
 
 ```bash
 # 1. Cloner le repo
@@ -41,9 +151,9 @@ pnpm install
 pnpm dev
 ```
 
-## 🗄️ Configuration de la Base de Données
+### Configuration de la Base de Données
 
-### 1. Créer la base PostgreSQL
+#### 1. Créer la base PostgreSQL
 
 ```bash
 # Se connecter à PostgreSQL
@@ -62,10 +172,9 @@ GRANT ALL PRIVILEGES ON DATABASE gestion_benevole TO gestio_benevole;
 \q
 ```
 
-### 2. Configurer les variables d'environnement
+#### 2. Configurer les variables d'environnement
 
 ```bash
-# Copier le fichier d'exemple
 cp .env.example .env
 ```
 
@@ -86,7 +195,7 @@ NEXTAUTH_SECRET="generer-un-secret-ici"
 NODE_ENV="development"
 ```
 
-### 3. Initialiser la base avec Prisma
+#### 3. Initialiser la base avec Prisma
 
 ```bash
 # Appliquer le schéma à la base (crée les tables)
@@ -102,26 +211,28 @@ pnpm prisma:generate
 pnpm prisma:db:seed
 ```
 
-### 4. Vérifier (optionnel)
+#### 4. Vérifier (optionnel)
 
 ```bash
 # Ouvrir l'interface graphique Prisma
 pnpm prisma:studio
 ```
 
-## 📁 Structure du Projet
+---
+
+## Project Structure
 
 ```
-├── app/                          # Next.js App Router (routing)
-│   ├── layout.tsx                # Layout global + providers
-│   ├── page.tsx                  # Page d'accueil
-│   ├── globals.css               # Styles globaux + Tailwind
-│   ├── api/                      # API Routes
+├── app/                              # Next.js App Router (routing)
+│   ├── layout.tsx                    # Layout global + providers
+│   ├── page.tsx                      # Page d'accueil
+│   ├── globals.css                   # Styles globaux + Tailwind
+│   ├── api/                          # API Routes
 │   │   ├── activites/[id]/route.ts
 │   │   └── benevoles/[id]/route.ts
-│   └── admin/                    # Pages admin protégées
-│       ├── layout.tsx            # Layout admin + sidebar
-│       ├── page.tsx              # Dashboard admin
+│   └── admin/                        # Pages admin protégées
+│       ├── layout.tsx                # Layout admin + sidebar
+│       ├── page.tsx                  # Dashboard admin
 │       ├── activites/
 │       ├── benevoles/
 │       ├── credits/
@@ -133,40 +244,67 @@ pnpm prisma:studio
 │       └── volunteers/
 │
 ├── src/
-│   ├── features/                 # Features verticales (domain-driven)
-│   │   ├── activites/            # Gestion activités
-│   │   │   ├── application/      # Schemas Zod (validation)
-│   │   │   ├── domain/           # Entités, types, interfaces
-│   │   │   ├── infrastructure/   # Repository Prisma
-│   │   │   └── presentation/     # Composants UI
-│   │   ├── benevoles/            # Gestion bénévoles
-│   │   ├── admin/                # Composants admin partagés
-│   │   ├── contact/              # Formulaire contact
-│   │   └── user/                 # User dropdown, liste, actions
+│   ├── features/                     # Features verticales (domain-driven)
+│   │   ├── activites/                # Gestion activités
+│   │   │   ├── application/          # Schemas Zod (validation)
+│   │   │   ├── domain/               # Entités, types, interfaces
+│   │   │   ├── infrastructure/       # Repository Prisma
+│   │   │   └── presentation/         # Composants UI
+│   │   ├── benevoles/                # Gestion bénévoles
+│   │   ├── admin/                    # Composants admin partagés
+│   │   ├── contact/                  # Formulaire contact
+│   │   └── user/                     # User dropdown, liste, actions
 │   │
-│   ├── components/               # Composants globaux réutilisables
-│   │   ├── ui/                   # Primitives shadcn/ui
-│   │   ├── svg/                  # Icônes SVG
-│   │   └── utils/                # Micro-composants utilitaires
+│   ├── components/                   # Composants globaux réutilisables
+│   │   ├── ui/                       # Primitives shadcn/ui
+│   │   ├── svg/                      # Icônes SVG
+│   │   └── utils/                    # Micro-composants utilitaires
 │   │
-│   ├── lib/                      # Configurations externes
-│   │   ├── prisma.ts             # Client Prisma singleton
-│   │   ├── env.ts                # Validation env (Zod)
-│   │   └── utils.ts              # Helpers (cn, etc.)
+│   ├── lib/                          # Configurations externes
+│   │   ├── prisma.ts                 # Client Prisma singleton
+│   │   ├── env.ts                    # Validation env (Zod)
+│   │   └── utils.ts                  # Helpers (cn, etc.)
 │   │
-│   └── hooks/                    # Custom hooks transversaux
+│   └── hooks/                        # Custom hooks transversaux
 │
 ├── prisma/
-│   ├── schema.prisma             # Schéma BDD (User, Presence, Observation, Credit, Activite, Partage, Temoignage)
-│   ├── seed.ts                   # Seed DB (1 ADMIN + 1 BENEVOLE)
+│   ├── schema.prisma                 # Schéma BDD
+│   ├── seed.ts                       # Seed DB (1 ADMIN + 1 BENEVOLE)
 │   └── migrations/
 │
-├── public/                       # Assets statiques + PWA manifest
-├── todos/sprints/                # Roadmap & sprints (Markdown)
-└── .github/workflows/            # CI/CD (à configurer)
+├── public/                           # Assets statiques + PWA manifest
+├── todos/sprints/                    # Roadmap & sprints (Markdown)
+└── .github/workflows/                # CI/CD
 ```
 
-## 🛠️ Commandes Disponibles
+---
+
+## Key Features
+
+### Espace Admin (Bénévole authentifié)
+
+| Fonctionnalité             | Description                                               |
+| -------------------------- | --------------------------------------------------------- |
+| **Info perso**             | Fiche bénévole (nom, contact, rôle, photo, date d'entrée) |
+| **Présence journalière**   | Pointage quotidien (arrivée/départ)                       |
+| **Observation mensuelle**  | Note ou observation mensuelle par bénévole                |
+| **Liste Crédit**           | Suivi des crédits/heures accumulés par bénévole           |
+| **Gestion activités**      | CRUD activités publiques                                  |
+| **Gestion partages**       | CRUD partages/ressources                                  |
+| **Modération témoignages** | Validation des témoignages (EN_ATTENTE/VALIDE/REJETE)     |
+
+### Espace Public
+
+| Fonctionnalité  | Description                                     |
+| --------------- | ----------------------------------------------- |
+| **Activités**   | Liste/actualité des activités menées            |
+| **Partages**    | Publications/contenus partagés par la structure |
+| **Témoignages** | Témoignages de bénévoles ou bénéficiaires       |
+| **PWA**         | Installable, responsive, mode offline partiel   |
+
+---
+
+## Commandes Disponibles
 
 ```bash
 # Développement
@@ -196,29 +334,40 @@ pnpm format:check                 # Prettier --check
 pnpm prepare                      # Installe Husky hooks
 ```
 
-## 🔐 Comptes de Test (après seed)
+---
+
+## Comptes de Test (après seed)
 
 | Rôle     | Email                  | Mot de passe |
 | -------- | ---------------------- | ------------ |
 | ADMIN    | admin@benevol.local    | admin123     |
 | BENEVOLE | benevole@benevol.local | benevole123  |
 
-## 🗄️ Modèle de Données (Prisma)
+---
 
-- **User** : bénévoles & admins (nom, prénom, email, password hash, rôle, photo, date_entrée)
-- **Presence** : pointage quotidien (arrivée, départ, statut)
-- **Observation** : note mensuelle par bénévole
-- **Credit** : cumul heures/crédits avec motif
-- **Activite** : activités publiques (titre, description, date, auteur optionnel)
-- **Partage** : partages/ressources publics
-- **Temoignage** : témoignages avec modération (EN_ATTENTE/VALIDE/REJETE)
+## Development Workflow
 
-## 📦 Roadmap des Sprints
+### Branching Strategy
+
+```
+main        ← code de production (stable)
+  └── dev   ← code en développement
+       └── feature/*   ← fonctionnalités en cours
+```
+
+### Processus
+
+1. Créer une branche `feature/*` depuis `dev`
+2. Développer avec commits conventionnels (`feat:`, `fix:`, `chore:`)
+3. PR vers `dev` → revue Lead obligatoire
+4. Merge squash après validation
+
+### Sprints
 
 | Sprint | Périmètre                     | Durée | Statut      |
 | ------ | ----------------------------- | ----- | ----------- |
-| 0      | Initialisation & Setup        | 1 sem | 🔵 En cours |
-| 1      | Authentification & Fondations | 2 sem | ⚪ À venir  |
+| 0      | Initialisation & Setup        | 1 sem | ✅ Terminé  |
+| 1      | Authentification & Fondations | 2 sem | 🔵 En cours |
 | 2      | Admin : Info perso & Présence | 2 sem | ⚪ À venir  |
 | 3      | Admin : Observation & Crédits | 2 sem | ⚪ À venir  |
 | 4      | Public : Activité & Partage   | 2 sem | ⚪ À venir  |
@@ -227,24 +376,91 @@ pnpm prepare                      # Installe Husky hooks
 
 Détails : [`todos/sprints/ROADMAP.md`](todos/sprints/ROADMAP.md)
 
-## 🚢 Déploiement
+---
 
-- **Vercel** (recommandé) : connecter le repo, configurer `DATABASE_URL` (Neon/Supabase) + secrets
-- **Docker** : `Dockerfile` multi-stage (à créer)
-- **PWA** : `next-pwa` génère manifest + SW automatiquement en prod
+## Coding Standards
 
-## 📋 CI/CD (à configurer - Sprint 0.8)
-
-- `.github/workflows/ci.yml` : install → lint → typecheck → build
-- `.github/workflows/deploy.yml` : preview PR + deploy main
-
-## 🤝 Contribution
-
-1. Créer une branche feature depuis `dev`
-2. Commits conventionnels (`feat:`, `fix:`, `chore:`)
-3. PR vers `dev` → revue Lead obligatoire
-4. Merge squash après validation
+- **TypeScript strict** : pas de `any`, types explicites
+- **Server Components** par défaut, `"use client"` uniquement si nécessaire
+- **Features verticales** : chaque feature est auto-contenue (domain, infrastructure, presentation)
+- **Validation** : schemas Zod pour tous les formulaires et inputs
+- **Styling** : Tailwind CSS + shadcn/ui, pas de CSS inline
+- **Commits** : conventionnels (`feat:`, `fix:`, `chore:`, `docs:`)
+- **Linting** : ESLint 9 + Prettier, hooks Husky pre-commit
 
 ---
 
-**Équipe CDC** : Lead @tahiry-dev-29 · Back1 @flavienrandria81 · Back2/Front @HunjanRakotoarison · Front @rasoarimanana71-maker
+## Testing
+
+> ⚠️ Framework de test non encore configuré. Prévu dans la roadmap.
+
+Quand configuré, les tests seront lancés avec :
+
+```bash
+pnpm test          # Unit tests
+pnpm test:e2e      # End-to-end tests
+```
+
+---
+
+## Contributing
+
+1. **Fork** le repo
+2. **Créer une branche** `feature/*` depuis `dev`
+3. **Commits conventionnels** : `feat:`, `fix:`, `chore:`, `docs:`
+4. **PR vers `dev`** → description claire des changements
+5. **Revue Lead** obligatoire avant merge
+6. **Merge squash** après validation
+
+### Règles de suivi
+
+- Chaque membre coche ses tâches dans `todos/CDC_PWA_Gestion_Benevoles.md`
+- Une tâche cochée doit correspondre à un commit/PR associé
+- Stand-up court 2x/semaine
+
+---
+
+## Équipe
+
+| Rôle              | Membre                 |
+| ----------------- | ---------------------- |
+| **Lead**          | @tahiry-dev-29         |
+| **Dev Backend 1** | @flavienrandria81      |
+| **Dev Backend 2** | @HunjanRakotoarison    |
+| **Dev Frontend**  | @rasoarimanana71-maker |
+
+---
+
+## License
+
+Ce projet est la propriété de la **Maison du Numérique (MDN) Madagascar**.
+
+Licence MIT — Usage libre pour les projets de la MDN et ses partenaires.
+
+```
+MIT License
+
+Copyright (c) 2025 Maison du Numérique Madagascar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+**Maison du Numérique — Madagascar** 🇲🇬
