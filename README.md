@@ -15,6 +15,100 @@ Application de gestion des bénévoles pour la Maison du Numérique. Construite 
 | **PWA**         | @ducanh2912/next-pwa (service worker, manifest)           |
 | **Quality**     | ESLint 9, Prettier, Husky, lint-staged, TypeScript strict |
 
+## 📦 Installation
+
+### Prérequis
+
+| Outil          | Version requise | Vérifier         |
+| -------------- | --------------- | ---------------- |
+| **Node.js**    | ≥ 18            | `node -v`        |
+| **pnpm**       | ≥ 9             | `pnpm -v`        |
+| **PostgreSQL** | ≥ 14            | `psql --version` |
+
+### Étapes
+
+```bash
+# 1. Cloner le repo
+git clone https://github.com/tahiry-dev-29/gestion-benevole-mdn.git
+cd gestion-benevole-mdn
+
+# 2. Installer les dépendances
+pnpm install
+
+# 3. Configurer la base de données (voir section suivante)
+
+# 4. Lancer le serveur dev
+pnpm dev
+```
+
+## 🗄️ Configuration de la Base de Données
+
+### 1. Créer la base PostgreSQL
+
+```bash
+# Se connecter à PostgreSQL
+psql -U postgres
+
+# Créer la base de données
+CREATE DATABASE gestion_benevole;
+
+# Créer un utilisateur dédié (optionnel mais recommandé)
+CREATE USER gestio_benevole WITH PASSWORD 'votre_mot_de_passe';
+
+# Donner les privilèges
+GRANT ALL PRIVILEGES ON DATABASE gestion_benevole TO gestio_benevole;
+
+# Quitter psql
+\q
+```
+
+### 2. Configurer les variables d'environnement
+
+```bash
+# Copier le fichier d'exemple
+cp .env.example .env
+```
+
+Remplir le fichier `.env` :
+
+```env
+# Base de données
+DATABASE_URL="postgresql://gestio_benevole:votre_mot_de_passe@localhost:5432/gestion_benevole?schema=public"
+
+# Shadow database (pour les migrations Prisma)
+SHADOW_DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="generer-un-secret-ici"
+
+# Environnement
+NODE_ENV="development"
+```
+
+### 3. Initialiser la base avec Prisma
+
+```bash
+# Appliquer le schéma à la base (crée les tables)
+pnpm prisma:db:push
+
+# OU créer une migration formelle
+pnpm prisma:migrate --name init
+
+# Générer le client Prisma
+pnpm prisma:generate
+
+# Remplir la base avec les données de test (admin + bénévole)
+pnpm prisma:db:seed
+```
+
+### 4. Vérifier (optionnel)
+
+```bash
+# Ouvrir l'interface graphique Prisma
+pnpm prisma:studio
+```
+
 ## 📁 Structure du Projet
 
 ```
@@ -132,18 +226,6 @@ pnpm prepare                      # Installe Husky hooks
 | 6      | Mise en production            | 1 sem | ⚪ À venir  |
 
 Détails : [`todos/sprints/ROADMAP.md`](todos/sprints/ROADMAP.md)
-
-## 🌐 Variables d'Environnement
-
-Copier `.env.example` vers `.env` et remplir :
-
-```env
-DATABASE_URL="postgresql://user:pass@localhost:5432/gestion_benevole"
-SHADOW_DATABASE_URL="postgresql://user:pass@localhost:5432/postgres"
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="votre-secret-securise"
-NODE_ENV="development"
-```
 
 ## 🚢 Déploiement
 
