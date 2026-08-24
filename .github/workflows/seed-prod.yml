@@ -41,8 +41,7 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9
-          run_install:
-            - install: --frozen-lockfile
+          run_install: true
 
       - name: Prisma generate
         run: pnpm prisma:generate
