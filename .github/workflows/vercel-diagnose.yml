@@ -1,0 +1,25 @@
+name: Vercel Diagnose
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diag:
+    name: Inspect Vercel projects and env vars
+    runs-on: ubuntu-latest
+    steps:
+      - name: Whoami
+        run: npx vercel@latest whoami --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: List projects
+        run: |
+          curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v3/projects?limit=100" | head -c 10000
+
+      - name: List teams
+        run: |
+          curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v2/teams" | head -c 4000
