@@ -37,7 +37,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL || 'https://benevol-mdn.vercel.app' }}
+          NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL || 'https://management-mdn.vercel.app' }}
 
       - name: Deploy to Vercel
         run: npx vercel@latest --prod --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }}
