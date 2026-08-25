@@ -47,10 +47,13 @@ jobs:
       - name: Validate Vercel token
         run: npx vercel@latest whoami --token=${{ secrets.VERCEL_TOKEN }}
 
-      # Déploiement canonique Vercel pour CI :
-      # - VERCEL_ORG_ID / VERCEL_PROJECT_ID (env vars) sont la source unique
-      #   du scope/org → `--scope` est superflu et source du « User not found ».
-      # - `--yes` évite toute invite interactive (mode non-interactif CI).
+      - name: Setup Vercel project configuration
+        run: |
+          mkdir -p .vercel
+          cat << 'EOF' > .vercel/project.json
+          {"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}
+          EOF
+
       - name: Deploy to Vercel
         run: npx vercel@latest deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
