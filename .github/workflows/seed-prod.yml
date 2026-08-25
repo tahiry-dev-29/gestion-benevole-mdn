@@ -48,8 +48,8 @@ jobs:
       - name: Prisma generate
         run: pnpm prisma:generate
 
-      - name: Run migrations
-        run: pnpm prisma:migrate:deploy
+      - name: Push schema (initial setup)
+        run: pnpm prisma:db:push
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
