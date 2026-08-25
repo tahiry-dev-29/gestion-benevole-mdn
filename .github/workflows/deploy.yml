@@ -40,7 +40,7 @@ jobs:
           NEXTAUTH_URL: ${{ vars.NEXTAUTH_URL || 'https://benevol-mdn.vercel.app' }}
 
       - name: Deploy to Vercel
-        run: npx vercel@latest --prod --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ vars.VERCEL_USERNAME }}
+        run: npx vercel@latest --prod --token=${{ secrets.VERCEL_TOKEN }} --scope=${{ secrets.VERCEL_ORG_ID }}
         env:
-          VERCEL_USERNAME: ${{ vars.VERCEL_USERNAME }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
