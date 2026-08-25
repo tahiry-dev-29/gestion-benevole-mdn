@@ -47,15 +47,5 @@ jobs:
       - name: Validate Vercel token
         run: npx vercel@latest whoami --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Setup Vercel project configuration
-        run: |
-          mkdir -p .vercel
-          cat << 'EOF' > .vercel/project.json
-          {"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}
-          EOF
-
       - name: Deploy to Vercel
-        run: npx vercel@latest deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npx vercel@latest deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }} --name=management-mdn
