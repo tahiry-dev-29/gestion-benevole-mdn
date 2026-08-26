@@ -9,5 +9,7 @@ interface SessionProviderProps {
 }
 
 export function SessionProvider({ children, session }: SessionProviderProps) {
-  return <NextSessionProvider session={session}>{children}</NextSessionProvider>;
+  return (
+    <NextSessionProvider session={session}>{children}</NextSessionProvider>
+  );
 }

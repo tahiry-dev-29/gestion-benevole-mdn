@@ -4,13 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import {
-  ExternalLink,
-  LogOut,
-  Menu,
-  Settings,
-  User,
-} from "lucide-react";
+import { ExternalLink, LogOut, Menu, Settings, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -83,7 +77,12 @@ export function AdminHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
+        <Button
+          variant="ghost"
+          size="sm"
+          asChild
+          className="hidden sm:inline-flex"
+        >
           <Link href="/">
             <ExternalLink className="size-4" />
             Retour au site

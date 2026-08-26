@@ -15,11 +15,12 @@ const progressVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 export interface ProgressProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof progressVariants> {
   value: number;
 }
@@ -36,7 +37,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         style={{ transform: `translateX(${100 - (value || 0)}%)` }}
       />
     </div>
-  ),
+  )
 );
 Progress.displayName = "Progress";
 

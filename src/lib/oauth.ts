@@ -6,7 +6,7 @@
 export function isAuth0Enabled(): boolean {
   return Boolean(
     process.env.AUTH0_CLIENT_ID &&
-      process.env.AUTH0_CLIENT_SECRET &&
-      process.env.AUTH0_ISSUER
+    process.env.AUTH0_CLIENT_SECRET &&
+    process.env.AUTH0_ISSUER
   );
 }

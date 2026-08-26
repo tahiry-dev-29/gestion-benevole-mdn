@@ -16,11 +16,12 @@ const alertVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 export interface AlertProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof alertVariants> {}
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
@@ -31,7 +32,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       className={cn(alertVariants({ variant, className }))}
       {...props}
     />
-  ),
+  )
 );
 Alert.displayName = "Alert";
 

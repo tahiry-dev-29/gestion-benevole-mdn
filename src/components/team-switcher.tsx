@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ChevronsUpDown, type LucideIcon,Plus } from "lucide-react"
+import * as React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ChevronsUpDown, type LucideIcon, Plus } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -13,14 +13,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 export function TeamSwitcher({
   teams,
@@ -29,28 +29,28 @@ export function TeamSwitcher({
   hideTeams = false,
 }: {
   teams: {
-    name: string
-    logo: React.ElementType
-    plan: string
-  }[]
+    name: string;
+    logo: React.ElementType;
+    plan: string;
+  }[];
   items?: {
-    title: string
-    url: string
-    icon?: LucideIcon
-  }[]
-  itemsLabel?: string
-  hideTeams?: boolean
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+  }[];
+  itemsLabel?: string;
+  hideTeams?: boolean;
 }) {
-  const { isMobile } = useSidebar()
-  const pathname = usePathname()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const { isMobile } = useSidebar();
+  const pathname = usePathname();
+  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
 
   if (!activeTeam) {
-    return null
+    return null;
   }
 
   const isActive = (url: string) =>
-    url === "/admin" ? pathname === "/admin" : pathname.startsWith(url)
+    url === "/admin" ? pathname === "/admin" : pathname.startsWith(url);
 
   return (
     <SidebarMenu>
@@ -137,5 +137,5 @@ export function TeamSwitcher({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

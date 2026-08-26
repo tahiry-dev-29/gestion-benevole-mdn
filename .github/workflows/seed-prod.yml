@@ -7,7 +7,7 @@ on:
         description: 'Tape "seed" pour confirmer le lancement sur la PRODUCTION'
         required: true
       dry_run:
-        description: 'Dry run (sans écrire en base)'
+        description: "Dry run (sans écrire en base)"
         type: boolean
         default: true
 

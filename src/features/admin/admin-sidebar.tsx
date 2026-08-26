@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { usePathname } from "next/navigation"
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -14,17 +14,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-import { adminNavGroups, adminUser } from "./admin.data"
-import { GestionGroup } from "./gestion-group"
+import { adminNavGroups, adminUser } from "./admin.data";
+import { GestionGroup } from "./gestion-group";
 
 function isActive(pathname: string, url: string) {
-  return url === "/admin/dashboard" ? pathname === "/admin/dashboard" : pathname.startsWith(url)
+  return url === "/admin/dashboard"
+    ? pathname === "/admin/dashboard"
+    : pathname.startsWith(url);
 }
 
 export function AdminSidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const groups = adminNavGroups.map((group) => ({
     label: group.label,
@@ -37,10 +39,10 @@ export function AdminSidebar() {
         isActive: item.items?.length
           ? Boolean(activeChildUrl)
           : isActive(pathname, item.url),
-        activeChildUrl: item.items?.length ? activeChildUrl ?? null : null,
+        activeChildUrl: item.items?.length ? (activeChildUrl ?? null) : null,
       };
     }),
-  }))
+  }));
 
   return (
     <Sidebar collapsible="icon" className="bg-card border-r h-full">
@@ -48,7 +50,13 @@ export function AdminSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="pointer-events-none">
-              <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg" />
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">Gestion Bénévole</span>
                 <span className="truncate text-xs">Espace administration</span>
@@ -68,5 +76,5 @@ export function AdminSidebar() {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

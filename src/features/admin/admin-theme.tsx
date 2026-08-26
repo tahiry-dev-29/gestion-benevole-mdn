@@ -19,7 +19,11 @@ export function useAdminTheme() {
   return useContext(AdminThemeContext);
 }
 
-export function AdminThemeProvider({ children }: { children: React.ReactNode }) {
+export function AdminThemeProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [theme, setTheme] = useState<Theme>(() =>
     typeof window !== "undefined"
       ? ((localStorage.getItem(ADMIN_THEME_KEY) as Theme | null) ?? "dark")

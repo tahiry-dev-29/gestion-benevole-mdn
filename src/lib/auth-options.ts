@@ -22,7 +22,11 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "admin@benevol.local" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "admin@benevol.local",
+        },
         password: { label: "Mot de passe", type: "password" },
       },
       async authorize(credentials) {
@@ -42,7 +46,10 @@ export const authOptions: AuthOptions = {
         });
         if (!user || !user.password) return null;
 
-        const valid = await bcryptjs.compare(parsed.data.password, user.password);
+        const valid = await bcryptjs.compare(
+          parsed.data.password,
+          user.password
+        );
         if (!valid) return null;
 
         return {
@@ -68,7 +75,8 @@ export const authOptions: AuthOptions = {
         token.prenom = (user as Record<string, unknown>).prenom as string;
         token.role = (user as Record<string, unknown>).role as string;
         token.photo = (user as Record<string, unknown>).photo as string | null;
-        token.rememberMe = (user as Record<string, unknown>).rememberMe as boolean;
+        token.rememberMe = (user as Record<string, unknown>)
+          .rememberMe as boolean;
       }
       return token;
     },

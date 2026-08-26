@@ -48,9 +48,7 @@ export default function UsersPage() {
                   {u.email}
                 </TableCell>
                 <TableCell>
-                  <Badge
-                    variant={u.role === "ADMIN" ? "default" : "secondary"}
-                  >
+                  <Badge variant={u.role === "ADMIN" ? "default" : "secondary"}>
                     {u.role === "ADMIN" ? "Admin" : "Bénévole"}
                   </Badge>
                 </TableCell>

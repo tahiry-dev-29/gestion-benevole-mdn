@@ -4,11 +4,27 @@ import { PageHeader } from "@/features/admin/page-header";
 
 const sprints = [
   { id: "Sprint 0", titre: "Initialisation & Setup", statut: "TERMINE" },
-  { id: "Sprint 1", titre: "Authentification & Fondations", statut: "EN_COURS" },
-  { id: "Sprint 2", titre: "Admin : Info perso & Présence journalière", statut: "A_FAIRE" },
-  { id: "Sprint 3", titre: "Admin : Observation mensuelle & Liste crédit", statut: "A_FAIRE" },
+  {
+    id: "Sprint 1",
+    titre: "Authentification & Fondations",
+    statut: "EN_COURS",
+  },
+  {
+    id: "Sprint 2",
+    titre: "Admin : Info perso & Présence journalière",
+    statut: "A_FAIRE",
+  },
+  {
+    id: "Sprint 3",
+    titre: "Admin : Observation mensuelle & Liste crédit",
+    statut: "A_FAIRE",
+  },
   { id: "Sprint 4", titre: "Public : Activité & Partage", statut: "A_FAIRE" },
-  { id: "Sprint 5", titre: "Public : Témoignage & Finalisation PWA", statut: "A_FAIRE" },
+  {
+    id: "Sprint 5",
+    titre: "Public : Témoignage & Finalisation PWA",
+    statut: "A_FAIRE",
+  },
   { id: "Sprint 6", titre: "Mise en production", statut: "A_FAIRE" },
 ];
 

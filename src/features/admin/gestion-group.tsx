@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ChevronsUpDown, FolderClosed } from "lucide-react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ChevronsUpDown, FolderClosed } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -18,21 +18,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
-import { adminGestionItems } from "./admin.data"
+import { adminGestionItems } from "./admin.data";
 
 function isActive(pathname: string, url: string) {
-  return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url)
+  return url === "/admin" ? pathname === "/admin" : pathname.startsWith(url);
 }
 
 export function GestionGroup() {
-  const { state } = useSidebar()
-  const pathname = usePathname()
+  const { state } = useSidebar();
+  const pathname = usePathname();
 
-  const activeItem = adminGestionItems.find((item) => isActive(pathname, item.url))
-  const isCollapsed = state === "collapsed"
+  const activeItem = adminGestionItems.find((item) =>
+    isActive(pathname, item.url)
+  );
+  const isCollapsed = state === "collapsed";
 
   if (isCollapsed) {
     return (
@@ -85,7 +87,7 @@ export function GestionGroup() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>
-    )
+    );
   }
 
   return (
@@ -138,5 +140,5 @@ export function GestionGroup() {
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

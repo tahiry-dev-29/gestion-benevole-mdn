@@ -1,15 +1,20 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { ExternalLink, Link2, type LucideIcon, MoreHorizontal } from "lucide-react"
-import { toast } from "sonner"
+import Link from "next/link";
+import {
+  ExternalLink,
+  Link2,
+  type LucideIcon,
+  MoreHorizontal,
+} from "lucide-react";
+import { toast } from "sonner";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -18,25 +23,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavProjects({
   projects,
   label = "Projets",
 }: {
   projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-  }[]
-  label?: string
+    name: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+  label?: string;
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
 
   const copyLink = (url: string) => {
-    navigator.clipboard.writeText(`${window.location.origin}${url}`)
-    toast.success("Lien copié dans le presse-papiers")
-  }
+    navigator.clipboard.writeText(`${window.location.origin}${url}`);
+    toast.success("Lien copié dans le presse-papiers");
+  };
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -84,5 +89,5 @@ export function NavProjects({
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

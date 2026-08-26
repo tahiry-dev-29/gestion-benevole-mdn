@@ -6,9 +6,8 @@ const PUBLIC_PATHS = ["/login", "/api", "/_next"];
 
 function isPublic(pathname: string) {
   return (
-    PUBLIC_PATHS.some(
-      (p) => pathname === p || pathname.startsWith(`${p}/`)
-    ) || pathname === "/"
+    PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
+    pathname === "/"
   );
 }
 
