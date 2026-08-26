@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 
 import { updateBenevoleSchema } from "@/features/benevoles/application/benevole.schema";
 import { benevoleRepository } from "@/features/benevoles/infrastructure/benevole.repository";
+import { requireAdmin } from "@/lib/api-auth";
 
 type Context = { params: Promise<{ id: string }> };
 
-export async function GET(_request: Request, { params }: Context) {
+export async function GET(request: Request, { params }: Context) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
+
   const { id } = await params;
   const benevole = await benevoleRepository.getById(Number(id));
 
@@ -19,6 +23,9 @@ export async function GET(_request: Request, { params }: Context) {
 }
 
 export async function PUT(request: Request, { params }: Context) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
+
   const { id } = await params;
   const body = await request.json().catch(() => null);
   const parsed = updateBenevoleSchema.safeParse(body);
@@ -41,7 +48,10 @@ export async function PUT(request: Request, { params }: Context) {
   }
 }
 
-export async function DELETE(_request: Request, { params }: Context) {
+export async function DELETE(request: Request, { params }: Context) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
+
   const { id } = await params;
 
   try {

@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 
 import { createActiviteSchema } from "@/features/activites/application/activite.schema";
 import { activiteRepository } from "@/features/activites/infrastructure/activite.repository";
+import { requireAdmin } from "@/lib/api-auth";
 
 export async function GET(request: Request) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
+
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q") ?? undefined;
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
@@ -27,6 +31,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const denied = await requireAdmin(request);
+  if (denied) return denied;
+
   const body = await request.json().catch(() => null);
   const parsed = createActiviteSchema.safeParse(body);
 
