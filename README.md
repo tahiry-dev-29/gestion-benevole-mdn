@@ -4,6 +4,10 @@ Application de gestion des bénévoles pour la **Maison du Numérique (MDN) Mada
 
 **Objectif :** Centraliser la gestion des bénévoles (présence, suivi, crédits) et offrir une vitrine publique de leurs activités, partages et témoignages.
 
+## Live Demo
+
+🌐 **Application en production :** [https://management-mdn.vercel.app](https://management-mdn.vercel.app)
+
 ---
 
 ## Stack Technique
