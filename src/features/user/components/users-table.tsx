@@ -45,6 +45,7 @@ import {
   deleteUserAction,
   updateUserRoleAction,
 } from "@/features/user/user.action";
+import type { Sexe } from "@/features/user/user.schema";
 
 function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -148,7 +149,7 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
         prenom: formData.prenom,
         email: formData.email,
         role: formData.role,
-        sexe: formData.sexe || undefined,
+        sexe: (formData.sexe || undefined) as Sexe | undefined,
         age: formData.age ? Number(formData.age) : undefined,
         contact: formData.contact || undefined,
         categorie: formData.categorie ? (formData.categorie as CategoryType) : undefined,
@@ -551,6 +552,7 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                     <SelectValue placeholder="Sélectionner" />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
+                    <SelectItem value="Non précisé">Non précisé</SelectItem>
                     <SelectItem value="Masculin">Masculin</SelectItem>
                     <SelectItem value="Féminin">Féminin</SelectItem>
                   </SelectContent>

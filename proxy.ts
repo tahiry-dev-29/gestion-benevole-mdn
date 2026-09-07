@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const PUBLIC_PATHS = ["/login", "/reset-password", "/api", "/_next"];
+const PUBLIC_PATHS = ["/login", "/api", "/_next"];
 
 function isPublic(pathname: string) {
   return (
@@ -11,7 +11,7 @@ function isPublic(pathname: string) {
   );
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const token = await getToken({ req: request });

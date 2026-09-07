@@ -26,11 +26,11 @@ model User {
   partages      Partage[]
   presences     Presence[]
   temoignages   Temoignage[]
-  sexe          String
-  age           Int
+  sexe          String        @default("Non précisé")
+  age           Int           @default(18)
   contact       String?
-  categorie     Category
-  etablissement String
+  categorie     Category      @default(UNIVERSITAIRE)
+  etablissement String        @default("Non renseigné")
   facebook      String?
 }
 

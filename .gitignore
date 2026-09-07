@@ -51,3 +51,6 @@ next-env.d.ts
 /public/sw.js
 /public/workbox-*.js
 
+# uploads locaux (dev) — les images prod sont stockées sur Vercel Blob
+/public/uploads
+

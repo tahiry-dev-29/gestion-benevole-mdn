@@ -1,55 +1,43 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { Category } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 
 import {
+  type CreateUserInput,
   type UpdateProfileInput,
   updateProfileSchema,
   type UpdateRoleInput,
   updateRoleSchema,
+  userSchema,
 } from "./user.schema";
 
-export interface CreateUserInput {
-  nom: string;
-  prenom: string;
-  email: string;
-  role: "ADMIN" | "BENEVOLE";
-  sexe?: string;
-  age?: number;
-  contact?: string;
-  categorie?: Category;
-  etablissement?: string;
-  facebook?: string;
-}
-
 export async function createUserAction(data: CreateUserInput) {
+  const parsed = userSchema.safeParse(data);
+  if (!parsed.success) {
+    return { success: false, error: "Données invalides." };
+  }
+
   try {
     const user = await prisma.user.create({
       data: {
-        nom: data.nom,
-        prenom: data.prenom,
-        email: data.email,
-        role: data.role,
+        ...parsed.data,
         statut: "ACTIF",
         date_entree: new Date(),
-        sexe: data.sexe ?? "Non précisé",
-        age: data.age ?? 18,
-        contact: data.contact,
-        categorie: data.categorie ?? ("UNIVERSITAIRE" as Category),
-        etablissement: data.etablissement ?? "Non renseigné",
-        facebook: data.facebook,
+        sexe: parsed.data.sexe ?? "Non précisé",
+        age: parsed.data.age ?? 18,
+        categorie: parsed.data.categorie ?? "UNIVERSITAIRE",
+        etablissement: parsed.data.etablissement ?? "Non renseigné",
       },
     });
 
     revalidatePath("/admin/users");
     return { success: true, data: user };
-  } catch (error: any) {
+  } catch {
     return {
       success: false,
-      error: error?.message || "Erreur lors de la création de l'utilisateur.",
+      error: "Erreur lors de la création de l'utilisateur.",
     };
   }
 }

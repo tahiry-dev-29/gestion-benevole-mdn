@@ -59,6 +59,7 @@ export const authOptions: AuthOptions = {
           nom: user.nom,
           prenom: user.prenom,
           role: user.role,
+          statut: user.statut,
           photo: user.photo,
           rememberMe: parsed.data.rememberMe === true,
         };
@@ -74,6 +75,7 @@ export const authOptions: AuthOptions = {
         token.nom = (user as Record<string, unknown>).nom as string;
         token.prenom = (user as Record<string, unknown>).prenom as string;
         token.role = (user as Record<string, unknown>).role as string;
+        token.statut = (user as Record<string, unknown>).statut as string;
         token.photo = (user as Record<string, unknown>).photo as string | null;
         token.rememberMe = (user as Record<string, unknown>)
           .rememberMe as boolean;
@@ -88,6 +90,7 @@ export const authOptions: AuthOptions = {
         session.user.nom = token.nom ?? "";
         session.user.prenom = token.prenom ?? "";
         session.user.role = token.role ?? "";
+        session.user.statut = token.statut ?? "";
         session.user.photo = token.photo ?? null;
       }
       return session;

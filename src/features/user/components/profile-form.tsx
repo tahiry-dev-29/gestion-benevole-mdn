@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updateProfileAction } from "@/features/user/user.action";
+import type { Category, Sexe } from "@/features/user/user.schema";
 
 interface ProfileFormProps {
   user: {
@@ -84,7 +85,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
       const res = await updateProfileAction(user.id, {
         ...formData,
         age: formData.age !== "" ? Number(formData.age) : undefined,
-        categorie: formData.categorie as any,
+        categorie: formData.categorie as Category | undefined,
+        sexe: formData.sexe as Sexe,
       });
       if (!res.success) {
         setError(res.error || "Erreur lors de la mise à jour.");
@@ -197,6 +199,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
               onChange={(e) => setFormData({ ...formData, sexe: e.target.value })}
               className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             >
+              <option value="Non précisé">Non précisé</option>
               <option value="Masculin">Masculin</option>
               <option value="Féminin">Féminin</option>
             </select>
