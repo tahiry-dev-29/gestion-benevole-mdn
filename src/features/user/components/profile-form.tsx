@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Camera, Loader2, X } from "lucide-react";
 
@@ -99,7 +100,10 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <form onSubmit={handleSubmit} className="relative bg-card p-6 rounded-xl border shadow-sm space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="relative bg-card p-6 rounded-xl border shadow-sm space-y-6"
+      >
         {/* Bouton de fermeture au coin haut droit de la carte */}
         <Button
           type="button"
@@ -112,17 +116,32 @@ export function ProfileForm({ user }: ProfileFormProps) {
           <X className="size-5" />
         </Button>
 
-        {error && <div className="p-3 text-sm bg-destructive/15 text-destructive rounded-md">{error}</div>}
-        {success && <div className="p-3 text-sm bg-emerald-500/15 text-emerald-600 rounded-md">{success}</div>}
+        {error && (
+          <div className="p-3 text-sm bg-destructive/15 text-destructive rounded-md">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="p-3 text-sm bg-emerald-500/15 text-emerald-600 rounded-md">
+            {success}
+          </div>
+        )}
 
         {/* Section Photo */}
         <div className="flex flex-col items-center gap-3 border-b pb-6">
           <div className="relative size-28 rounded-full overflow-hidden border-2 border-border bg-muted flex items-center justify-center">
             {formData.photo ? (
-              <img src={formData.photo} alt="Photo de profil" className="size-full object-cover" />
+              <Image
+                src={formData.photo}
+                alt="Photo de profil"
+                fill
+                sizes="112px"
+                className="object-cover"
+              />
             ) : (
               <span className="text-2xl font-bold text-muted-foreground">
-                {formData.prenom[0]?.toUpperCase()}{formData.nom[0]?.toUpperCase()}
+                {formData.prenom[0]?.toUpperCase()}
+                {formData.nom[0]?.toUpperCase()}
               </span>
             )}
 
@@ -155,7 +174,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <Input
               id="prenom"
               value={formData.prenom}
-              onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, prenom: e.target.value })
+              }
               required
             />
           </div>
@@ -165,7 +186,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <Input
               id="nom"
               value={formData.nom}
-              onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, nom: e.target.value })
+              }
               required
             />
           </div>
@@ -176,7 +199,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
             />
           </div>
@@ -187,7 +212,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
               id="contact"
               placeholder="Ex: +261 34 00 000 00"
               value={formData.contact}
-              onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, contact: e.target.value })
+              }
             />
           </div>
 
@@ -196,7 +223,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <select
               id="sexe"
               value={formData.sexe}
-              onChange={(e) => setFormData({ ...formData, sexe: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, sexe: e.target.value })
+              }
               className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="Non précisé">Non précisé</option>
@@ -213,7 +242,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
               min={1}
               max={120}
               value={formData.age}
-              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, age: e.target.value })
+              }
             />
           </div>
 
@@ -222,7 +253,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <select
               id="categorie"
               value={formData.categorie}
-              onChange={(e) => setFormData({ ...formData, categorie: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, categorie: e.target.value })
+              }
               className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="PRIMAIRE">Primaire</option>
@@ -238,7 +271,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
               id="etablissement"
               placeholder="Ex: IS2M, Université..."
               value={formData.etablissement}
-              onChange={(e) => setFormData({ ...formData, etablissement: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, etablissement: e.target.value })
+              }
             />
           </div>
 
@@ -248,7 +283,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
               id="facebook"
               placeholder="Ex: https://facebook.com/nom ou Nom complet"
               value={formData.facebook}
-              onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, facebook: e.target.value })
+              }
             />
           </div>
         </div>

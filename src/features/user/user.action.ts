@@ -80,7 +80,10 @@ export async function listUsersAction(query?: string, role?: string) {
 
     return { success: true, data: users };
   } catch {
-    return { success: false, error: "Impossible de récupérer les utilisateurs." };
+    return {
+      success: false,
+      error: "Impossible de récupérer les utilisateurs.",
+    };
   }
 }
 
@@ -116,7 +119,10 @@ export async function deleteUserAction(userId: number) {
     revalidatePath("/admin/users");
     return { success: true };
   } catch {
-    return { success: false, error: "Erreur lors de la désactivation de l'utilisateur." };
+    return {
+      success: false,
+      error: "Erreur lors de la désactivation de l'utilisateur.",
+    };
   }
 }
 
@@ -148,11 +154,17 @@ export async function getProfileAction(userId: number) {
 
     return { success: true, data: user };
   } catch {
-    return { success: false, error: "Erreur lors de la récupération du profil." };
+    return {
+      success: false,
+      error: "Erreur lors de la récupération du profil.",
+    };
   }
 }
 
-export async function updateProfileAction(userId: number, data: UpdateProfileInput) {
+export async function updateProfileAction(
+  userId: number,
+  data: UpdateProfileInput
+) {
   const parsed = updateProfileSchema.safeParse(data);
   if (!parsed.success) {
     return { success: false, error: "Données de profil invalides." };
@@ -167,6 +179,9 @@ export async function updateProfileAction(userId: number, data: UpdateProfileInp
     revalidatePath(`/admin/benevoles/${userId}`);
     return { success: true, data: updated };
   } catch {
-    return { success: false, error: "Erreur lors de la mise à jour du profil." };
+    return {
+      success: false,
+      error: "Erreur lors de la mise à jour du profil.",
+    };
   }
 }

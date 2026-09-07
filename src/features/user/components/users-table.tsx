@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -110,7 +111,8 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
   });
 
   const filteredUsers = initialUsers.filter((u) => {
-    const searchTarget = `${u.prenom} ${u.nom} ${u.email} ${u.role} ${u.etablissement || ""} ${u.contact || ""}`.toLowerCase();
+    const searchTarget =
+      `${u.prenom} ${u.nom} ${u.email} ${u.role} ${u.etablissement || ""} ${u.contact || ""}`.toLowerCase();
     const matchesSearch = searchTarget.includes(search.toLowerCase());
     const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
     const matchesStatus = statusFilter === "ALL" || u.statut === statusFilter;
@@ -122,7 +124,10 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + pageSize);
 
-  const handleRoleChange = (userId: number, currentRole: "ADMIN" | "BENEVOLE") => {
+  const handleRoleChange = (
+    userId: number,
+    currentRole: "ADMIN" | "BENEVOLE"
+  ) => {
     const newRole = currentRole === "ADMIN" ? "BENEVOLE" : "ADMIN";
     startTransition(async () => {
       await updateUserRoleAction({ userId, role: newRole });
@@ -152,7 +157,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
         sexe: (formData.sexe || undefined) as Sexe | undefined,
         age: formData.age ? Number(formData.age) : undefined,
         contact: formData.contact || undefined,
-        categorie: formData.categorie ? (formData.categorie as CategoryType) : undefined,
+        categorie: formData.categorie
+          ? (formData.categorie as CategoryType)
+          : undefined,
         etablissement: formData.etablissement || undefined,
         facebook: formData.facebook || undefined,
       });
@@ -183,7 +190,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-white">Utilisateurs</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-white">
+              Utilisateurs
+            </h1>
             <span className="inline-flex items-center rounded-full bg-cyan-950/80 px-3 py-0.5 text-xs font-semibold text-cyan-400 border border-cyan-800/60">
               {initialUsers.length} membres
             </span>
@@ -228,8 +237,8 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                 {roleFilter === "ALL"
                   ? "Tous les rôles"
                   : roleFilter === "ADMIN"
-                  ? "Admin"
-                  : "Bénévole"}
+                    ? "Admin"
+                    : "Bénévole"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
@@ -251,8 +260,8 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                 {statusFilter === "ALL"
                   ? "Tous les statuts"
                   : statusFilter === "ACTIF"
-                  ? "Actif"
-                  : "Inactif"}
+                    ? "Actif"
+                    : "Inactif"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
@@ -262,7 +271,11 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
             </SelectContent>
           </Select>
 
-          <Button variant="outline" size="icon" className="bg-slate-900/60 border-slate-800 text-slate-300">
+          <Button
+            variant="outline"
+            size="icon"
+            className="bg-slate-900/60 border-slate-800 text-slate-300"
+          >
             <Filter className="size-4" />
           </Button>
         </div>
@@ -275,12 +288,16 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {paginatedUsers.map((u) => {
-            const initials = `${u.prenom[0] ?? ""}${u.nom[0] ?? ""}`.toUpperCase();
-            const formattedDate = new Date(u.date_entree).toLocaleDateString("fr-FR", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            });
+            const initials =
+              `${u.prenom[0] ?? ""}${u.nom[0] ?? ""}`.toUpperCase();
+            const formattedDate = new Date(u.date_entree).toLocaleDateString(
+              "fr-FR",
+              {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              }
+            );
 
             return (
               <div
@@ -290,12 +307,14 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                 <div>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="size-11 rounded-full bg-cyan-950/90 text-cyan-400 font-bold flex items-center justify-center shrink-0 border border-cyan-800/50 text-sm">
+                      <div className="relative size-11 rounded-full bg-cyan-950/90 text-cyan-400 font-bold flex items-center justify-center shrink-0 border border-cyan-800/50 text-sm overflow-hidden">
                         {u.photo ? (
-                          <img
+                          <Image
                             src={u.photo}
                             alt={`${u.prenom} ${u.nom}`}
-                            className="size-full rounded-full object-cover"
+                            fill
+                            sizes="44px"
+                            className="object-cover"
                           />
                         ) : (
                           initials
@@ -322,23 +341,34 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                           <MoreHorizontal className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-slate-900 border-slate-800 text-slate-200">
+                      <DropdownMenuContent
+                        align="end"
+                        className="bg-slate-900 border-slate-800 text-slate-200"
+                      >
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator className="bg-slate-800" />
                         <DropdownMenuItem asChild>
-                          <Link href={`/admin/benevoles/${u.id}`} className="cursor-pointer">
+                          <Link
+                            href={`/admin/benevoles/${u.id}`}
+                            className="cursor-pointer"
+                          >
                             <Pencil className="mr-2 size-4" /> Éditer le profil
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleRoleChange(u.id, u.role)} className="cursor-pointer">
-                          <Shield className="mr-2 size-4" /> Passer en {u.role === "ADMIN" ? "Bénévole" : "Admin"}
+                        <DropdownMenuItem
+                          onClick={() => handleRoleChange(u.id, u.role)}
+                          className="cursor-pointer"
+                        >
+                          <Shield className="mr-2 size-4" /> Passer en{" "}
+                          {u.role === "ADMIN" ? "Bénévole" : "Admin"}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-slate-800" />
                         <DropdownMenuItem
                           onClick={() => handleDelete(u.id)}
                           className="text-rose-400 focus:text-rose-400 focus:bg-rose-950/40 cursor-pointer"
                         >
-                          <Trash2 className="mr-2 size-4" /> Désactiver le compte
+                          <Trash2 className="mr-2 size-4" /> Désactiver le
+                          compte
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -370,7 +400,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                     >
                       <span
                         className={`size-1.5 rounded-full ${
-                          u.statut === "ACTIF" ? "bg-emerald-500" : "bg-rose-500"
+                          u.statut === "ACTIF"
+                            ? "bg-emerald-500"
+                            : "bg-rose-500"
                         }`}
                       />
                       {u.statut === "ACTIF" ? "Actif" : "Inactif"}
@@ -408,7 +440,8 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                       ENTRÉE / DÉTAILS
                     </span>
                     <span className="font-semibold text-slate-200 mt-0.5 block truncate">
-                      {u.sexe ? `${u.sexe}, ` : ""}{u.age ? `${u.age} ans` : formattedDate}
+                      {u.sexe ? `${u.sexe}, ` : ""}
+                      {u.age ? `${u.age} ans` : formattedDate}
                     </span>
                   </div>
                 </div>
@@ -420,9 +453,16 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
 
       <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/60 text-xs text-slate-400">
         <div>
-          Affichage de <strong className="text-slate-200">{totalUsers > 0 ? startIndex + 1 : 0}</strong> à{" "}
-          <strong className="text-slate-200">{Math.min(startIndex + pageSize, totalUsers)}</strong> sur{" "}
-          <strong className="text-slate-200">{totalUsers}</strong> utilisateurs
+          Affichage de{" "}
+          <strong className="text-slate-200">
+            {totalUsers > 0 ? startIndex + 1 : 0}
+          </strong>{" "}
+          à{" "}
+          <strong className="text-slate-200">
+            {Math.min(startIndex + pageSize, totalUsers)}
+          </strong>{" "}
+          sur <strong className="text-slate-200">{totalUsers}</strong>{" "}
+          utilisateurs
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -504,7 +544,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                   id="nom"
                   required
                   value={formData.nom}
-                  onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nom: e.target.value })
+                  }
                   placeholder="Dupont"
                   className="bg-slate-950/60 border-slate-800 text-slate-200"
                 />
@@ -521,7 +563,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   placeholder="jean.dupont@exemple.com"
                   className="bg-slate-950/60 border-slate-800 text-slate-200"
                 />
@@ -534,7 +578,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                 <Input
                   id="contact"
                   value={formData.contact}
-                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, contact: e.target.value })
+                  }
                   placeholder="+261 34 00 000 00"
                   className="bg-slate-950/60 border-slate-800 text-slate-200"
                 />
@@ -546,7 +592,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                 <Label className="text-xs text-slate-300">Sexe</Label>
                 <Select
                   value={formData.sexe}
-                  onValueChange={(val) => setFormData({ ...formData, sexe: val ?? "" })}
+                  onValueChange={(val) =>
+                    setFormData({ ...formData, sexe: val ?? "" })
+                  }
                 >
                   <SelectTrigger className="bg-slate-950/60 border-slate-800 text-slate-200">
                     <SelectValue placeholder="Sélectionner" />
@@ -567,7 +615,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                   id="age"
                   type="number"
                   value={formData.age}
-                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, age: e.target.value })
+                  }
                   placeholder="20"
                   className="bg-slate-950/60 border-slate-800 text-slate-200"
                 />
@@ -579,7 +629,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                 <Label className="text-xs text-slate-300">Catégorie</Label>
                 <Select
                   value={formData.categorie}
-                  onValueChange={(val) => setFormData({ ...formData, categorie: val as CategoryType })}
+                  onValueChange={(val) =>
+                    setFormData({ ...formData, categorie: val as CategoryType })
+                  }
                 >
                   <SelectTrigger className="bg-slate-950/60 border-slate-800 text-slate-200">
                     <SelectValue placeholder="Sélectionner" />
@@ -616,7 +668,10 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="etablissement" className="text-xs text-slate-300">
+                <Label
+                  htmlFor="etablissement"
+                  className="text-xs text-slate-300"
+                >
                   Établissement
                 </Label>
                 <Input
@@ -637,7 +692,9 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
                 <Input
                   id="facebook"
                   value={formData.facebook}
-                  onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, facebook: e.target.value })
+                  }
                   placeholder="Lien ou Nom Facebook"
                   className="bg-slate-950/60 border-slate-800 text-slate-200"
                 />

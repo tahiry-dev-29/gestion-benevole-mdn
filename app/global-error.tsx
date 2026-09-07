@@ -12,9 +12,12 @@ export default function GlobalError({
     <html lang="fr" className="dark">
       <body className="min-h-screen flex flex-col items-center justify-center px-4 bg-slate-950 text-slate-100">
         <main className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-sm">
-          <h2 className="text-2xl font-bold tracking-tight">Erreur inattendue</h2>
+          <h2 className="text-2xl font-bold tracking-tight">
+            Erreur inattendue
+          </h2>
           <p className="mt-2 text-sm text-slate-400">
-            Une erreur est survenue pendant le traitement de votre demande. Veuillez réessayer.
+            Une erreur est survenue pendant le traitement de votre demande.
+            Veuillez réessayer.
           </p>
           {process.env.NODE_ENV === "development" && error?.message && (
             <p className="mt-4 rounded border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-500">

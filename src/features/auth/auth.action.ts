@@ -7,8 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { type RegisterInput, registerSchema } from "./auth.schema";
 
 export type RegisterResult =
-  | { success: true }
-  | { success: false; error: string; issues?: unknown };
+  { success: true } | { success: false; error: string; issues?: unknown };
 
 export async function registerAction(
   data: RegisterInput

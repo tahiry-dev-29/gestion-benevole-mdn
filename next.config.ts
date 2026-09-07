@@ -7,6 +7,12 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      // Images de profil stockées sur Vercel Blob en production
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+    ],
+  },
   turbopack: {
     // Enforce project root so Next/Turbopack do not infer a wrong workspace
     // root from stray lockfiles outside the repository (see build warning).
