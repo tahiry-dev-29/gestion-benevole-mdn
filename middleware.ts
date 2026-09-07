@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-const PUBLIC_PATHS = ["/login", "/api", "/_next"];
+const PUBLIC_PATHS = ["/login", "/reset-password", "/api", "/_next"];
 
 function isPublic(pathname: string) {
   return (
@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    if (token.role !== "ADMIN") {
+    if (token.role !== "ADMIN" || token.statut === "INACTIF") {
       return NextResponse.rewrite(new URL("/forbidden", request.url));
     }
     return NextResponse.next();

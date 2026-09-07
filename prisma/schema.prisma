@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  seed     = "npx tsx prisma/seed.ts"
 }
 
 datasource db {
@@ -8,23 +7,31 @@ datasource db {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  nom          String
-  prenom       String
-  email        String        @unique
+  id            Int            @id @default(autoincrement())
+  nom           String
+  prenom        String
+  email         String         @unique
   emailVerified DateTime?
-  password     String?
-  role         Role          @default(BENEVOLE)
-  photo        String?
-  date_entree  DateTime      @default(now())
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  activites    Activite[]
-  credits      Credit[]
-  observations Observation[]
-  partages     Partage[]
-  presences    Presence[]
-  temoignages  Temoignage[]
+  password      String?
+  role          Role           @default(BENEVOLE)
+  photo         String?
+  statut        UserStatut     @default(ACTIF)
+  deletedAt     DateTime?
+  date_entree   DateTime       @default(now())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  activites     Activite[]
+  credits       Credit[]
+  observations  Observation[]
+  partages      Partage[]
+  presences     Presence[]
+  temoignages   Temoignage[]
+  sexe          String
+  age           Int
+  contact       String?
+  categorie     Category
+  etablissement String
+  facebook      String?
 }
 
 model Presence {
@@ -97,4 +104,16 @@ model Temoignage {
 enum Role {
   ADMIN
   BENEVOLE
+}
+
+enum UserStatut {
+  ACTIF
+  INACTIF
+}
+
+enum Category {
+  PRIMAIRE
+  COLLEGIEN
+  UNIVERSITAIRE
+  SALARIE
 }

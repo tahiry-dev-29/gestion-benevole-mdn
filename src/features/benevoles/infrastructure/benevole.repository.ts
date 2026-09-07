@@ -111,6 +111,10 @@ export const benevoleRepository: IBenevoleRepository = {
         password: input.password,
         role: input.role ?? "BENEVOLE",
         date_entree: input.dateEntree ? new Date(input.dateEntree) : new Date(),
+        sexe: (input as Record<string, unknown>).sexe as string ?? "Non précisé",
+        age: (input as Record<string, unknown>).age ? Number((input as Record<string, unknown>).age) : 18,
+        categorie: (input as Record<string, unknown>).categorie as any ?? "UNIVERSITAIRE",
+        etablissement: (input as Record<string, unknown>).etablissement as string ?? "Non renseigné",
       },
       select: {
         id: true,

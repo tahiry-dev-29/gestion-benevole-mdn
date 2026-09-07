@@ -28,5 +28,25 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
+export const requestResetSchema = z.object({
+  email: z.string().email("Adresse email invalide"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Jeton invalide"),
+    password: z
+      .string()
+      .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+      .max(100),
+    confirmPassword: z.string().min(1, "Veuillez confirmer le mot de passe"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Les mots de passe ne correspondent pas",
+    path: ["confirmPassword"],
+  });
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type RequestResetInput = z.infer<typeof requestResetSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
