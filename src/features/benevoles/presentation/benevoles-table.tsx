@@ -155,7 +155,7 @@ export function BenevolesTable() {
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Rechercher un bénévole…"
+                placeholder="Rechercher un bénévole..."
                 className="pl-8"
               />
             </div>

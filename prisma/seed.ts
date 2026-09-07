@@ -19,6 +19,10 @@ async function main() {
       email: "admin@mdn.com",
       password: mdnAdminPassword,
       role: Role.ADMIN,
+      sexe: "Masculin",
+      age: 30,
+      categorie: "SALARIE",
+      etablissement: "Maison du Numérique",
     },
   });
 
@@ -31,6 +35,10 @@ async function main() {
       email: "admin@benevol.local",
       password: adminPassword,
       role: Role.ADMIN,
+      sexe: "Masculin",
+      age: 28,
+      categorie: "SALARIE",
+      etablissement: "MDN",
     },
   });
 
@@ -43,6 +51,10 @@ async function main() {
       email: "benevole@benevol.local",
       password: benevolePassword,
       role: Role.BENEVOLE,
+      sexe: "Féminin",
+      age: 22,
+      categorie: "UNIVERSITAIRE",
+      etablissement: "Université",
     },
   });
 
