@@ -43,7 +43,8 @@ jobs:
         run: |
           DEPLOY_URL=$(vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }})
           echo "Deployed URL: $DEPLOY_URL"
-          echo "Assigning alias management-mdn.vercel.app..."
+          echo "Assigning alias gestion-benevole-mdn.vercel.app..."
+          vercel alias set "$DEPLOY_URL" gestion-benevole-mdn.vercel.app --token=${{ secrets.VERCEL_TOKEN }} || true
           vercel alias set "$DEPLOY_URL" management-mdn.vercel.app --token=${{ secrets.VERCEL_TOKEN }} || true
           echo "Promoting deployment..."
           vercel promote "$DEPLOY_URL" --yes --token=${{ secrets.VERCEL_TOKEN }} || true

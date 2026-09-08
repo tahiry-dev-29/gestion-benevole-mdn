@@ -6,7 +6,7 @@ Application de gestion des bénévoles pour la **Maison du Numérique (MDN) Mada
 
 ## Live Demo
 
-🌐 **Application en production :** [https://management-mdn.vercel.app](https://management-mdn.vercel.app)
+🌐 **Application en production :** [https://gestion-benevole-mdn.vercel.app](https://gestion-benevole-mdn.vercel.app)
 
 ---
 
