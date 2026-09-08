@@ -117,8 +117,8 @@ export const benevoleRepository: IBenevoleRepository = {
           ? Number((input as Record<string, unknown>).age)
           : 18,
         categorie:
-          ((input as Record<string, unknown>).categorie as Category | undefined) ??
-          "UNIVERSITAIRE",
+          ((input as Record<string, unknown>).categorie as
+            Category | undefined) ?? "UNIVERSITAIRE",
         etablissement:
           ((input as Record<string, unknown>).etablissement as string) ??
           "Non renseigné",
