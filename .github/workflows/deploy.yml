@@ -39,5 +39,11 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Deploy to Vercel (Production)
-        run: vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy & Alias Domain on Vercel
+        run: |
+          DEPLOY_URL=$(vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }})
+          echo "Deployed URL: $DEPLOY_URL"
+          echo "Assigning alias management-mdn.vercel.app..."
+          vercel alias set "$DEPLOY_URL" management-mdn.vercel.app --token=${{ secrets.VERCEL_TOKEN }} || true
+          echo "Promoting deployment..."
+          vercel promote "$DEPLOY_URL" --yes --token=${{ secrets.VERCEL_TOKEN }} || true
