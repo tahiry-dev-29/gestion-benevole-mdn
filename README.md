@@ -468,3 +468,6 @@ SOFTWARE.
 ---
 
 **Maison du Numérique — Madagascar** 🇲🇬
+Le domaine https://management-mdn.vercel.app est temporairement réservé par Vercel suite à la suppression du projet d origine.
+Le site est accessible via : https://management-mdn-tahirys-projects-385468bd.vercel.app
+Migration DB requise : DATABASE_URL=<ton_url> NODE_ENV=production pnpm prisma:migrate:deploy
