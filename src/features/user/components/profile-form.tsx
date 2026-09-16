@@ -34,8 +34,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<ProfileFormData>({
     nom: user.nom || "",
@@ -85,8 +83,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
 
     startTransition(async () => {
       const payload = {

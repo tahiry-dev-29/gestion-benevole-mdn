@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
 
+import { authOptions } from "@/lib/auth-options";
 import { prisma } from "@/lib/prisma";
 
 import {
@@ -128,6 +130,17 @@ export async function deleteUserAction(userId: number) {
 
 export async function getProfileAction(userId: number) {
   try {
+    // Vérification d'ownership : bénévole ne peut voir que son propre profil
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return { success: false, error: "Non authentifié." };
+    }
+    const currentUserId = parseInt(session.user.id, 10);
+    const isAdmin = session.user.role === "ADMIN";
+    if (!isAdmin && currentUserId !== userId) {
+      return { success: false, error: "Accès non autorisé." };
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -165,6 +178,17 @@ export async function updateProfileAction(
   userId: number,
   data: UpdateProfileInput
 ) {
+  // Vérification d'ownership : bénévole ne peut modifier que son propre profil
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return { success: false, error: "Non authentifié." };
+  }
+  const currentUserId = parseInt(session.user.id, 10);
+  const isAdmin = session.user.role === "ADMIN";
+  if (!isAdmin && currentUserId !== userId) {
+    return { success: false, error: "Accès non autorisé." };
+  }
+
   const parsed = updateProfileSchema.safeParse(data);
   if (!parsed.success) {
     return { success: false, error: "Données de profil invalides." };
