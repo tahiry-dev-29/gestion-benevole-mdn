@@ -1,0 +1,21 @@
+name: Check Package Changes
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  check-deps:
+    name: Verify package.json modifications
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.pull_request.labels.*.name, 'allow-deps-change')"
+    steps:
+      - name: Fail if dependencies have changed
+        run: |
+          echo "::error title=Modification forbidden::package.json or pnpm-lock.yaml has been modified in this PR!"
+          echo "⚠️ Please do not modify dependencies without prior approval from the Lead Dev."
+          echo "💡 To allow this change, add the 'allow-deps-change' label to this PR."
+          exit 1

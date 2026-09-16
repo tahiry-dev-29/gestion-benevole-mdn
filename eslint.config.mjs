@@ -58,6 +58,21 @@ const eslintConfig = defineConfig([
       eqeqeq: ["error", "always"],
     },
   },
+  {
+    files: ["src/**/*.{ts,tsx}", "app/**/*.{ts,tsx}"],
+    ignores: ["src/components/ui/**", "src/generated/**"],
+    rules: {
+      "max-lines": [
+        "warn",
+        { max: 300, skipBlankLines: true, skipComments: true },
+      ],
+      "max-lines-per-function": [
+        "warn",
+        { max: 250, skipBlankLines: true, skipComments: true, IIFEs: true },
+      ],
+      complexity: ["warn", 20],
+    },
+  },
   globalIgnores([
     ".next/**",
     ".agents/**",

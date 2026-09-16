@@ -1,16 +1,18 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Camera, Loader2, X } from "lucide-react";
-import { toast } from "sonner";
+import { Loader2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { updateProfileAction } from "@/features/user/user.action";
 import type { Category, Sexe } from "@/features/user/user.schema";
+
+import {
+  ProfileFields,
+  type ProfileFormData,
+} from "./_components/profile-fields";
+import { ProfilePhotoField } from "./_components/profile-photo-field";
 
 interface ProfileFormProps {
   user: {
@@ -33,7 +35,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const [isPending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProfileFormData>({
     nom: user.nom || "",
     prenom: user.prenom || "",
     email: user.email || "",
@@ -46,12 +48,19 @@ export function ProfileForm({ user }: ProfileFormProps) {
     facebook: user.facebook || "",
   });
 
+  const handleFieldChange = (
+    field: keyof ProfileFormData,
+    value: string | number
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
-
+    setError(null);
     const data = new FormData();
     data.append("file", file);
 
@@ -60,16 +69,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
         method: "POST",
         body: data,
       });
-
-      const result = await res.json();
-
-      if (!result.success) {
-        toast.error(result.error || "Erreur lors de l'upload.");
-      } else {
-        setFormData((prev) => ({ ...prev, photo: result.url }));
-      }
-    } catch {
-      toast.error("Erreur réseau lors de l'upload.");
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Erreur upload");
+      setFormData((prev) => ({ ...prev, photo: json.url }));
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "Erreur d'upload de l'image"
+      );
     } finally {
       setUploading(false);
     }
@@ -79,17 +85,25 @@ export function ProfileForm({ user }: ProfileFormProps) {
     e.preventDefault();
 
     startTransition(async () => {
-      const res = await updateProfileAction(user.id, {
-        ...formData,
+      const payload = {
+        nom: formData.nom,
+        prenom: formData.prenom,
+        email: formData.email,
+        photo: formData.photo || null,
+        sexe: (formData.sexe as Sexe) || undefined,
         age: formData.age !== "" ? Number(formData.age) : undefined,
-        categorie: formData.categorie as Category | undefined,
-        sexe: formData.sexe as Sexe,
-      });
-      if (!res.success) {
-        toast.error(res.error || "Erreur lors de la mise à jour.");
-      } else {
-        toast.success("Profil mis à jour avec succès !");
+        contact: formData.contact || undefined,
+        categorie: (formData.categorie as Category) || undefined,
+        etablissement: formData.etablissement || undefined,
+        facebook: formData.facebook || undefined,
+      };
+
+      const res = await updateProfileAction(user.id, payload);
+      if (res.success) {
+        setSuccess("Profil mis à jour avec succès !");
         router.refresh();
+      } else {
+        setError(res.error || "Une erreur est survenue.");
       }
     });
   };
@@ -100,7 +114,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
         onSubmit={handleSubmit}
         className="relative bg-card p-6 rounded-xl border shadow-sm space-y-6"
       >
-        {/* Bouton de fermeture au coin haut droit de la carte */}
         <Button
           type="button"
           variant="ghost"
@@ -112,170 +125,28 @@ export function ProfileForm({ user }: ProfileFormProps) {
           <X className="size-5" />
         </Button>
 
-        {/* Section Photo */}
-        <div className="flex flex-col items-center gap-3 border-b pb-6">
-          <div className="relative size-28 rounded-full overflow-hidden border-2 border-border bg-muted flex items-center justify-center">
-            {formData.photo ? (
-              <Image
-                src={formData.photo}
-                alt="Photo de profil"
-                fill
-                sizes="112px"
-                className="object-cover"
-              />
-            ) : (
-              <span className="text-2xl font-bold text-muted-foreground">
-                {formData.prenom[0]?.toUpperCase()}
-                {formData.nom[0]?.toUpperCase()}
-              </span>
-            )}
-
-            {uploading && (
-              <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
-                <Loader2 className="size-6 animate-spin" />
-              </div>
-            )}
+        {error && (
+          <div className="p-3 text-sm bg-destructive/15 text-destructive rounded-md">
+            {error}
           </div>
-
-          <Label htmlFor="photo-upload" className="cursor-pointer">
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
-              <Camera className="size-4" /> Changer la photo
-            </span>
-            <Input
-              id="photo-upload"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className="hidden"
-              onChange={handleImageUpload}
-              disabled={uploading || isPending}
-            />
-          </Label>
-        </div>
-
-        {/* Grille de champs (2 colonnes) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="prenom">Prénom *</Label>
-            <Input
-              id="prenom"
-              value={formData.prenom}
-              onChange={(e) =>
-                setFormData({ ...formData, prenom: e.target.value })
-              }
-              required
-            />
+        )}
+        {success && (
+          <div className="p-3 text-sm bg-emerald-500/15 text-emerald-600 rounded-md">
+            {success}
           </div>
+        )}
 
-          <div className="grid gap-2">
-            <Label htmlFor="nom">Nom *</Label>
-            <Input
-              id="nom"
-              value={formData.nom}
-              onChange={(e) =>
-                setFormData({ ...formData, nom: e.target.value })
-              }
-              required
-            />
-          </div>
+        <ProfilePhotoField
+          photo={formData.photo}
+          nom={formData.nom}
+          prenom={formData.prenom}
+          uploading={uploading}
+          onFileChange={handleImageUpload}
+          onRemovePhoto={() => setFormData((p) => ({ ...p, photo: "" }))}
+        />
 
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email *</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              required
-            />
-          </div>
+        <ProfileFields formData={formData} onChange={handleFieldChange} />
 
-          <div className="grid gap-2">
-            <Label htmlFor="contact">Contact / Téléphone</Label>
-            <Input
-              id="contact"
-              placeholder="Ex: +261 34 00 000 00"
-              value={formData.contact}
-              onChange={(e) =>
-                setFormData({ ...formData, contact: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="sexe">Sexe</Label>
-            <select
-              id="sexe"
-              value={formData.sexe}
-              onChange={(e) =>
-                setFormData({ ...formData, sexe: e.target.value })
-              }
-              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="Non précisé">Non précisé</option>
-              <option value="Masculin">Masculin</option>
-              <option value="Féminin">Féminin</option>
-            </select>
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="age">Âge</Label>
-            <Input
-              id="age"
-              type="number"
-              min={1}
-              max={120}
-              value={formData.age}
-              onChange={(e) =>
-                setFormData({ ...formData, age: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="categorie">Catégorie</Label>
-            <select
-              id="categorie"
-              value={formData.categorie}
-              onChange={(e) =>
-                setFormData({ ...formData, categorie: e.target.value })
-              }
-              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="PRIMAIRE">Primaire</option>
-              <option value="COLLEGIEN">Collégien</option>
-              <option value="UNIVERSITAIRE">Universitaire</option>
-              <option value="SALARIE">Salarié</option>
-            </select>
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="etablissement">Établissement</Label>
-            <Input
-              id="etablissement"
-              placeholder="Ex: IS2M, Université..."
-              value={formData.etablissement}
-              onChange={(e) =>
-                setFormData({ ...formData, etablissement: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="grid gap-2 md:col-span-2">
-            <Label htmlFor="facebook">Profil Facebook</Label>
-            <Input
-              id="facebook"
-              placeholder="Ex: https://facebook.com/nom ou Nom complet"
-              value={formData.facebook}
-              onChange={(e) =>
-                setFormData({ ...formData, facebook: e.target.value })
-              }
-            />
-          </div>
-        </div>
-
-        {/* Boutons d'action */}
         <div className="flex items-center justify-end gap-3 pt-4 border-t">
           <Button
             type="button"
