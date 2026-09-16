@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Column, ColumnDef } from "@tanstack/react-table";
 import {
   ArrowDown,
@@ -9,6 +10,7 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
+  User,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -111,8 +113,13 @@ export function getBenevoleColumns({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/benevoles/${b.id}`}>
+                  <User className="size-4" /> Fiche profil
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onView(b)}>
-                <Eye className="size-4" /> Voir
+                <Eye className="size-4" /> Voir (dialog)
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onEdit(b)}>
                 <Pencil className="size-4" /> Modifier

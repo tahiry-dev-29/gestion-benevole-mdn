@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Camera, Loader2, X } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,8 +32,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     nom: user.nom || "",
@@ -52,7 +51,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
     if (!file) return;
 
     setUploading(true);
-    setError(null);
 
     const data = new FormData();
     data.append("file", file);
@@ -66,12 +64,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
       const result = await res.json();
 
       if (!result.success) {
-        setError(result.error || "Erreur lors de l'upload.");
+        toast.error(result.error || "Erreur lors de l'upload.");
       } else {
         setFormData((prev) => ({ ...prev, photo: result.url }));
       }
     } catch {
-      setError("Erreur réseau lors de l'upload.");
+      toast.error("Erreur réseau lors de l'upload.");
     } finally {
       setUploading(false);
     }
@@ -79,8 +77,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
 
     startTransition(async () => {
       const res = await updateProfileAction(user.id, {
@@ -90,9 +86,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
         sexe: formData.sexe as Sexe,
       });
       if (!res.success) {
-        setError(res.error || "Erreur lors de la mise à jour.");
+        toast.error(res.error || "Erreur lors de la mise à jour.");
       } else {
-        setSuccess("Profil mis à jour avec succès !");
+        toast.success("Profil mis à jour avec succès !");
         router.refresh();
       }
     });
@@ -115,17 +111,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
         >
           <X className="size-5" />
         </Button>
-
-        {error && (
-          <div className="p-3 text-sm bg-destructive/15 text-destructive rounded-md">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="p-3 text-sm bg-emerald-500/15 text-emerald-600 rounded-md">
-            {success}
-          </div>
-        )}
 
         {/* Section Photo */}
         <div className="flex flex-col items-center gap-3 border-b pb-6">
