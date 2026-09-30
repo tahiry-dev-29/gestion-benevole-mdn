@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient, Role, UserStatut } from "@prisma/client";
 import bcryptjs from "bcryptjs";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
@@ -12,7 +12,7 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: "admin@mdn.com" },
-    update: { password: mdnAdminPassword, role: Role.ADMIN },
+    update: { password: mdnAdminPassword, role: Role.ADMIN, statut: UserStatut.ACTIF },
     create: {
       nom: "Admin",
       prenom: "MDN",
@@ -28,7 +28,7 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: "admin@benevol.local" },
-    update: {},
+    update: { statut: UserStatut.ACTIF },
     create: {
       nom: "Dupont",
       prenom: "Jean",
@@ -44,7 +44,7 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: "benevole@benevol.local" },
-    update: {},
+    update: { statut: UserStatut.ACTIF },
     create: {
       nom: "Martin",
       prenom: "Marie",

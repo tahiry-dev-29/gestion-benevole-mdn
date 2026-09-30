@@ -71,7 +71,7 @@ export function LoginForm({
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@mdn.com"
+                placeholder="vous@exemple.com"
                 autoComplete="email"
                 aria-invalid={!!errors.email}
                 {...register("email")}
