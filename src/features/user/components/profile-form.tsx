@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, X } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { updateProfileAction } from "@/features/user/user.action";
@@ -60,7 +61,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
     if (!file) return;
 
     setUploading(true);
-    setError(null);
     const data = new FormData();
     data.append("file", file);
 
@@ -73,7 +73,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       if (!res.ok) throw new Error(json.error || "Erreur upload");
       setFormData((prev) => ({ ...prev, photo: json.url }));
     } catch (err: unknown) {
-      setError(
+      toast.error(
         err instanceof Error ? err.message : "Erreur d'upload de l'image"
       );
     } finally {
@@ -100,10 +100,10 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
       const res = await updateProfileAction(user.id, payload);
       if (res.success) {
-        setSuccess("Profil mis à jour avec succès !");
+        toast.success("Profil mis à jour avec succès !");
         router.refresh();
       } else {
-        setError(res.error || "Une erreur est survenue.");
+        toast.error(res.error || "Une erreur est survenue.");
       }
     });
   };
@@ -124,17 +124,6 @@ export function ProfileForm({ user }: ProfileFormProps) {
         >
           <X className="size-5" />
         </Button>
-
-        {error && (
-          <div className="p-3 text-sm bg-destructive/15 text-destructive rounded-md">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="p-3 text-sm bg-emerald-500/15 text-emerald-600 rounded-md">
-            {success}
-          </div>
-        )}
 
         <ProfilePhotoField
           photo={formData.photo}
