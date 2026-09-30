@@ -13,15 +13,16 @@
 
 ## 🗓️ Roadmap des Sprints
 
-| Sprint | Périmètre                                    | Durée      | Statut                                                     | Backlog Scrum                                                                                                                          |
-| ------ | -------------------------------------------- | ---------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| 0      | Initialisation & Setup                       | 1 semaine  | ✅ Terminé (cases S0.1–S0.8 validées, 2 options reportées) | [sprint-0/sprint-0-initialisation-et-setup.md](./sprint-0/sprint-0-initialisation-et-setup.md)                                         |
-| 1      | Authentification & Fondations                | 2 semaines | ⚪ À venir                                                 | [sprint-1/sprint-1-authentification-et-fondations.md](./sprint-1/sprint-1-authentification-et-fondations.md)                           |
-| 2      | Admin : Info perso & Présence journalière    | 2 semaines | ⚪ À venir                                                 | [sprint-2/sprint-2-admin-info-perso-et-presence-journaliere.md](./sprint-2/sprint-2-admin-info-perso-et-presence-journaliere.md)       |
-| 3      | Admin : Observation mensuelle & Liste Crédit | 2 semaines | ⚪ À venir                                                 | [sprint-3/sprint-3-admin-observation-mensuelle-et-liste-credit.md](./sprint-3/sprint-3-admin-observation-mensuelle-et-liste-credit.md) |
-| 4      | Public : Activité & Partage                  | 2 semaines | ⚪ À venir                                                 | [sprint-4/sprint-4-public-activite-et-partage.md](./sprint-4/sprint-4-public-activite-et-partage.md)                                   |
-| 5      | Public : Témoignage & Finalisation PWA       | 2 semaines | ⚪ À venir                                                 | [sprint-5/sprint-5-public-temoignage-et-finalisation-pwa.md](./sprint-5/sprint-5-public-temoignage-et-finalisation-pwa.md)             |
-| 6      | Mise en production                           | 1 semaine  | ⚪ À venir                                                 | [sprint-6/sprint-6-mise-en-production.md](./sprint-6/sprint-6-mise-en-production.md)                                                   |
+| Sprint | Périmètre                                           | Durée      | Statut     | Backlog Scrum                                                                                                                          |
+| ------ | --------------------------------------------------- | ---------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 0      | Initialisation & Setup                              | 1 semaine  | ✅ Terminé | [sprint-0/sprint-0-initialisation-et-setup.md](./sprint-0/sprint-0-initialisation-et-setup.md)                                         |
+| 1      | Authentification & Rôles (RBAC USER/BENEVOLE/ADMIN) | 2 semaines | ⚪ À venir | [sprint-1/sprint-1-authentification-et-fondations.md](./sprint-1/sprint-1-authentification-et-fondations.md)                           |
+| 2      | Gestion Utilisateur (USER) & Vérification PDF       | 2 semaines | ⚪ À venir | [sprint-2/sprint-2-gestion-utilisateur-pdf.md](./sprint-2/sprint-2-gestion-utilisateur-pdf.md)                                         |
+| 3      | Présence avec Places & Grille Tables/Sièges         | 2 semaines | ⚪ À venir | [sprint-3/sprint-3-presence-places-grille.md](./sprint-3/sprint-3-presence-places-grille.md)                                           |
+| 4      | Admin : Observation mensuelle & Liste Crédit        | 2 semaines | ⚪ À venir | [sprint-4/sprint-4-admin-observation-mensuelle-et-liste-credit.md](./sprint-4/sprint-4-admin-observation-mensuelle-et-liste-credit.md) |
+| 5      | Public : Activité & Partage                         | 2 semaines | ⚪ À venir | [sprint-5/sprint-5-public-activite-et-partage.md](./sprint-5/sprint-5-public-activite-et-partage.md)                                   |
+| 6      | Public : Témoignage & Finalisation PWA              | 2 semaines | ⚪ À venir | [sprint-6/sprint-6-public-temoignage-et-finalisation-pwa.md](./sprint-6/sprint-6-public-temoignage-et-finalisation-pwa.md)             |
+| 7      | Mise en production                                  | 1 semaine  | ⚪ À venir | [sprint-7/sprint-7-mise-en-production.md](./sprint-7/sprint-7-mise-en-production.md)                                                   |
 
 ## ✅ Sprint 0 — état des lieux (checklist migrée)
 
@@ -39,15 +40,16 @@
 
 ## 📋 Périmètre global (rappel CDC §2)
 
-| Module              | Détail                                                    | Sprints |
-| ------------------- | --------------------------------------------------------- | ------- |
-| Utilisateur / Auth  | login, register, logout, rôles ADMIN/BENEVOLE, middleware | 1       |
-| Bénévole (Admin)    | fiche info perso, photo, date d'entrée                    | 2       |
-| Présence (Admin)    | pointage arrivée/départ, historique, statut               | 2       |
-| Observation (Admin) | note mensuelle par bénévole                               | 3       |
-| Crédit (Admin)      | cumul heures/crédits, totaux, export optionnel            | 3       |
-| Activité (Public)   | liste + détail, publication admin                         | 4       |
-| Partage (Public)    | liste + détail, publication admin                         | 4       |
-| Témoignage (Public) | soumission + modération                                   | 5       |
-| PWA                 | manifest, offline, installabilité, Lighthouse             | 0, 1, 5 |
-| Prod                | DB, déploiement, domaine, passation                       | 6       |
+| Module               | Détail                                                                    | Sprints |
+| -------------------- | ------------------------------------------------------------------------- | ------- |
+| Utilisateur / Auth   | login, register, logout, rôles ADMIN/BENEVOLE/USER, RBAC proxy.ts         | 1       |
+| Gestion USER         | création (champs étudiants), liste filtrée, transfert USER→BENEVOLE (PDF) | 2       |
+| Présence avec Places | tables/sièges, pointage par place, filtre calendrier                      | 3       |
+| Bénévole (Admin)     | fiche info perso, photo, date d'entrée                                    | 2, 4    |
+| Observation (Admin)  | note mensuelle par bénévole                                               | 4       |
+| Crédit (Admin)       | cumul heures/crédits, totaux, export optionnel                            | 4       |
+| Activité (Public)    | liste + détail, publication admin                                         | 5       |
+| Partage (Public)     | liste + détail, publication admin                                         | 5       |
+| Témoignage (Public)  | soumission + modération                                                   | 6       |
+| PWA                  | manifest, offline, installabilité, Lighthouse                             | 0, 1, 6 |
+| Prod                 | DB, déploiement, domaine, passation                                       | 7       |

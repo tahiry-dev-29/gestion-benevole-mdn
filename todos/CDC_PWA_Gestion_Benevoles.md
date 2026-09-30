@@ -37,19 +37,90 @@
 
 ## 2. Fonctionnalités
 
-### 2.1 Espace Admin (Bénévole)
+### 2.0 Gestion des rôles (RBAC)
 
-- **Info perso** : fiche bénévole (nom, contact, rôle, photo, date d'entrée)
+| Rôle         | Description                                                                       | Accès                                                     |
+| ------------ | --------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **ADMIN**    | Administrateur complet                                                            | Tout : dashboard, users, bénévoles, présences, paramètres |
+| **USER**     | Utilisateur standard (étudiant/participant) — **rôle par défaut à l'inscription** | Profil + présences uniquement. **Zéro accès admin**       |
+| **BENEVOLE** | Bénévole validé (passé de USER via vérification PDF)                              | Profil + présences + espaces activité/partage/témoignage  |
+
+**Parcours USER → BENEVOLE :**
+
+1. L'admin crée un USER avec les champs obligatoires
+2. L'admin upload un fichier PDF de vérification (pièce justificative)
+3. L'admin valide → le rôle passe à `BENEVOLE`
+4. Le USER accède alors aux espaces bénévole
+
+### 2.1 Création & Gestion Utilisateur (USER)
+
+**Champs obligatoires à la création :**
+
+- Full name (prénom + nom)
+- Âge
+- Genre
+- Email + mot de passe
+- School name (établissement scolaire/universitaire)
+- Filière (département/voie)
+- Année scolaire
+- ECTS (crédits)
+
+**Liste des utilisateurs — filtres :**
+
+- Par présence (présent/absent/retard)
+- Par fichier de vérification (validé/en attente/absent)
+- Par place (table + siège)
+- Par ECTS (seuil minimum)
+
+**Actions admin sur la liste :**
+
+- Créer un USER
+- Modifier un USER
+- Transformer USER → BENEVOLE (upload PDF + validation)
+- Supprimer/désactiver un USER
+
+### 2.2 Gestion des Présences (USER & BENEVOLE)
+
+**Système de places :**
+
+- Chaque **table** a un numéro
+- Chaque **siège** dans une table a un numéro
+- Un siège = un utilisateur assigné (unique)
+- Assignation : `table N / siège M`
+
+**Pointage avec places :**
+
+- L'utilisateur pointe sur **sa place** (table + siège)
+- Enregistrement : date, heure arrivée, heure départ, place occupée
+
+**Filtre calendrier :**
+
+- Vue par jour / semaine / mois
+- Navigation calendrier pour consulter les présences passées
+
+### 2.3 Espace Admin — Section Bénévole
+
+- **Info perso** : fiche bénévole (nom, contact, rôle, photo, date d'entrée, school, filière, ECTS)
 - **Présence**
-  - Journalier : pointage quotidien (arrivée/départ)
-  - Observation ?/Mois : note ou observation mensuelle par bénévole
-  - Liste Crédit : suivi des crédits/heures accumulés par bénévole
+  - **Journalier** : pointage quotidien (arrivée/départ) avec place (table + siège)
+  - **Observation ?/Mois** : note ou observation mensuelle par bénévole
+  - **Liste Crédit** : suivi des crédits/heures accumulés par bénévole
 
-### 2.2 Espace Public
+### 2.4 Espace Public
 
 - **Activité (bénévole)** : liste/actualité des activités menées
 - **Partage** : publications/contenus partagés par la structure ou les bénévoles
 - **Témoignage** : témoignages de bénévoles ou bénéficiaires
+
+### 2.5 Contraintes UI/UX
+
+- **Style** : simple, minimaliste mais moderne
+- **UI kit** : shadcn/ui (composants réutilisables)
+- **Tables** : TanStack Table (filtres, tri, pagination)
+- **State** : TanStack Query (data fetching/cache)
+- **Validation** : Zod (front + back, même schéma)
+- **Toasts** : sonner
+- **Thème** : next-themes (dark/light)
 
 ---
 
@@ -59,16 +130,31 @@
 
 ```mermaid
 flowchart LR
-  Admin((Admin / Bénévole))
+  Admin((Admin))
+  User((USER))
+  Benevole((Bénévole))
   Visiteur((Visiteur))
 
-  Admin --> UC1[Gérer info perso]
-  Admin --> UC2[Pointer présence]
+  Admin --> UC0[Créer/gerer utilisateurs USER]
+  Admin --> UC0b[Valider PDF → USER devient BENEVOLE]
+  Admin --> UC1[Gérer info perso bénévole]
+  Admin --> UC2[Pointer présence bénévole]
   Admin --> UC3[Saisir observation mensuelle]
   Admin --> UC4[Consulter liste crédit]
   Admin --> UC5[Publier activité]
   Admin --> UC6[Publier partage]
   Admin --> UC7[Modérer témoignage]
+  Admin --> UC99[Gérer places / tables / sièges]
+
+  User --> UCP1[Consulter/modifier son profil]
+  User --> UCP2[Pointer présence sur sa place]
+  User --> UCP3[Consulter son historique présence]
+
+  Benevole --> UCB1[Consulter info perso]
+  Benevole --> UCB2[Pointer présence]
+  Benevole --> UCB3[Consulter activité]
+  Benevole --> UCB4[Consulter partage]
+  Benevole --> UCB5[Rédiger témoignage]
 
   Visiteur --> UC8[Consulter activités]
   Visiteur --> UC9[Consulter partages]
@@ -79,28 +165,47 @@ flowchart LR
 
 ```mermaid
 erDiagram
-  USER ||--o{ PRESENCE : effectue
+  USER ||--o{ ATTENDANCE : effectue
   USER ||--o{ OBSERVATION : recoit
   USER ||--o{ CREDIT : cumule
   USER ||--o{ ACTIVITE : publie
   USER ||--o{ PARTAGE : publie
   USER ||--o{ TEMOIGNAGE : redige
+  USER ||--o| SEAT : occupe
+  SEAT ||--o{ ATTENDANCE : accueille
 
   USER {
     int id PK
     string nom
     string prenom
     string email
-    string role
+    string password
+    string role "ADMIN | BENEVOLE | USER"
+    string statut "ACTIF | INACTIF"
+    string schoolName
+    string filiere
+    string anneeScolaire
+    int ects
+    string genre
+    int age
+    string verificationFile "URL PDF"
+    datetime verifiedAt
     date date_entree
   }
-  PRESENCE {
+  SEAT {
+    int id PK
+    int tableNumber
+    int seatNumber
+    int user_id FK "unique - un siège = un user"
+  }
+  ATTENDANCE {
     int id PK
     int user_id FK
+    int seat_id FK "optionnel"
     date date
-    time heure_arrivee
-    time heure_depart
-    string statut
+    string statut "PRESENT | ABSENT | RETARD"
+    string heure_arrivee
+    string heure_depart
   }
   OBSERVATION {
     int id PK
@@ -118,6 +223,7 @@ erDiagram
   }
   ACTIVITE {
     int id PK
+    int user_id FK
     string titre
     string description
     date date
@@ -131,9 +237,10 @@ erDiagram
   }
   TEMOIGNAGE {
     int id PK
+    int user_id FK
     string nom_auteur
     string contenu
-    string statut
+    string statut "EN_ATTENTE | VALIDE | REJETE"
   }
 ```
 
@@ -191,18 +298,19 @@ Le bénévole/dev met un `x` entre les crochets directement dans ce fichier (éd
 
 ---
 
-### Sprint 1 — Authentification & Fondations (2 semaines)
+### Sprint 1 — Authentification & Rôles (2 semaines)
 
 **Dev Backend 1**
 
-- [ ] Finaliser schéma PostgreSQL (User, Presence, Observation, Credit, Activite, Partage, Temoignage)
-- [ ] Créer migrations Prisma
-- [ ] API Auth (login/register/logout)
+- [ ] Finaliser schéma PostgreSQL (User + champs étudiants, Seat, Attendance, Observation, Credit, Activite, Partage, Temoignage)
+- [ ] Ajouter `USER` à `enum Role` + migration Prisma
+- [ ] API Auth (login/register/logout) — rôle par défaut `USER`
+- [ ] Seed : comptes ADMIN, USER, BENEVOLE de test
 
 **Dev Backend 2**
 
-- [ ] Middleware de protection des routes Admin
-- [ ] Gestion des rôles (admin/bénévole)
+- [ ] Middleware `proxy.ts` : RBAC complet (ADMIN / BENEVOLE / USER)
+- [ ] Protection routes : USER → profil+présence, BENEVOLE → +activités, ADMIN → tout
 
 **Dev Frontend 1**
 
@@ -216,22 +324,28 @@ Le bénévole/dev met un `x` entre les crochets directement dans ce fichier (éd
 
 ---
 
-### Sprint 2 — Admin : Info perso & Présence Journalière (2 semaines)
+### Sprint 2 — Gestion Utilisateur (USER) & Vérification PDF (2 semaines)
 
 **Dev Backend 1**
 
-- [ ] API CRUD "Info perso" bénévole
-- [ ] Upload photo de profil
+- [ ] Server Action : création USER avec champs étudiants (schoolName, filière, année scolaire, ECTS, genre, age)
+- [ ] Server Action : transfert USER → BENEVOLE (upload PDF + validation admin)
+- [ ] Server Action : liste USER avec filtres (présence, fichier, place, ECTS)
 
 **Dev Backend 2**
 
-- [ ] API Présence journalière (pointage)
+- [ ] Upload fichier PDF (validation type MIME + taille max 5 Mo)
+- [ ] Stockage Vercel Blob pour les PDF de vérification
 
 **Dev Frontend 1**
 
-- [ ] UI Fiche "Info perso" (création/édition)
-- [ ] UI Présence journalière (pointage + historique)
-- [ ] Liste des bénévoles (vue admin)
+- [ ] UI création USER (formulaire champs étudiants)
+- [ ] UI liste UTILISATEURS avec filtres TanStack Table
+- [ ] Modal upload PDF + bouton "Promouvoir BENEVOLE"
+
+**Dev Frontend 2**
+
+- [ ] UI Profil utilisateur (champs étudiants en lecture/édition)
 
 **Toute l'équipe**
 
@@ -239,7 +353,35 @@ Le bénévole/dev met un `x` entre les crochets directement dans ce fichier (éd
 
 ---
 
-### Sprint 3 — Admin : Observation Mensuelle & Liste Crédit (2 semaines)
+### Sprint 3 — Présence avec Places & Grille Tables/Sièges (2 semaines)
+
+**Dev Backend 1**
+
+- [ ] Server Actions : CRUD `Seat` (table + numéro siège, assignation user)
+- [ ] Server Actions : CRUD `Attendance` (pointage avec place, filtre calendrier)
+
+**Dev Backend 2**
+
+- [ ] Contrainte : un siège = un user unique (`@@unique`)
+- [ ] Calcul présence par jour/semaine/mois
+
+**Dev Frontend 1**
+
+- [ ] UI grille Tables/Sièges (visualisation des places)
+- [ ] UI pointage avec sélection de place (table + siège)
+- [ ] UI filtre calendrier (jour/semaine/mois)
+
+**Dev Frontend 2**
+
+- [ ] UI historique présence personnel (USER)
+
+**Toute l'équipe**
+
+- [ ] Tests fonctionnels Sprint 3
+
+---
+
+### Sprint 4 — Admin : Observation Mensuelle & Liste Crédit (2 semaines)
 
 **Dev Backend 1**
 
@@ -257,11 +399,11 @@ Le bénévole/dev met un `x` entre les crochets directement dans ce fichier (éd
 
 **Toute l'équipe**
 
-- [ ] Tests fonctionnels Sprint 3
+- [ ] Tests fonctionnels Sprint 4
 
 ---
 
-### Sprint 4 — Public : Activité & Partage (2 semaines)
+### Sprint 5 — Public : Activité & Partage (2 semaines)
 
 **Dev Backend 1**
 
@@ -283,7 +425,7 @@ Le bénévole/dev met un `x` entre les crochets directement dans ce fichier (éd
 
 ---
 
-### Sprint 5 — Public : Témoignage & Finalisation PWA (2 semaines)
+### Sprint 6 — Public : Témoignage & Finalisation PWA (2 semaines)
 
 **Dev Backend 2**
 
@@ -306,7 +448,7 @@ Le bénévole/dev met un `x` entre les crochets directement dans ce fichier (éd
 
 ---
 
-### Sprint 6 — Mise en production (1 semaine)
+### Sprint 7 — Mise en production (1 semaine)
 
 **Lead**
 
