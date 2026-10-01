@@ -18,7 +18,10 @@ const MAX_SIZE = 2 * 1024 * 1024; // 2 Mo
 export async function POST(request: NextRequest) {
   // Authentification requise : seuls les administrateurs gèrent les profils.
   const token = await getToken({ req: request });
-  if (!token || token.role !== "ADMIN") {
+  if (
+    !token ||
+    (token.role !== "ADMIN" && token.role !== "SUPER_ADMIN")
+  ) {
     return NextResponse.json(
       { success: false, error: "Non autorisé." },
       { status: 401 }

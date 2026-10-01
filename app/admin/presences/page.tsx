@@ -10,7 +10,7 @@ import { authOptions } from "@/lib/auth-options";
 
 export default async function PresencesPage() {
   const session = await getServerSession(authOptions);
-  const isAdmin = session?.user?.role === "ADMIN";
+  const isAdmin = ["ADMIN", "SUPER_ADMIN"].includes(session?.user?.role ?? "");
 
   // Récupérer le pointage du jour pour l'utilisateur connecté
   const presenceRes = await getPresenceDuJourAction();

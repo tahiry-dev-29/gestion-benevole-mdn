@@ -136,7 +136,8 @@ export async function getProfileAction(userId: number) {
       return { success: false, error: "Non authentifié." };
     }
     const currentUserId = parseInt(session.user.id, 10);
-    const isAdmin = session.user.role === "ADMIN";
+    const isAdmin =
+    session.user.role === "ADMIN" || session.user.role === "SUPER_ADMIN";
     if (!isAdmin && currentUserId !== userId) {
       return { success: false, error: "Accès non autorisé." };
     }
@@ -184,7 +185,8 @@ export async function updateProfileAction(
     return { success: false, error: "Non authentifié." };
   }
   const currentUserId = parseInt(session.user.id, 10);
-  const isAdmin = session.user.role === "ADMIN";
+  const isAdmin =
+    session.user.role === "ADMIN" || session.user.role === "SUPER_ADMIN";
   if (!isAdmin && currentUserId !== userId) {
     return { success: false, error: "Accès non autorisé." };
   }
@@ -200,7 +202,7 @@ export async function updateProfileAction(
       data: parsed.data,
     });
 
-    revalidatePath(`/admin/benevoles/${userId}`);
+    revalidatePath(`/admin/volunteer-management/${userId}`);
     return { success: true, data: updated };
   } catch {
     return {

@@ -1,6 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { MoreHorizontal, Pencil, Phone, Shield, Trash2 } from "lucide-react";
+import type { Role } from "@prisma/client";
+import {
+  MoreHorizontal,
+  Pencil,
+  Phone,
+  Shield,
+  Trash2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +41,7 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 interface UserCardProps {
   user: UserItem;
   isPending: boolean;
-  onRoleChange: (id: number, role: "ADMIN" | "VOLUNTEER") => void;
+  onRoleChange: (id: number, role: Role) => void;
   onDelete: (id: number) => void;
 }
 
@@ -97,7 +104,7 @@ export function UserCard({
               <DropdownMenuSeparator className="bg-slate-800" />
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/admin/benevoles/${u.id}`}
+                  href={`/admin/volunteer-management/${u.id}`}
                   className="cursor-pointer gap-2"
                 >
                   <Pencil className="size-3.5 text-slate-400" />
@@ -107,7 +114,10 @@ export function UserCard({
               <DropdownMenuItem
                 disabled={isPending}
                 onClick={() =>
-                  onRoleChange(u.id, u.role === "ADMIN" ? "VOLUNTEER" : "ADMIN")
+                  onRoleChange(
+                    u.id,
+                    u.role === "ADMIN" ? "VOLUNTEER" : "ADMIN"
+                  )
                 }
                 className="cursor-pointer gap-2"
               >

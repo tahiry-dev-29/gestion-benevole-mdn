@@ -18,12 +18,14 @@ import {
 
 export * from "./data/mock-data";
 
+const ADMIN_ONLY: Role[] = ["SUPER_ADMIN", "ADMIN"];
+
 export type NavItem = {
   title: string;
   url: string;
   icon?: LucideIcon;
-  isActive?: boolean;
   roles?: Role[];
+  isActive?: boolean;
   items?: { title: string; url: string; roles?: Role[] }[];
 };
 
@@ -33,8 +35,6 @@ export type NavGroup = {
   dropdown?: boolean;
   items: NavItem[];
 };
-
-const ADMIN_ONLY: Role[] = ["SUPER_ADMIN", "ADMIN"];
 
 export const adminGestionItems: NavItem[] = [
   {
@@ -46,9 +46,17 @@ export const adminGestionItems: NavItem[] = [
   },
   {
     title: "Gestion bénévole",
-    url: "/admin/volunteers",
+    url: "/admin/volunteer-management",
     icon: UserCheck,
-    items: [{ title: "Bénévoles", url: "/admin/volunteers" }],
+    items: [
+      { title: "Liste des bénévoles", url: "/admin/volunteer-management" },
+      { title: "Ajouter un bénévole", url: "/admin/volunteer-management/add" },
+      {
+        title: "Rôles & permissions",
+        url: "/admin/volunteer-management/roles",
+        roles: ADMIN_ONLY,
+      },
+    ],
   },
   {
     title: "Présences",

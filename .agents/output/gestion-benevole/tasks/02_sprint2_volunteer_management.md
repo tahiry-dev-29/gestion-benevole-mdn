@@ -1,4 +1,4 @@
-Status: TODO
+Status: DONE
 
 # Tâche 02 — Sprint 2 : Volunteer Management (sous-liste + CRUD sécurisé)
 
@@ -43,13 +43,21 @@ Livrer `/admin/volunteer-management` entièrement fonctionnel (liste, fiche, mod
 
 ## Critères d'acceptation
 
-- [ ] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur
-- [ ] `pnpm prisma migrate dev` passe
-- [ ] La liste affiche **les données réelles de la BDD** (plus aucun mock `user.data`)
-- [ ] Création `VOLUNTEER` par un `VOLUNTEER` → OK ; création `ADMIN` par un `VOLUNTEER` → refus **côté serveur** (test de l'action, pas seulement l'UI)
-- [ ] Seul un `SUPER_ADMIN` peut créer un `SUPER_ADMIN`
-- [ ] Un compte `ADMIN` ne peut ni modifier ni supprimer un `SUPER_ADMIN`
-- [ ] `deletedAt` renseigné au lieu de `DELETE` ; le compte disparaît de la liste
-- [ ] `createdById` renseigné et visible sur la fiche
-- [ ] `/admin/benevoles` et `/admin/volunteers` n'existent plus (404)
-- [ ] Test : `canCreate` × actions (`createVolunteerAction`) exhaustif
+- [x] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur
+- [x] `pnpm prisma migrate dev` passe
+- [x] La liste affiche **les données réelles de la BDD** (plus aucun mock `user.data`)
+- [x] Création `VOLUNTEER` par un `VOLUNTEER` → OK ; création `ADMIN` par un `VOLUNTEER` → refus **côté serveur** (test de l'action, pas seulement l'UI)
+- [x] Seul un `SUPER_ADMIN` peut créer un `SUPER_ADMIN`
+- [x] Un compte `ADMIN` ne peut ni modifier ni supprimer un `SUPER_ADMIN`
+- [x] `deletedAt` renseigné au lieu de `DELETE` ; le compte disparaît de la liste
+- [x] `createdById` renseigné et visible sur la fiche
+- [x] `/admin/benevoles` et `/admin/volunteers` n'existent plus (404)
+- [x] Test : `canCreate` × actions (`createVolunteerAction`) exhaustif
+
+> **Vérifié le 2026-10-01** :
+> - `typecheck` **0 erreur**, `lint` **EXIT=0**, `pnpm test` **46/46**, `next build` **EXIT=0** (routes `volunteer-management{,/add,/roles,/[id]}` au sommaire, `Proxy (Middleware)` actif).
+> - **Base réelle, plus aucun mock** : test d'intégration contre PostgreSQL → SQL `WHERE "deletedAt" IS NULL AND "role" IN (SUPER_ADMIN, ADMIN, VOLUNTEER)` + jointure `createdById` → `createdBy` (exécuté puis retiré de la suite pour la garder hermétique).
+> - **Refus côté serveur** : `volunteer.action.test.ts` (4 acteurs × 3 cibles) → `VOLUNTEER→VOLUNTEER` **créé**, `VOLUNTEER→ADMIN` refusé avec `« Vous ne pouvez pas créer un compte ADMIN. »` et **`create` jamais appelé** ; idem `ADMIN→SUPER_ADMIN` refusé.
+> - **Soft delete prouvé sur BDD réelle** : création d'un compte test → `softDelete()` → `deletedAt = 2026-10-01T11:39:17Z`, **ligne toujours présente (pas de `DELETE`)**, **absent de la liste** (puis nettoyé).
+> - **404** : avec session, `/admin/benevoles` et `/admin/volunteers` → **404** (les dossiers ont été supprimés).
+> - **Bâtons en rouge** : `next build` passe sous **`NODE_ENV=production`** (échec sans lui = cause pré-existante du `.env`, identique sur branche propre) ; `prisma migrate dev` nécessite `SHADOW_DATABASE_URL=gestion_benevole_shadow` (celui du `.env` vise la base `postgres`).
