@@ -31,8 +31,8 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 | Story                                   | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S7.1 — API Activité (CRUD/publication)  | 🟡     | Back2  | 5      | ☑       | ☑        | ☐    | ☐    |
-| S7.2 — API Partage (CRUD/publication)   | 🟡     | Back1  | 5      | ☑       | ☑        | ☐    | ☐    |
+| S7.1 — API Activité (CRUD/publication)  | ✅     | Back2  | 5      | ☑       | ☑        | ☑    | ☐    |
+| S7.2 — API Partage (CRUD/publication)   | ✅     | Back1  | 5      | ☑       | ☑        | ☑    | ☐    |
 | S7.3 — Admin Modération (UI)            | 🟡     | Front1 | 5      | ☑       | ☑        | ☐    | ☐    |
 | S7.4 — UI publique Activités            | 🟡     | Front2 | 5      | ☑       | ☑        | ☐    | ☐    |
 | S7.5 — UI publique Partages             | 🟡     | Front2 | 5      | ☑       | ☑        | ☐    | ☐    |
@@ -141,8 +141,8 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 **Dev :** Toute l'équipe · **Pts :** 2
 
-- [ ] Visiteur découvre une activité/partage publié
-- [ ] Admin : créer → brouillon → publier → vérifier visibilité
+- [x] Visiteur découvre une activité/partage publié (API publique testée sans session)
+- [x] Admin : créer → brouillon → publier → vérifier visibilité → dépublier
 - [ ] Bugs (max 2 boucles, sinon escalade Lead)
 
 ## 🧪 Critères d'acceptation du Sprint
@@ -180,3 +180,4 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 - `pnpm lint`, `pnpm typecheck` et `pnpm build` : réussis ; les routes publiques sont dynamiques.
 - Lighthouse ≥ 90, vérification axe et parcours fonctionnels manuels restent à mesurer.
 - La base locale présente aussi une dérive préexistante sur `Observation` et `Credit`, hors périmètre de ce sprint.
+- Parcours HTTP admin/public Activité et Partage : réussi, contenus temporaires supprimés après vérification.
