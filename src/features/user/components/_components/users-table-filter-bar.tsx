@@ -49,7 +49,7 @@ export function UsersTableFilterBar({
           <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
             <SelectItem value="ALL">Tous les rôles</SelectItem>
             <SelectItem value="ADMIN">Admin</SelectItem>
-            <SelectItem value="BENEVOLE">Bénévole</SelectItem>
+            <SelectItem value="VOLUNTEER">Bénévole</SelectItem>
           </SelectContent>
         </Select>
 

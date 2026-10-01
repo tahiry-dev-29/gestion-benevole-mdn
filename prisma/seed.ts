@@ -10,9 +10,27 @@ async function main() {
   const benevolePassword = await bcryptjs.hash("benevole123", 10);
   const mdnAdminPassword = await bcryptjs.hash("Password123", 10);
 
+  for (const [tableNumber, seatCount] of [
+    [1, 6],
+    [2, 6],
+    [3, 4],
+  ]) {
+    await prisma.seat.createMany({
+      data: Array.from({ length: seatCount }, (_, index) => ({
+        tableNumber,
+        seatNumber: index + 1,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
   await prisma.user.upsert({
     where: { email: "admin@mdn.com" },
-    update: { password: mdnAdminPassword, role: Role.ADMIN, statut: UserStatut.ACTIF },
+    update: {
+      password: mdnAdminPassword,
+      role: Role.ADMIN,
+      statut: UserStatut.ACTIF,
+    },
     create: {
       nom: "Admin",
       prenom: "MDN",
@@ -50,7 +68,7 @@ async function main() {
       prenom: "Marie",
       email: "benevole@benevol.local",
       password: benevolePassword,
-      role: Role.BENEVOLE,
+      role: Role.VOLUNTEER,
       sexe: "Féminin",
       age: 22,
       categorie: "UNIVERSITAIRE",

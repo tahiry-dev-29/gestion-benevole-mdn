@@ -1,218 +1,160 @@
 "use server";
 
-import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
-import { authOptions } from "@/lib/auth-options";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+import { pointSchema, presenceFilterSchema } from "./presence.schema";
 import { computeHeures } from "./presence.utils";
 
-/**
- * Pointer l'arrivée du bénévole pour aujourd'hui.
- * Crée un enregistrement Presence avec heure_arrivee.
- * Refuse si un pointage existe déjà pour ce user + cette date.
- */
-export async function pointerArriveeAction() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return { success: false, error: "Non authentifié." };
-  }
+const heuresSchema = z.object({
+  id: z.coerce.number().int().positive(),
+  arrivee: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .nullable(),
+  depart: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .nullable(),
+});
 
-  const userId = parseInt(session.user.id, 10);
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const heureArrivee = now.toLocaleTimeString("fr-FR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+async function hasAdminSession() {
+  const session = await auth();
+  return (
+    session?.user?.role === "ADMIN" || session?.user?.role === "SUPER_ADMIN"
+  );
+}
 
+function dayFromString(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+export async function pointAction(input: unknown) {
+  if (!(await hasAdminSession()))
+    return { success: false, error: "Accès refusé." };
+  const parsed = pointSchema.safeParse(input);
+  if (!parsed.success)
+    return { success: false, error: "Données de pointage invalides." };
+  const data = parsed.data;
+  const date = dayFromString(data.date);
   try {
-    // Vérifier s'il existe déjà un pointage pour aujourd'hui
-    const existing = await prisma.presence.findUnique({
-      where: { user_id_date: { user_id: userId, date: today } },
-    });
-
-    if (existing) {
-      return {
-        success: false,
-        error: "Vous avez déjà pointé votre arrivée aujourd'hui.",
-      };
+    if (data.seatId) {
+      const seat = await prisma.seat.findUnique({ where: { id: data.seatId } });
+      if (!seat) return { success: false, error: "Ce siège n'existe pas." };
+      const occupant = await prisma.attendance.findFirst({
+        where: { seat_id: data.seatId, date, user_id: { not: data.userId } },
+      });
+      if (occupant)
+        return {
+          success: false,
+          error: "Ce siège est déjà occupé à cette date.",
+        };
     }
-
-    const presence = await prisma.presence.create({
-      data: {
-        user_id: userId,
-        date: today,
-        heure_arrivee: heureArrivee,
-        statut: "PRESENT",
+    const attendance = await prisma.attendance.upsert({
+      where: { user_id_date: { user_id: data.userId, date } },
+      create: {
+        user_id: data.userId,
+        date,
+        seat_id: data.seatId ?? null,
+        statut: data.statut,
+        heure_arrivee: data.arrivee ?? null,
+        heure_depart: data.depart ?? null,
+      },
+      update: {
+        seat_id: data.seatId ?? null,
+        statut: data.statut,
+        heure_arrivee: data.arrivee ?? null,
+        heure_depart: data.depart ?? null,
       },
     });
-
-    return { success: true, data: presence };
-  } catch {
-    return {
-      success: false,
-      error: "Erreur lors du pointage d'arrivée.",
-    };
-  }
-}
-
-/**
- * Pointer le départ du bénévole pour aujourd'hui.
- * Met à jour heure_depart sur la présence existante du jour.
- */
-export async function pointerDepartAction() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return { success: false, error: "Non authentifié." };
-  }
-
-  const userId = parseInt(session.user.id, 10);
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const heureDepart = now.toLocaleTimeString("fr-FR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
-  try {
-    const existing = await prisma.presence.findUnique({
-      where: { user_id_date: { user_id: userId, date: today } },
-    });
-
-    if (!existing) {
+    revalidatePath("/admin/users/presence");
+    return { success: true, data: attendance };
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message.toLowerCase().includes("unique")
+    ) {
       return {
         success: false,
-        error: "Aucun pointage d'arrivée trouvé pour aujourd'hui.",
+        error: "Ce siège est déjà occupé à cette date.",
       };
     }
-
-    if (existing.heure_depart) {
-      return {
-        success: false,
-        error: "Vous avez déjà pointé votre départ aujourd'hui.",
-      };
-    }
-
-    const updated = await prisma.presence.update({
-      where: { id: existing.id },
-      data: { heure_depart: heureDepart },
-    });
-
-    return { success: true, data: updated };
-  } catch {
-    return {
-      success: false,
-      error: "Erreur lors du pointage de départ.",
-    };
+    return { success: false, error: "Impossible d'enregistrer le pointage." };
   }
 }
 
-/**
- * Récupérer le statut de pointage du jour pour l'utilisateur connecté.
- */
-export async function getPresenceDuJourAction() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return { success: false, error: "Non authentifié." };
-  }
-
-  const userId = parseInt(session.user.id, 10);
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  try {
-    const presence = await prisma.presence.findUnique({
-      where: { user_id_date: { user_id: userId, date: today } },
-    });
-
-    return { success: true, data: presence };
-  } catch {
-    return {
-      success: false,
-      error: "Erreur lors de la récupération de la présence du jour.",
-    };
-  }
-}
-
-/**
- * Récupérer l'historique des présences avec pagination et filtres.
- * Admin : voit toutes les présences.
- * Bénévole : voit uniquement ses propres présences.
- */
-export async function getHistoriquePresencesAction(params?: {
-  page?: number;
-  pageSize?: number;
-  dateDebut?: string;
-  dateFin?: string;
-  userId?: number;
-}) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return { success: false, error: "Non authentifié." };
-  }
-
-  const currentUserId = parseInt(session.user.id, 10);
-  const isAdmin = session.user.role === "ADMIN";
-
-  const page = params?.page ?? 1;
-  const pageSize = params?.pageSize ?? 10;
-
-  // Un bénévole ne voit que ses propres présences
-  const filterUserId = isAdmin ? params?.userId : currentUserId;
-
-  const where: Record<string, unknown> = {};
-
-  if (filterUserId) {
-    where.user_id = filterUserId;
-  }
-
-  if (params?.dateDebut || params?.dateFin) {
-    const dateFilter: Record<string, Date> = {};
-    if (params?.dateDebut) {
-      dateFilter.gte = new Date(params.dateDebut);
-    }
-    if (params?.dateFin) {
-      dateFilter.lte = new Date(params.dateFin);
-    }
-    where.date = dateFilter;
-  }
-
-  try {
-    const [presences, total] = await Promise.all([
-      prisma.presence.findMany({
-        where,
-        include: {
-          user: {
-            select: { id: true, nom: true, prenom: true, email: true },
+export async function listAttendanceAction(input: unknown = {}) {
+  if (!(await hasAdminSession()))
+    return { success: false as const, error: "Accès refusé." };
+  const parsed = presenceFilterSchema.safeParse(input);
+  if (!parsed.success)
+    return { success: false as const, error: "Filtres invalides." };
+  const filters = parsed.data;
+  const where = {
+    ...(filters.du || filters.au
+      ? {
+          date: {
+            ...(filters.du ? { gte: dayFromString(filters.du) } : {}),
+            ...(filters.au ? { lte: dayFromString(filters.au) } : {}),
           },
-        },
-        orderBy: [{ date: "desc" }, { heure_arrivee: "desc" }],
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-      prisma.presence.count({ where }),
-    ]);
-
-    const data = presences.map((p) => ({
-      id: p.id,
-      userId: p.user_id,
-      benevole: `${p.user.prenom} ${p.user.nom}`,
-      date: p.date.toISOString().split("T")[0],
-      heure_arrivee: p.heure_arrivee,
-      heure_depart: p.heure_depart,
-      statut: p.statut,
-      heuresTravaillees: computeHeures(p.heure_arrivee, p.heure_depart),
-    }));
-
-    return { success: true, data, total, page, pageSize };
+        }
+      : {}),
+    ...(filters.statut ? { statut: filters.statut } : {}),
+    ...(filters.table ? { seat: { tableNumber: filters.table } } : {}),
+  };
+  try {
+    const attendance = await prisma.attendance.findMany({
+      where,
+      include: {
+        user: { select: { id: true, nom: true, prenom: true } },
+        seat: true,
+      },
+      orderBy: [{ date: "desc" }, { user: { nom: "asc" } }],
+    });
+    return {
+      success: true as const,
+      data: attendance.map((item) => ({
+        id: item.id,
+        userId: item.user_id,
+        benevole: `${item.user.prenom} ${item.user.nom}`,
+        date: item.date.toISOString().slice(0, 10),
+        tableNumber: item.seat?.tableNumber ?? null,
+        seatNumber: item.seat?.seatNumber ?? null,
+        seatId: item.seat_id,
+        heure_arrivee: item.heure_arrivee,
+        heure_depart: item.heure_depart,
+        statut: item.statut,
+        heuresTravaillees: computeHeures(item.heure_arrivee, item.heure_depart),
+      })),
+    };
   } catch {
     return {
-      success: false,
-      error: "Erreur lors de la récupération de l'historique.",
+      success: false as const,
+      error: "Impossible de charger les présences.",
     };
   }
 }
 
+export async function updateHeuresAction(input: unknown) {
+  if (!(await hasAdminSession()))
+    return { success: false, error: "Accès refusé." };
+  const parsed = heuresSchema.safeParse(input);
+  if (!parsed.success) return { success: false, error: "Heures invalides." };
+  try {
+    const data = await prisma.attendance.update({
+      where: { id: parsed.data.id },
+      data: {
+        heure_arrivee: parsed.data.arrivee,
+        heure_depart: parsed.data.depart,
+      },
+    });
+    revalidatePath("/admin/users/presence");
+    return { success: true, data };
+  } catch {
+    return { success: false, error: "Impossible de modifier les heures." };
+  }
+}

@@ -14,7 +14,7 @@ import { PageHeader } from "@/features/admin/page-header";
 import { TableCard } from "@/features/admin/table-card";
 import { users } from "@/features/users/user.data";
 
-const benevoles = users.filter((u) => u.role === "BENEVOLE");
+const benevoles = users.filter((u) => u.role === "VOLUNTEER");
 
 export default function VolunteersPage() {
   return (

@@ -13,7 +13,7 @@ model User {
   email         String         @unique
   emailVerified DateTime?
   password      String?
-  role          Role           @default(BENEVOLE)
+  role          Role           @default(VOLUNTEER)
   photo         String?
   statut        UserStatut     @default(ACTIF)
   deletedAt     DateTime?
@@ -24,7 +24,7 @@ model User {
   credits       Credit[]
   observations  Observation[]
   partages      Partage[]
-  presences     Presence[]
+  presences     Attendance[]
   temoignages   Temoignage[]
   sexe          String        @default("Non précisé")
   age           Int           @default(18)
@@ -32,20 +32,60 @@ model User {
   categorie     Category      @default(UNIVERSITAIRE)
   etablissement String        @default("Non renseigné")
   facebook      String?
+  matricule     String?             @unique
+  societe       String?
+  telephone     String?
+  dateNaissance DateTime?
+  siteWeb       String?
+  cvUrl         String?
+  socialProfile String?
+  joursDisponibles String[]         @default([])
+  disponibilites Json?
+  contactUrgence String?
+  spinneret     String?
+  accepteRegles Boolean             @default(false)
+  reglesAccepteesAt DateTime?
+  materielPC    Boolean             @default(false)
+  createdById   Int?
+  createdBy     User?               @relation("CreatedBy", fields: [createdById], references: [id])
+  createdUsers  User[]              @relation("CreatedBy")
+  certificatUrl String?
+  certificatStatut CertificatStatut  @default(NON_DEMANDE)
+  certificatValidatedAt DateTime?
+  certificatValidatedById Int?
+
+  @@index([certificatStatut])
+  @@index([role, statut])
+  @@index([createdById])
 }
 
-model Presence {
+model Seat {
+  id          Int          @id @default(autoincrement())
+  tableNumber Int
+  seatNumber  Int
+  label       String?
+  presences   Attendance[]
+
+  @@unique([tableNumber, seatNumber])
+  @@index([tableNumber])
+}
+
+model Attendance {
   id            Int      @id @default(autoincrement())
   user_id       Int
   date          DateTime @db.Date
+  seat_id       Int?
   heure_arrivee String?
   heure_depart  String?
   statut        String   @default("PRESENT")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  seat          Seat?    @relation(fields: [seat_id], references: [id], onDelete: Restrict)
 
   @@unique([user_id, date])
+  @@unique([seat_id, date])
+  @@index([date])
 }
 
 model Observation {
@@ -104,8 +144,17 @@ model Temoignage {
 }
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
-  BENEVOLE
+  VOLUNTEER
+  USER
+}
+
+enum CertificatStatut {
+  NON_DEMANDE
+  EN_ATTENTE
+  APPROUVE
+  REJETE
 }
 
 enum UserStatut {

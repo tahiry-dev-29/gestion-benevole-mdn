@@ -49,7 +49,7 @@ export async function listUsersAction(query?: string, role?: string) {
     const users = await prisma.user.findMany({
       where: {
         deletedAt: null,
-        ...(role && (role === "ADMIN" || role === "BENEVOLE") ? { role } : {}),
+        ...(role && (role === "ADMIN" || role === "VOLUNTEER") ? { role } : {}),
         ...(query
           ? {
               OR: [

@@ -1,15 +1,12 @@
 export type CategoryType =
-  | "PRIMAIRE"
-  | "COLLEGIEN"
-  | "UNIVERSITAIRE"
-  | "SALARIE";
+  "PRIMAIRE" | "COLLEGIEN" | "UNIVERSITAIRE" | "SALARIE";
 
 export interface UserItem {
   id: number;
   nom: string;
   prenom: string;
   email: string;
-  role: "ADMIN" | "BENEVOLE";
+  role: "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER";
   statut: "ACTIF" | "INACTIF";
   photo: string | null;
   sexe?: string | null;
@@ -26,7 +23,7 @@ export interface UserFormData {
   prenom: string;
   nom: string;
   email: string;
-  role: "ADMIN" | "BENEVOLE";
+  role: "ADMIN" | "VOLUNTEER";
   sexe: string;
   age: string;
   contact: string;

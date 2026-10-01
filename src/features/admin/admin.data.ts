@@ -1,4 +1,5 @@
 import {
+  Armchair,
   BarChart3,
   CalendarCheck,
   CalendarDays,
@@ -47,10 +48,11 @@ export const adminGestionItems: NavItem[] = [
   },
   {
     title: "Présences",
-    url: "/admin/presences",
+    url: "/admin/users/presence",
     icon: CalendarCheck,
-    items: [{ title: "Pointage journalier", url: "/admin/presences" }],
+    items: [{ title: "Pointage journalier", url: "/admin/users/presence" }],
   },
+  { title: "Places", url: "/admin/places", icon: Armchair },
   {
     title: "Activités",
     url: "/admin/activities",

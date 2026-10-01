@@ -35,7 +35,7 @@ const formSchema = z.object({
     .string()
     .optional()
     .refine((v) => !v || v.length >= 6, "Au moins 6 caractères"),
-  role: z.enum(["ADMIN", "BENEVOLE"]),
+  role: z.enum(["ADMIN", "VOLUNTEER"]),
   dateEntree: z.string().optional(),
 });
 
@@ -72,7 +72,7 @@ export function BenevoleForm({
       prenom: initialData?.prenom ?? "",
       email: initialData?.email ?? "",
       password: "",
-      role: initialData?.role ?? "BENEVOLE",
+      role: initialData?.role === "ADMIN" ? "ADMIN" : "VOLUNTEER",
       dateEntree: initialData?.dateEntree
         ? initialData.dateEntree.slice(0, 10)
         : "",
@@ -86,7 +86,7 @@ export function BenevoleForm({
         prenom: initialData?.prenom ?? "",
         email: initialData?.email ?? "",
         password: "",
-        role: initialData?.role ?? "BENEVOLE",
+        role: initialData?.role === "ADMIN" ? "ADMIN" : "VOLUNTEER",
         dateEntree: initialData?.dateEntree
           ? initialData.dateEntree.slice(0, 10)
           : "",
@@ -94,7 +94,7 @@ export function BenevoleForm({
     }
   }, [open, initialData, reset]);
 
-  const submit = handleSubmit((values) => {
+  const submit = handleSubmit((values: FormValues) => {
     if (!isEdit && !values.password) {
       setError("password", {
         message: "Le mot de passe est requis pour un nouveau bénévole",
@@ -185,7 +185,7 @@ export function BenevoleForm({
                     <SelectValue placeholder="Sélectionner un rôle" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="BENEVOLE">Bénévole</SelectItem>
+                    <SelectItem value="VOLUNTEER">Bénévole</SelectItem>
                     <SelectItem value="ADMIN">Administrateur</SelectItem>
                   </SelectContent>
                 </Select>
