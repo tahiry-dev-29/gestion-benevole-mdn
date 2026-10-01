@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 
 import { PageHeader } from "@/features/admin/page-header";
+import { ImportExportButtons } from "@/features/excel/import-export-buttons";
 import {
   getPresenceDuJourAction,
 } from "@/features/presence/presence.action";
@@ -22,6 +23,8 @@ export default async function PresencesPage() {
         title="Présences"
         description="Pointage quotidien et historique des présences."
       />
+
+      {isAdmin && <ImportExportButtons dataset="presences" />}
 
       {/* Bouton de pointage pour l'utilisateur connecté */}
       <PointageButton presenceDuJour={presenceDuJour} />

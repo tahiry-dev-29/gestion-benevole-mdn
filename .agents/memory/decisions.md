@@ -8,4 +8,5 @@ Journal append-only. Une décision = une ligne datée. Ne pas effacer, ne pas r�
 2026-10-01 — Création des comptes déplacée vers `/admin/volunteer-management` (sous-liste `roles` / `add` / `[id]`) ; suppression des doublons de routes `/admin/benevoles`, `/admin/volunteers`, `/admin/presence`
 2026-10-01 — Places non fixes : `Seat` sans `userId`, la table/siège est choisie à chaque pointage (`Attendance.seat_id`) — CRUD des numéros de table/siège dans `/admin/places`
 2026-10-01 — Import/Export Excel via `exceljs` (côté serveur) sur les listes USER et présences ; colonnes partagées import/export
+2026-10-01 — Première implémentation Excel alignée sur les champs réellement présents dans `User` et `Presence`; `tasks05` reste TODO car le schéma n'a pas encore les champs matricule/siège du PRD — éviter de simuler ces données dans les exports
 2026-10-01 — Dossier `todos/` supprimé : plan/sprints migés dans `.agents/output/gestion-benevole/` (idea, discovery, prd, archi, ROADMAP, tasks/00-09, references/CDC)
