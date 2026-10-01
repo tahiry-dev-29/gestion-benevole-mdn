@@ -55,7 +55,7 @@ export async function importPresences(fileValue: FormDataEntryValue | null) {
       continue;
     }
     try {
-      await prisma.presence.upsert({
+      await prisma.attendance.upsert({
         where: { user_id_date: { user_id: user.id, date: new Date(`${presence.date}T00:00:00.000Z`) } },
         create: { user_id: user.id, date: new Date(`${presence.date}T00:00:00.000Z`), statut: presence.statut, heure_arrivee: presence.heure_arrivee || null, heure_depart: presence.heure_depart || null },
         update: { statut: presence.statut, heure_arrivee: presence.heure_arrivee || null, heure_depart: presence.heure_depart || null },

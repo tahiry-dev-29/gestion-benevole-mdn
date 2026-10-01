@@ -6,7 +6,7 @@ export const excelUserSchema = z.object({
   nom: z.string().trim().min(2),
   prenom: z.string().trim().min(2),
   email: z.string().trim().email().transform((email) => email.toLowerCase()),
-  role: z.enum(["ADMIN", "BENEVOLE"]).default("BENEVOLE"),
+  role: z.enum(["ADMIN", "VOLUNTEER"]).default("VOLUNTEER"),
   statut: z.enum(["ACTIF", "INACTIF"]).default("ACTIF"),
   sexe: SexeEnum.default("Non précisé"),
   age: z.coerce.number().int().min(1).max(120).default(18),

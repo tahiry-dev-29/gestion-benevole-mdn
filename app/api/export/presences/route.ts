@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const start = url.searchParams.get("dateDebut");
   const end = url.searchParams.get("dateFin");
   const date = start || end ? { ...(start ? { gte: new Date(start) } : {}), ...(end ? { lte: new Date(end) } : {}) } : undefined;
-  const rows = template ? [] : await prisma.presence.findMany({
+  const rows = template ? [] : await prisma.attendance.findMany({
     where: date ? { date } : undefined, orderBy: [{ date: "desc" }, { heure_arrivee: "desc" }],
     include: { user: { select: { nom: true, prenom: true, email: true } } },
   });

@@ -7,51 +7,86 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  nom           String
-  prenom        String
-  email         String         @unique
-  emailVerified DateTime?
-  password      String?
-  role          Role           @default(VOLUNTEER)
-  photo         String?
-  statut        UserStatut     @default(ACTIF)
-  deletedAt     DateTime?
-  date_entree   DateTime       @default(now())
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  activites     Activite[]
-  credits       Credit[]
-  observations  Observation[]  @relation("UserObservations")
-  observationsRedigees Observation[] @relation("ObservationAuthor")
-  partages      Partage[]
-  presences     Presence[]
-  temoignages   Temoignage[]
-  sexe          String        @default("Non précisé")
-  age           Int           @default(18)
-  contact       String?
-  categorie     Category      @default(UNIVERSITAIRE)
-  etablissement String        @default("Non renseigné")
-  facebook      String?
-  createdById   Int?
-  createdBy     User?         @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  createdUsers  User[]        @relation("CreatedBy")
+  id                      Int              @id @default(autoincrement())
+  nom                     String
+  prenom                  String
+  email                   String           @unique
+  emailVerified           DateTime?
+  password                String?
+  role                    Role             @default(VOLUNTEER)
+  photo                   String?
+  statut                  UserStatut       @default(ACTIF)
+  deletedAt               DateTime?
+  date_entree             DateTime         @default(now())
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  activites               Activite[]
+  credits                 Credit[]
+  observations            Observation[]    @relation("UserObservations")
+  observationsRedigees    Observation[]    @relation("ObservationAuthor")
+  partages                Partage[]
+  presences               Attendance[]
+  temoignages             Temoignage[]
+  sexe                    String           @default("Non précisé")
+  age                     Int              @default(18)
+  contact                 String?
+  categorie               Category         @default(UNIVERSITAIRE)
+  etablissement           String           @default("Non renseigné")
+  facebook                String?
+  matricule               String?          @unique
+  societe                 String?
+  telephone               String?
+  dateNaissance           DateTime?
+  siteWeb                 String?
+  cvUrl                   String?
+  socialProfile           String?
+  joursDisponibles        String[]         @default([])
+  disponibilites          Json?
+  contactUrgence          String?
+  spinneret               String?
+  accepteRegles           Boolean          @default(false)
+  reglesAccepteesAt       DateTime?
+  materielPC              Boolean          @default(false)
+  createdById             Int?
+  createdBy               User?            @relation("CreatedBy", fields: [createdById], references: [id])
+  createdUsers            User[]           @relation("CreatedBy")
+  certificatUrl           String?
+  certificatStatut        CertificatStatut @default(NON_DEMANDE)
+  certificatValidatedAt   DateTime?
+  certificatValidatedById Int?
 
+  @@index([certificatStatut])
   @@index([role, statut])
+  @@index([createdById])
 }
 
-model Presence {
+model Seat {
+  id          Int          @id @default(autoincrement())
+  tableNumber Int
+  seatNumber  Int
+  label       String?
+  presences   Attendance[]
+
+  @@unique([tableNumber, seatNumber])
+  @@index([tableNumber])
+}
+
+model Attendance {
   id            Int      @id @default(autoincrement())
   user_id       Int
   date          DateTime @db.Date
+  seat_id       Int?
   heure_arrivee String?
   heure_depart  String?
   statut        String   @default("PRESENT")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  seat          Seat?    @relation(fields: [seat_id], references: [id], onDelete: Restrict)
 
   @@unique([user_id, date])
+  @@unique([seat_id, date])
+  @@index([date])
 }
 
 model Observation {
@@ -81,44 +116,36 @@ model Credit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id])
-  @@index([date])
 }
 
 model Activite {
-  id          Int      @id @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   user_id     Int?
   titre       String
   description String
   image       String?
   statut      PublicationStatut @default(BROUILLON)
-  date        DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User?    @relation(fields: [user_id], references: [id])
+  date        DateTime          @default(now())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  user        User?             @relation(fields: [user_id], references: [id])
 
   @@index([statut, date])
 }
 
 model Partage {
-  id               Int      @id @default(autoincrement())
+  id               Int               @id @default(autoincrement())
   user_id          Int
   titre            String
   contenu          String
   statut           PublicationStatut @default(BROUILLON)
-  date_publication DateTime @default(now())
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  user             User     @relation(fields: [user_id], references: [id], onDelete: Restrict)
+  date_publication DateTime          @default(now())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  user             User              @relation(fields: [user_id], references: [id], onDelete: Restrict)
 
   @@index([user_id])
   @@index([statut, date_publication])
-}
-
-enum PublicationStatut {
-  BROUILLON
-  PUBLIE
 }
 
 model Temoignage {
@@ -132,11 +159,23 @@ model Temoignage {
   user       User?    @relation(fields: [user_id], references: [id])
 }
 
+enum PublicationStatut {
+  BROUILLON
+  PUBLIE
+}
+
 enum Role {
   SUPER_ADMIN
   ADMIN
   VOLUNTEER
   USER
+}
+
+enum CertificatStatut {
+  NON_DEMANDE
+  EN_ATTENTE
+  APPROUVE
+  REJETE
 }
 
 enum UserStatut {
