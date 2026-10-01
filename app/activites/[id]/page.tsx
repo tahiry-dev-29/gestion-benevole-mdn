@@ -70,7 +70,7 @@ export default async function ActiviteDetailPage({ params }: Props) {
       </article>
       <Link
         href="/partages"
-        className="mt-8 inline-flex text-sm font-medium text-primary hover:underline"
+        className="mt-8 inline-flex text-sm font-medium text-sky-300 hover:underline"
       >
         Explorer les partages de l’association →
       </Link>

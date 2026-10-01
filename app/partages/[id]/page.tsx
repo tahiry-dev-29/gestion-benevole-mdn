@@ -56,7 +56,7 @@ export default async function PartageDetailPage({ params }: Props) {
       </article>
       <Link
         href="/activites"
-        className="mt-8 inline-flex text-sm font-medium text-primary hover:underline"
+        className="mt-8 inline-flex text-sm font-medium text-sky-300 hover:underline"
       >
         Découvrir aussi nos activités →
       </Link>

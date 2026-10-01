@@ -33,9 +33,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 | --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
 | S7.1 — API Activité (CRUD/publication)  | ✅     | Back2  | 5      | ☑       | ☑        | ☑    | ☐    |
 | S7.2 — API Partage (CRUD/publication)   | ✅     | Back1  | 5      | ☑       | ☑        | ☑    | ☐    |
-| S7.3 — Admin Modération (UI)            | 🟡     | Front1 | 5      | ☑       | ☑        | ☐    | ☐    |
-| S7.4 — UI publique Activités            | 🟡     | Front2 | 5      | ☑       | ☑        | ☐    | ☐    |
-| S7.5 — UI publique Partages             | 🟡     | Front2 | 5      | ☑       | ☑        | ☐    | ☐    |
+| S7.3 — Admin Modération (UI)            | ✅     | Front1 | 5      | ☑       | ☑        | ☑    | ☐    |
+| S7.4 — UI publique Activités            | ✅     | Front2 | 5      | ☑       | ☑        | ☑    | ☐    |
+| S7.5 — UI publique Partages             | ✅     | Front2 | 5      | ☑       | ☑        | ☑    | ☐    |
 | S7.6 — Optimisation images (next/image) | 🟡     | Front2 | 3      | ☑       | ☑        | ☐    | ☐    |
 | S7.7 — Tests fonctionnels               | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
@@ -107,7 +107,7 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Critères d'acceptation
 
-- [ ] Layout responsive + contrastes A11y vérifiés (axe Lighthouse)
+- [x] Layout responsive + contrastes A11y vérifiés (axe Lighthouse)
 
 ### 🎟️ S7.5 — UI publique "Partages"
 
@@ -121,7 +121,7 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Critères d'acceptation
 
-- [ ] SEO de base (title, description, OpenGraph)
+- [x] SEO de base (title, description, OpenGraph)
 
 ### 🎟️ S7.6 — Optimisation images (`next/image`)
 
@@ -178,6 +178,8 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 - `pnpm prisma validate` : réussi.
 - `pnpm prisma migrate deploy` : les migrations Activité/Partage ont été appliquées.
 - `pnpm lint`, `pnpm typecheck` et `pnpm build` : réussis ; les routes publiques sont dynamiques.
-- Le score Lighthouse ≥ 90 et la vérification Axe restent à mesurer.
+- Axe : aucune violation WCAG 2/2.1 A/AA sur `/activites` et `/partages` ; aucune barre de défilement horizontale en viewport 390 px.
+- Lighthouse Performance : desktop `/activites` 99 ; mobile `/activites` 88 lors de la mesure stable (FCP 1,0 s, LCP 2,2 s, TBT 420 ms, CLS 0). Deux mesures suivantes ont varié sous forte charge CPU locale ; le seuil mobile ≥ 90 reste à confirmer.
+- Le layout racine ne monte plus `SessionProvider` sur les pages publiques ; la police monospace n'est plus préchargée globalement.
 - La base locale présente aussi une dérive préexistante sur `Observation` et `Credit`, hors périmètre de ce sprint.
 - Parcours HTTP admin/public Activité et Partage : réussi, contenus temporaires supprimés après vérification.
