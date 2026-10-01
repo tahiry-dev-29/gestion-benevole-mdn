@@ -1,4 +1,6 @@
-# Sprint 4 — Public : Activité & Partage
+Status: TODO
+
+# Tâche 07 — Sprint 7 : Public — Activité & Partage
 
 > ⏱️ **Durée :** 2 semaines · 🎯 **Objectif :** vitrine publique des activités & partages,
 > modération admin, images optimisées
@@ -13,15 +15,15 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 ## 🧮 Estimation & dépendances
 
-| Story                                   | Dev    | Points | Priorité | Dépend de       |
-| --------------------------------------- | ------ | ------ | -------- | --------------- |
-| S4.1 — API Activité (CRUD/publication)  | Back2  | 5      | Haute    | S1.1            |
-| S4.2 — API Partage (CRUD/publication)   | Back1  | 5      | Haute    | S1.1            |
-| S4.3 — Admin Modération (UI)            | Front1 | 5      | Haute    | S1.5, S4.1,S4.2 |
-| S4.4 — UI publique Activités            | Front2 | 5      | Haute    | S1.6, S4.1      |
-| S4.5 — UI publique Partages             | Front2 | 5      | Haute    | S1.6, S4.2      |
-| S4.6 — Optimisation images (next/image) | Front2 | 3      | Moyenne  | S4.4,S4.5       |
-| S4.7 — Tests fonctionnels               | Équipe | 2      | Haute    | toutes          |
+| Story                                   | Dev    | Points | Priorité | Dépend de                         |
+| --------------------------------------- | ------ | ------ | -------- | --------------------------------- |
+| S7.1 — API Activité (CRUD/publication)  | Back2  | 5      | Haute    | Sprint 1 (Auth & RBAC)            |
+| S7.2 — API Partage (CRUD/publication)   | Back1  | 5      | Haute    | Sprint 1 (Auth & RBAC)            |
+| S7.3 — Admin Modération (UI)            | Front1 | 5      | Haute    | Sprint 1 (Auth & RBAC), S7.1,S7.2 |
+| S7.4 — UI publique Activités            | Front2 | 5      | Haute    | Sprint 1 (Auth & RBAC), S7.1      |
+| S7.5 — UI publique Partages             | Front2 | 5      | Haute    | Sprint 1 (Auth & RBAC), S7.2      |
+| S7.6 — Optimisation images (next/image) | Front2 | 3      | Moyenne  | S7.4,S7.5                         |
+| S7.7 — Tests fonctionnels               | Équipe | 2      | Haute    | toutes                            |
 
 **Capacité :** ~42 points · **Chargement :** 30 points.
 
@@ -29,19 +31,19 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 | Story                                   | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S4.1 — API Activité (CRUD/publication)  | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.2 — API Partage (CRUD/publication)   | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.3 — Admin Modération (UI)            | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.4 — UI publique Activités            | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.5 — UI publique Partages             | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S4.6 — Optimisation images (next/image) | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S4.7 — Tests fonctionnels               | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| S7.1 — API Activité (CRUD/publication)  | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S7.2 — API Partage (CRUD/publication)   | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S7.3 — Admin Modération (UI)            | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S7.4 — UI publique Activités            | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S7.5 — UI publique Partages             | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S7.6 — Optimisation images (next/image) | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
+| S7.7 — Tests fonctionnels               | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 
-### 🎟️ S4.1 — API Activité (CRUD + publication)
+### 🎟️ S7.1 — API Activité (CRUD + publication)
 
-**Dev :** Back2 · **Pts :** 5 · **Dépend de :** S1.1
+**Dev :** Back2 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC)
 
 > En tant que **Lead**, je veux publier des activités (statut BROUILLON/PUBLIE) afin de
 > les exposer ou non sur la vitrine.
@@ -60,9 +62,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 - **Étant donné** une activité en `BROUILLON`, **Quand** un visiteur la consulte, **Alors**
   elle est 404.
 
-### 🎟️ S4.2 — API Partage (CRUD + publication)
+### 🎟️ S7.2 — API Partage (CRUD + publication)
 
-**Dev :** Back1 · **Pts :** 5 · **Dépend de :** S1.1
+**Dev :** Back1 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC)
 
 #### Tâches
 
@@ -76,9 +78,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 - [ ] Le champ auteur est lié à `User` (FK) et exposé de façon sécurisée
 
-### 🎟️ S4.3 — Admin : modération Activités & Partages
+### 🎟️ S7.3 — Admin : modération Activités & Partages
 
-**Dev :** Front1 · **Pts :** 5 · **Dépend de :** S1.5, S4.1, S4.2
+**Dev :** Front1 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC), S7.1, S7.2
 
 #### Tâches
 
@@ -91,9 +93,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 - **Étant donné** un admin qui publie, **Quand** il rafraîchit la page publique, **Alors**
   l'élément apparaît immédiatement.
 
-### 🎟️ S4.4 — UI publique "Activités"
+### 🎟️ S7.4 — UI publique "Activités"
 
-**Dev :** Front2 · **Pts :** 5 · **Dépend de :** S1.6, S4.1
+**Dev :** Front2 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC), S7.1
 
 #### Tâches
 
@@ -107,9 +109,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 - [ ] Layout responsive + contrastes A11y vérifiés (axe Lighthouse)
 
-### 🎟️ S4.5 — UI publique "Partages"
+### 🎟️ S7.5 — UI publique "Partages"
 
-**Dev :** Front2 · **Pts :** 5 · **Dépend de :** S1.6, S4.2
+**Dev :** Front2 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC), S7.2
 
 #### Tâches
 
@@ -121,9 +123,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 - [ ] SEO de base (title, description, OpenGraph)
 
-### 🎟️ S4.6 — Optimisation images (`next/image`)
+### 🎟️ S7.6 — Optimisation images (`next/image`)
 
-**Dev :** Front2 · **Pts :** 3 · **Dépend de :** S4.4, S4.5
+**Dev :** Front2 · **Pts :** 3 · **Dépend de :** S7.4, S7.5
 
 #### Tâches
 
@@ -135,7 +137,7 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 - **Quand** Lighthouse audite la page activité, **Alors** le score perf image **≥ 90**.
 
-### 🎟️ S4.7 — Tests fonctionnels du Sprint
+### 🎟️ S7.7 — Tests fonctionnels du Sprint
 
 **Dev :** Toute l'équipe · **Pts :** 2
 

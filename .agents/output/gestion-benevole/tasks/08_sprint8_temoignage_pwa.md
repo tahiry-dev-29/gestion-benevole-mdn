@@ -1,4 +1,6 @@
-# Sprint 5 — Public : Témoignage & Finalisation PWA
+Status: TODO
+
+# Tâche 08 — Sprint 8 : Public — Témoignage & Finalisation PWA
 
 > ⏱️ **Durée :** 2 semaines · 🎯 **Objectif :** soumission/publique des témoignages,
 > modération admin + PWA complète (installable, offline, splash, Lighthouse ≥ 90)
@@ -13,15 +15,15 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 ## 🧮 Estimation & dépendances
 
-| Story                                         | Dev    | Points | Priorité | Dépend de  |
-| --------------------------------------------- | ------ | ------ | -------- | ---------- |
-| S5.1 — API Témoignage (soumission/modération) | Back2  | 5      | Haute    | S1.1       |
-| S5.2 — UI publique Témoignages                | Front2 | 3      | Haute    | S1.6       |
-| S5.3 — Formulaire soumission (public)         | Front2 | 5      | Haute    | S1.6, S5.1 |
-| S5.4 — Modération admin (témoignages)         | Front1 | 3      | Moyenne  | S1.5, S5.1 |
-| S5.5 — Finalisation PWA (offline, splash)     | Front2 | 8      | Haute    | S0.6, S1.7 |
-| S5.6 — Audit Lighthouse                       | Lead   | 3      | Haute    | S5.5,S5.4  |
-| S5.7 — Tests globaux + bugs                   | Équipe | 3      | Haute    | toutes     |
+| Story                                         | Dev    | Points | Priorité | Dépend de                    |
+| --------------------------------------------- | ------ | ------ | -------- | ---------------------------- |
+| S8.1 — API Témoignage (soumission/modération) | Back2  | 5      | Haute    | Sprint 1 (Auth & RBAC)       |
+| S8.2 — UI publique Témoignages                | Front2 | 3      | Haute    | Sprint 1 (Auth & RBAC)       |
+| S8.3 — Formulaire soumission (public)         | Front2 | 5      | Haute    | Sprint 1 (Auth & RBAC), S8.1 |
+| S8.4 — Modération admin (témoignages)         | Front1 | 3      | Moyenne  | Sprint 1 (Auth & RBAC), S8.1 |
+| S8.5 — Finalisation PWA (offline, splash)     | Front2 | 8      | Haute    | S0.6, Sprint 1 (Auth & RBAC) |
+| S8.6 — Audit Lighthouse                       | Lead   | 3      | Haute    | S8.5,S8.4                    |
+| S8.7 — Tests globaux + bugs                   | Équipe | 3      | Haute    | toutes                       |
 
 **Capacité :** ~45 points · **Chargement :** 32 points + buffer.
 
@@ -29,19 +31,19 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 | Story                                         | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | --------------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S5.1 — API Témoignage (soumission/modération) | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S5.2 — UI publique Témoignages                | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S5.3 — Formulaire soumission (public)         | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S5.4 — Modération admin (témoignages)         | ⚪     | Front1 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S5.5 — Finalisation PWA (offline, splash)     | ⚪     | Front2 | 8      | ☐       | ☐        | ☐    | ☐    |
-| S5.6 — Audit Lighthouse                       | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
-| S5.7 — Tests globaux + bugs                   | ⚪     | Équipe | 3      | ☐       | ☐        | ☐    | ☐    |
+| S8.1 — API Témoignage (soumission/modération) | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S8.2 — UI publique Témoignages                | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
+| S8.3 — Formulaire soumission (public)         | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S8.4 — Modération admin (témoignages)         | ⚪     | Front1 | 3      | ☐       | ☐        | ☐    | ☐    |
+| S8.5 — Finalisation PWA (offline, splash)     | ⚪     | Front2 | 8      | ☐       | ☐        | ☐    | ☐    |
+| S8.6 — Audit Lighthouse                       | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
+| S8.7 — Tests globaux + bugs                   | ⚪     | Équipe | 3      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 
-### 🎟️ S5.1 — API Témoignage (soumission + modération)
+### 🎟️ S8.1 — API Témoignage (soumission + modération)
 
-**Dev :** Back2 · **Pts :** 5 · **Dépend de :** S1.1
+**Dev :** Back2 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC)
 
 > En tant que **visiteur**, je peux soumettre un témoignage ; en tant que **Lead**, je le
 > modère avant publication (anti-spam).
@@ -62,9 +64,9 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 - **Étant donné** un visiteur non authentifié, **Quand** il soumet un témoignage, **Alors**
   l'enregistrement est en `EN_ATTENTE` (pas publié).
 
-### 🎟️ S5.2 — UI publique "Témoignages"
+### 🎟️ S8.2 — UI publique "Témoignages"
 
-**Dev :** Front2 · **Pts :** 3 · **Dépend de :** S1.6
+**Dev :** Front2 · **Pts :** 3 · **Dépend de :** Sprint 1 (Auth & RBAC)
 
 #### Tâches
 
@@ -77,9 +79,9 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 - **Étant donné** un témoignage en `EN_ATTENTE`/`REJETE`, **Quand** un visiteur charge `/temoignages`,
   **Alors** il ne s'affiche pas.
 
-### 🎟️ S5.3 — Formulaire de soumission (public)
+### 🎟️ S8.3 — Formulaire de soumission (public)
 
-**Dev :** Front2 · **Pts :** 5 · **Dépend de :** S1.6, S5.1
+**Dev :** Front2 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC), S8.1
 
 #### Tâches
 
@@ -92,9 +94,9 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 - [ ] Envoi non authentifié possible → statut `EN_ATTENTE`
 
-### 🎟️ S5.4 — Modération admin (témoignages)
+### 🎟️ S8.4 — Modération admin (témoignages)
 
-**Dev :** Front1 · **Pts :** 3 · **Dépend de :** S1.5, S5.1
+**Dev :** Front1 · **Pts :** 3 · **Dépend de :** Sprint 1 (Auth & RBAC), S8.1
 
 #### Tâches
 
@@ -106,9 +108,9 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 - [ ] Une action de modération se répercute côté public sans rebuild (SSR revalidation)
 
-### 🎟️ S5.5 — Finalisation PWA (offline + installabilité)
+### 🎟️ S8.5 — Finalisation PWA (offline + installabilité)
 
-**Dev :** Front2 · **Pts :** 8 · **Dépend de :** S0.6, S1.7
+**Dev :** Front2 · **Pts :** 8 · **Dépend de :** S0.6, Sprint 1 (Auth & RBAC)
 
 #### Tâches
 
@@ -122,9 +124,9 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 - **Étant donné** l'app en prod, **Quand** l'utilisateur est hors-ligne, **Alors** les
   pages publiques s'affichent depuis le cache.
 
-### 🎟️ S5.6 — Audit Lighthouse
+### 🎟️ S8.6 — Audit Lighthouse
 
-**Dev :** Lead · **Pts :** 3 · **Dépend de :** S5.5, S5.4
+**Dev :** Lead · **Pts :** 3 · **Dépend de :** S8.5, S8.4
 
 #### Tâches
 
@@ -136,7 +138,7 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 - [ ] Score global **≥ 90** sur les pages publiques
 
-### 🎟️ S5.7 — Tests globaux & corrections de bugs
+### 🎟️ S8.7 — Tests globaux & corrections de bugs
 
 **Dev :** Toute l'équipe · **Pts :** 3
 

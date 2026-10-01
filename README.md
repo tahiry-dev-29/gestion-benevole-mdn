@@ -279,7 +279,7 @@ pnpm prisma:studio
 │   └── migrations/
 │
 ├── public/                           # Assets statiques + PWA manifest
-├── todos/sprints/                    # Roadmap & sprints (Markdown)
+├── .agents/output/gestion-benevole/  # Plan, PRD, archi, ROADMAP & sprints (Markdown)
 └── .github/workflows/                # CI/CD
 ```
 
@@ -370,17 +370,20 @@ main        ← code de production (stable)
 
 ### Sprints
 
-| Sprint | Périmètre                     | Durée | Statut      |
-| ------ | ----------------------------- | ----- | ----------- |
-| 0      | Initialisation & Setup        | 1 sem | ✅ Terminé  |
-| 1      | Authentification & Fondations | 2 sem | 🔵 En cours |
-| 2      | Admin : Info perso & Présence | 2 sem | ⚪ À venir  |
-| 3      | Admin : Observation & Crédits | 2 sem | ⚪ À venir  |
-| 4      | Public : Activité & Partage   | 2 sem | ⚪ À venir  |
-| 5      | Public : Témoignage & PWA     | 2 sem | ⚪ À venir  |
-| 6      | Mise en production            | 1 sem | ⚪ À venir  |
+| Sprint | Périmètre                                   | Durée | Statut     |
+| ------ | ------------------------------------------- | ----- | ---------- |
+| 0      | Initialisation & Setup                      | 1 sem | ✅ Terminé |
+| 1      | Auth & RBAC (app fermée, 4 rôles)           | 2 sem | ⚪ À venir |
+| 2      | Volunteer Management (rôles, CRUD sécurisé) | 2 sem | ⚪ À venir |
+| 3      | Users & conversion par certificat           | 2 sem | ⚪ À venir |
+| 4      | Présence & Places (CRUD tables/sièges)      | 2 sem | ⚪ À venir |
+| 5      | Import / Export Excel                       | 1 sem | ⚪ À venir |
+| 6      | Observations & Crédits                      | 2 sem | ⚪ À venir |
+| 7      | Public : Activité & Partage                 | 2 sem | ⚪ À venir |
+| 8      | Public : Témoignage & PWA                   | 2 sem | ⚪ À venir |
+| 9      | Mise en production                          | 1 sem | ⚪ À venir |
 
-Détails : [`todos/sprints/ROADMAP.md`](todos/sprints/ROADMAP.md)
+Détails : [`.agents/output/gestion-benevole/ROADMAP.md`](.agents/output/gestion-benevole/ROADMAP.md)
 
 ---
 
@@ -420,7 +423,7 @@ pnpm test:e2e      # End-to-end tests
 
 ### Règles de suivi
 
-- Chaque membre coche ses tâches dans `todos/CDC_PWA_Gestion_Benevoles.md`
+- Chaque membre coche ses tâches dans `.agents/output/gestion-benevole/tasks/NN_*.md`
 - Une tâche cochée doit correspondre à un commit/PR associé
 - Stand-up court 2x/semaine
 

@@ -1,8 +1,12 @@
-# Sprint 3 — Admin : Observation mensuelle & Liste Crédit
+Status: TODO
+
+# Tâche 06 — Sprint 6 : Observation mensuelle & Liste Crédit
 
 > ⏱️ **Durée :** 2 semaines · 🎯 **Objectif :** notes mensuelles par bénévole + suivi/calcul
 > cumulé des crédits (heures) avec export optionnel
 > 📌 **Statut :** ⚪ À venir · **Vélocité cible :** ~42 points
+>
+> ℹ️ L'option d'export (S6.2) s'aligne sur l'**Excel `exceljs`** livré au sprint 5 (`tasks/05_sprint5_excel_import_export.md`) plutôt que sur un export CSV/PDF spécifique.
 
 - [x] Toutes les cases cochées = PR fusionnée + revue Lead (CDC §6)
 
@@ -13,33 +17,33 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 ## 🧮 Estimation & dépendances
 
-| Story                            | Dev    | Points | Priorité | Dépend de  |
-| -------------------------------- | ------ | ------ | -------- | ---------- |
-| S3.1 — API Liste Crédit          | Back1  | 8      | Haute    | S2.1, S2.3 |
-| S3.2 — Export CSV/PDF (option)   | Back2  | 3      | Basse    | S3.1       |
-| S3.3 — API Observation mensuelle | Back2  | 5      | Haute    | S1.1, S2.1 |
-| S3.4 — UI Observations par mois  | Front1 | 5      | Haute    | S1.5, S3.3 |
-| S3.5 — UI Liste Crédit           | Front1 | 5      | Haute    | S1.5, S3.1 |
-| S3.6 — Tests fonctionnels        | Équipe | 2      | Haute    | toutes     |
+| Story                            | Dev    | Points | Priorité | Dépend de                                             |
+| -------------------------------- | ------ | ------ | -------- | ----------------------------------------------------- |
+| S6.1 — API Liste Crédit          | Back1  | 8      | Haute    | Sprint 3 (Users & conversion)                         |
+| S6.2 — Export CSV/PDF (option)   | Back2  | 3      | Basse    | S6.1                                                  |
+| S6.3 — API Observation mensuelle | Back2  | 5      | Haute    | Sprint 1 (Auth & RBAC), Sprint 3 (Users & conversion) |
+| S6.4 — UI Observations par mois  | Front1 | 5      | Haute    | Sprint 1 (Auth & RBAC), S6.3                          |
+| S6.5 — UI Liste Crédit           | Front1 | 5      | Haute    | Sprint 1 (Auth & RBAC), S6.1                          |
+| S6.6 — Tests fonctionnels        | Équipe | 2      | Haute    | toutes                                                |
 
-**Capacité :** ~42 points · **Chargement :** 28 points (+ option S3.2 si budget).
+**Capacité :** ~42 points · **Chargement :** 28 points (+ option S6.2 si budget).
 
 ## 🎫 Sprint Board
 
 | Story                            | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | -------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S3.1 — API Liste Crédit          | ⚪     | Back1  | 8      | ☐       | ☐        | ☐    | ☐    |
-| S3.2 — Export CSV/PDF (option)   | ⚪     | Back2  | 3      | ☐       | ☐        | ☐    | ☐    |
-| S3.3 — API Observation mensuelle | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S3.4 — UI Observations par mois  | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S3.5 — UI Liste Crédit           | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S3.6 — Tests fonctionnels        | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| S6.1 — API Liste Crédit          | ⚪     | Back1  | 8      | ☐       | ☐        | ☐    | ☐    |
+| S6.2 — Export CSV/PDF (option)   | ⚪     | Back2  | 3      | ☐       | ☐        | ☐    | ☐    |
+| S6.3 — API Observation mensuelle | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
+| S6.4 — UI Observations par mois  | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S6.5 — UI Liste Crédit           | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
+| S6.6 — Tests fonctionnels        | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 
-### 🎟️ S3.1 — API "Crédit" (ajout, consultation, cumul)
+### 🎟️ S6.1 — API "Crédit" (ajout, consultation, cumul)
 
-**Dev :** Back1 · **Pts :** 8 · **Dépend de :** S2.1, S2.3
+**Dev :** Back1 · **Pts :** 8 · **Dépend de :** Sprint 3 (Users & conversion)
 
 > En tant que **Lead**, je veux attribuer/consulter des crédits et voir le cumul par
 > bénévole afin de suivre la reconnaissance/temps.
@@ -59,9 +63,9 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 - [ ] Le cumul se recalcule après ajout/suppression
 - [ ] Un bénévole non-admin ne peut pas créer/modifier un crédit (403)
 
-### 🎟️ S3.2 — Export des crédits (optionnel : CSV/PDF)
+### 🎟️ S6.2 — Export des crédits (optionnel : CSV/PDF)
 
-**Dev :** Back2 · **Pts :** 3 · **Dépend de :** S3.1
+**Dev :** Back2 · **Pts :** 3 · **Dépend de :** S6.1
 
 #### Tâches
 
@@ -74,9 +78,9 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 - **Étant donné** un admin, **Quand** il exporte, **Alors** le CSV s'ouvre dans un tableur
   avec les colonnes attendues.
 
-### 🎟️ S3.3 — API "Observation mensuelle" (CRUD)
+### 🎟️ S6.3 — API "Observation mensuelle" (CRUD)
 
-**Dev :** Back2 · **Pts :** 5 · **Dépend de :** S1.1, S2.1
+**Dev :** Back2 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC), Sprint 3 (Users & conversion)
 
 > En tant que **Lead**, je veux noter un bénévole par mois pour suivre sa performance.
 
@@ -94,9 +98,9 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 - [ ] Double saisie même mois → rejet explicite
 - [ ] Seuls admin/auteur peuvent modifier
 
-### 🎟️ S3.4 — UI Observations par mois
+### 🎟️ S6.4 — UI Observations par mois
 
-**Dev :** Front1 · **Pts :** 5 · **Dépend de :** S1.5, S3.3
+**Dev :** Front1 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC), S6.3
 
 #### Tâches
 
@@ -109,9 +113,9 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 - [ ] Observation enregistrée → visible dans l'historique au rafraîchissement
 
-### 🎟️ S3.5 — UI Liste Crédit
+### 🎟️ S6.5 — UI Liste Crédit
 
-**Dev :** Front1 · **Pts :** 5 · **Dépend de :** S1.5, S3.1
+**Dev :** Front1 · **Pts :** 5 · **Dépend de :** Sprint 1 (Auth & RBAC), S6.1
 
 #### Tâches
 
@@ -124,7 +128,7 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 - [ ] Le total recalculé s'affiche immédiatement après ajout
 
-### 🎟️ S3.6 — Tests fonctionnels du Sprint
+### 🎟️ S6.6 — Tests fonctionnels du Sprint
 
 **Dev :** Toute l'équipe · **Pts :** 2
 

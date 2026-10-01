@@ -1,4 +1,6 @@
-# Sprint 6 — Mise en production
+Status: TODO
+
+# Tâche 09 — Sprint 9 : Mise en production
 
 > ⏱️ **Durée :** 1 semaine · 🎯 **Objectif :** déploiement final sur prod (domaine, HTTPS,
 > DB), verification sécurité/PWA, formation & passation
@@ -13,13 +15,13 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 
 ## 🧮 Estimation & dépendances
 
-| Story                                   | Dev    | Points | Priorité | Dépend de  |
-| --------------------------------------- | ------ | ------ | -------- | ---------- |
-| S6.1 — Environnement de production      | Lead   | 3      | Haute    | S0.7, S0.8 |
-| S6.2 — Migration DB + déploiement final | Lead   | 5      | Haute    | S6.1, S5.5 |
-| S6.3 — Vérification finale (checklist)  | Équipe | 5      | Haute    | S5.6       |
-| S6.4 — Formation & passation            | Lead   | 3      | Moyenne  | S6.2       |
-| S6.5 — Rétrospective globale + clôture  | Équipe | 2      | Moyenne  | S6.3       |
+| Story                                   | Dev    | Points | Priorité | Dépend de                                      |
+| --------------------------------------- | ------ | ------ | -------- | ---------------------------------------------- |
+| S9.1 — Environnement de production      | Lead   | 3      | Haute    | S0.7, S0.8                                     |
+| S9.2 — Migration DB + déploiement final | Lead   | 5      | Haute    | S9.1, Sprint 8 (Témoignage & Finalisation PWA) |
+| S9.3 — Vérification finale (checklist)  | Équipe | 5      | Haute    | Sprint 8 (Témoignage & Finalisation PWA)       |
+| S9.4 — Formation & passation            | Lead   | 3      | Moyenne  | S9.2                                           |
+| S9.5 — Rétrospective globale + clôture  | Équipe | 2      | Moyenne  | S9.3                                           |
 
 **Capacité :** ~21 points · **Chargement :** 18 points.
 
@@ -27,15 +29,15 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 
 | Story                                   | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S6.1 — Environnement de production      | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
-| S6.2 — Migration DB + déploiement final | ⚪     | Lead   | 5      | ☐       | ☐        | ☐    | ☐    |
-| S6.3 — Vérification finale (checklist)  | ⚪     | Équipe | 5      | ☐       | ☐        | ☐    | ☐    |
-| S6.4 — Formation & passation            | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
-| S6.5 — Rétrospective globale + clôture  | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| S9.1 — Environnement de production      | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
+| S9.2 — Migration DB + déploiement final | ⚪     | Lead   | 5      | ☐       | ☐        | ☐    | ☐    |
+| S9.3 — Vérification finale (checklist)  | ⚪     | Équipe | 5      | ☐       | ☐        | ☐    | ☐    |
+| S9.4 — Formation & passation            | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
+| S9.5 — Rétrospective globale + clôture  | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
 
-### 🎟️ S6.1 — Environnement de production
+### 🎟️ S9.1 — Environnement de production
 
 **Dev :** Lead · **Pts :** 3 · **Dépend de :** S0.7, S0.8
 
@@ -46,7 +48,7 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 - [ ] Variables prod dans Vercel (DATABASE_URL, AUTH_SECRET, NEXTAUTH_URL, domaines)
 - [ ] CSP + security headers + HTTPS/SSL actifs (Vercel Edge)
 - [ ] Sauvegarde de la base configurée (fréquence + plan de restauration testé)
-- [ ] Comptes `ADMIN` réels créés (pas de seed en prod)
+- [ ] Comptes `ADMIN` réels créés (pas de seed en prod) — **SUPER_ADMIN / ADMIN selon la matrice de création**
 
 **Implémentation :** Vercel → Settings → Environment Variables, `next.config.ts` (headers).
 
@@ -54,9 +56,9 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 
 - [ ] `pnpm build` de prod passe avec les vraies variables
 
-### 🎟️ S6.2 — Migration DB + déploiement final
+### 🎟️ S9.2 — Migration DB + déploiement final
 
-**Dev :** Lead · **Pts :** 5 · **Dépend de :** S6.1, S5.5
+**Dev :** Lead · **Pts :** 5 · **Dépend de :** S9.1, Sprint 8 (Témoignage & Finalisation PWA)
 
 #### Tâches
 
@@ -72,9 +74,9 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 - **Étant donné** une migration cassante, **Quand** le rollback est exécuté, **Alors** la
   version précédente remonte en moins de 5 min.
 
-### 🎟️ S6.3 — Vérification finale (checklist PWA + sécurité)
+### 🎟️ S9.3 — Vérification finale (checklist PWA + sécurité)
 
-**Dev :** Toute l'équipe · **Pts :** 5 · **Dépend de :** S5.6
+**Dev :** Toute l'équipe · **Pts :** 5 · **Dépend de :** Sprint 8 (Témoignage & Finalisation PWA)
 
 #### Tâches
 
@@ -87,9 +89,9 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 
 - [ ] Zéro problème bloquant ; critiques résiduelles explicitement listées
 
-### 🎟️ S6.4 — Formation & passation
+### 🎟️ S9.4 — Formation & passation
 
-**Dev :** Lead · **Pts :** 3 · **Dépend de :** S6.2
+**Dev :** Lead · **Pts :** 3 · **Dépend de :** S9.2
 
 #### Tâches
 
@@ -103,14 +105,14 @@ l'équipe autonome (formation + docs). Projet clôturé en `v1.0.0`.
 - **Étant donné** un bénévole nouveau, **Quand** il suit le guide, **Alors** il peut
   pointer sa présence sans aide.
 
-### 🎟️ S6.5 — Rétrospective globale & clôture
+### 🎟️ S9.5 — Rétrospective globale & clôture
 
-**Dev :** Toute l'équipe · **Pts :** 2 · **Dépend de :** S6.3
+**Dev :** Toute l'équipe · **Pts :** 2 · **Dépend de :** S9.3
 
 #### Tâches
 
 - [ ] Rétrospective projet (8 sprints)
-- [ ] Mise à jour finale des boards (`todos/README.md`, ROADMAP, TODO par sprint)
+- [ ] Mise à jour finale des boards (`README.md`, ROADMAP, TODO par sprint)
 - [ ] Tag release `v1.0.0` + release notes GitHub
 - [ ] CDC archivé avec amendements éventuels
 

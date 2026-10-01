@@ -7,8 +7,9 @@ Fullstack dans un seul repo : Next.js 16 App Router pour front + Server Actions/
 1. **Prisma** : schéma dans `prisma/schema.prisma`, config dans `prisma.config.ts`, seed via `tsx prisma/seed.ts`. Migrations explicites (`pnpm prisma migrate dev`), jamais de `db push` en prod (`migrate deploy` uniquement). Adapter `@prisma/adapter-pg` obligatoire (Prisma 7 driver adapter). Index sur FK et champs filtrés/recherchés souvent.
 2. **API** : Server Actions (`"use server"`) pour les mutations simples, Route Handlers (`app/api/.../route.ts`) pour les endpoints publics/webhooks/auth.
 3. **Validation** : Zod sur toutes les entrées (server actions et route handlers), schémas dans `*.schema.ts` à côté des actions.
-4. **Auth** : NextAuth v4 (Credentials provider, JWT strategy). Config dans `src/lib/auth-options.ts`, helper `auth()` dans `src/lib/auth.ts`. Protection routes via `proxy.ts` (middleware RBAC : ADMIN / BENEVOLE / USER). Ne pas rouler sa propre gestion de session.
+4. **Auth** : NextAuth v4 (Credentials provider, JWT strategy). Config dans `src/lib/auth-options.ts`, helper `auth()` dans `src/lib/auth.ts`. Protection routes via `proxy.ts` (middleware RBAC : SUPER_ADMIN / ADMIN / VOLUNTEER / USER). **App fermée** : `/` → `/login`, pas d'inscription publique, le rôle `USER` ne peut pas s'authentifier. Ne pas rouler sa propre gestion de session.
 5. **Erreurs** : Server Actions retournent `{ success: boolean, error?: string }` — pas de throw brut côté client. Toasts via `sonner`.
+6. **Excel** : `exceljs` côté **serveur uniquement** (Server Actions / Route Handlers), jamais importé dans un Client Component. Colonnes déclarées une seule fois dans `src/features/excel/excel.columns.ts` (partagées export + import).
 
 ## Frontend
 
@@ -42,15 +43,15 @@ Fullstack dans un seul repo : Next.js 16 App Router pour front + Server Actions/
 | ESLint strict : `no-explicit-any`, `no-non-null-assertion` en warn ; `unused-imports` + `simple-import-sort` en error | Lint |
 | Prettier pour le formatage | Formatage |
 | Husky pre-commit : `pnpm lint-staged` + `pnpm typecheck` | Git hooks |
-| RBAC via `proxy.ts` — toute route `/admin/*` vérifie `token.role` | Sécurité |
+| RBAC via `proxy.ts` — matrice routes × rôles + `canCreate()` (SUPER_ADMIN / ADMIN / VOLUNTEER / USER) ; aucune route `/sign-up` | Sécurité |
 
 ## Vérification (critères d'acceptation)
 
 ```bash
-pnpm lint          # ESLint — 0 erreur
-pnpm typecheck     # tsc --noEmit — 0 erreur
-pnpm build         # prisma generate + next build — doit passer
-pnpm prisma migrate dev  # migrations — doit passer en dev
+bun run lint          # ESLint — 0 erreur
+bun run typecheck     # tsc --noEmit — 0 erreur
+bun run build         # prisma generate + next build — doit passer
+bun run prisma migrate dev  # migrations — doit passer en dev
 ```
 
 ## Skills liées (thr-*)

@@ -286,15 +286,15 @@ Le bénévole/dev met un `x` entre les crochets directement dans ce fichier (éd
 
 **Lead**
 
-- [ ] Créer le repo Git + structure de branches (main/dev/feature)
-- [ ] Initialiser projet Next.js (App Router)
-- [ ] Configurer Tailwind CSS
-- [ ] Configurer PostgreSQL + Prisma (schéma de base)
-- [ ] Configurer variables d'environnement (.env)
-- [ ] Mettre en place l'hébergement (Vercel/VPS + DB managée)
-- [ ] Configurer CI/CD basique (build/lint)
+- [x] Créer le repo Git + structure de branches (main/dev/feature)
+- [x] Initialiser projet Next.js (App Router)
+- [x] Configurer Tailwind CSS
+- [x] Configurer PostgreSQL + Prisma (schéma de base)
+- [x] Configurer variables d'environnement (.env)
+- [x] Mettre en place l'hébergement (Vercel/VPS + DB managée)
+- [x] Configurer CI/CD basique (build/lint)
 - [ ] Ajouter manifest.json + icônes PWA de base
-- [ ] (Optionnel) Créer table `tasks` + page `/admin/sprints` pour suivi interne
+- [x] (Optionnel) Créer table `tasks` + page `/admin/sprints` pour suivi interne
 
 ---
 
