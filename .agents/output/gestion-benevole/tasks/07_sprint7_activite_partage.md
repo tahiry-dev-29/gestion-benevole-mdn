@@ -178,5 +178,5 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 - `pnpm prisma validate` : réussi.
 - `pnpm prisma migrate deploy` : les migrations Activité/Partage ont été appliquées.
 - `pnpm lint`, `pnpm typecheck` et `pnpm build` : réussis ; les routes publiques sont dynamiques.
-- Lighthouse ≥ 90, vérification axe et parcours fonctionnels manuels restent à mesurer.
+- Le score Lighthouse ≥ 90 et la vérification Axe restent à mesurer.
 - La base locale présente aussi une dérive préexistante sur `Observation` et `Credit`, hors périmètre de ce sprint.
