@@ -17,6 +17,8 @@ function toEntity(a: {
   titre: string;
   description: string;
   date: Date;
+  image: string | null;
+  statut: "BROUILLON" | "PUBLIE";
   createdAt: Date;
   updatedAt: Date;
 }): Activite {
@@ -25,27 +27,37 @@ function toEntity(a: {
     titre: a.titre,
     description: a.description,
     date: a.date.toISOString(),
+    image: a.image,
+    statut: a.statut,
     createdAt: a.createdAt.toISOString(),
     updatedAt: a.updatedAt.toISOString(),
   };
 }
 
 export const activiteRepository: IActiviteRepository = {
-  async list({
-    q,
-    page = 1,
-    pageSize = 10,
-    sortBy = "date",
-    sortDir = "desc",
-  } = {}) {
-    const where = q
-      ? {
-          OR: [
-            { titre: { contains: q, mode: "insensitive" as const } },
-            { description: { contains: q, mode: "insensitive" as const } },
-          ],
-        }
-      : {};
+  async list(
+    {
+      q,
+      page = 1,
+      pageSize = 10,
+      sortBy = "date",
+      sortDir = "desc",
+      statut,
+    } = {},
+    publishedOnly = false
+  ) {
+    const where = {
+      ...(publishedOnly ? { statut: "PUBLIE" as const } : {}),
+      ...(!publishedOnly && statut ? { statut } : {}),
+      ...(q
+        ? {
+            OR: [
+              { titre: { contains: q, mode: "insensitive" as const } },
+              { description: { contains: q, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+    };
 
     const [rows, total] = await Promise.all([
       prisma.activite.findMany({
@@ -60,8 +72,10 @@ export const activiteRepository: IActiviteRepository = {
     return { data: rows.map(toEntity), total };
   },
 
-  async getById(id) {
-    const a = await prisma.activite.findUnique({ where: { id } });
+  async getById(id, publishedOnly = false) {
+    const a = await prisma.activite.findFirst({
+      where: { id, ...(publishedOnly ? { statut: "PUBLIE" } : {}) },
+    });
     return a ? toEntity(a) : null;
   },
 
@@ -71,6 +85,8 @@ export const activiteRepository: IActiviteRepository = {
         titre: input.titre,
         description: input.description,
         date: new Date(input.date),
+        image: input.image || null,
+        statut: input.statut ?? "BROUILLON",
       },
     });
     return toEntity(created);
@@ -85,6 +101,8 @@ export const activiteRepository: IActiviteRepository = {
           ? { description: input.description }
           : {}),
         ...(input.date !== undefined ? { date: new Date(input.date) } : {}),
+        ...(input.image !== undefined ? { image: input.image || null } : {}),
+        ...(input.statut !== undefined ? { statut: input.statut } : {}),
       },
     });
     return toEntity(updated);

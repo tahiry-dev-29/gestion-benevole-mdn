@@ -2,19 +2,17 @@
 
 import * as React from "react";
 import { type SortingState } from "@tanstack/react-table";
-import { Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 
-import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
 import { DataTable } from "@/components/shared/data-table";
-import { PageHeader } from "@/components/shared/page-header";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import type { Activite } from "../domain/activite.entity";
 
 import { getActiviteColumns } from "./activite-columns";
+import { ActiviteDeleteDialog } from "./activite-delete-dialog";
 import { ActiviteForm, type ActiviteFormValues } from "./activite-form";
+import { ActivitePageHeader } from "./activite-page-header";
+import { ActiviteToolbar } from "./activite-toolbar";
 import {
   useActivites,
   useCreateActivite,
@@ -26,6 +24,9 @@ const PAGE_SIZE = 10;
 
 export function ActivitesTable() {
   const [search, setSearch] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState<
+    "ALL" | "BROUILLON" | "PUBLIE"
+  >("ALL");
   const [debouncedQ, setDebouncedQ] = React.useState("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -45,6 +46,10 @@ export function ActivitesTable() {
     pageSize: PAGE_SIZE,
     sortBy: sort?.id,
     sortDir: sort?.desc ? "desc" : "asc",
+    statut:
+      statusFilter === "BROUILLON" || statusFilter === "PUBLIE"
+        ? statusFilter
+        : undefined,
   };
 
   const { data, isLoading } = useActivites(params);
@@ -54,6 +59,7 @@ export function ActivitesTable() {
   const createMutation = useCreateActivite();
   const updateMutation = useUpdateActivite();
   const deleteMutation = useDeleteActivite();
+  const togglePublication = useUpdateActivite();
   const isPending =
     createMutation.isPending ||
     updateMutation.isPending ||
@@ -71,8 +77,25 @@ export function ActivitesTable() {
           setFormOpen(true);
         },
         onDelete: (a) => setDeleteTarget(a),
+        onTogglePublish: (a) =>
+          togglePublication.mutate(
+            {
+              id: a.id,
+              input: { statut: a.statut === "PUBLIE" ? "BROUILLON" : "PUBLIE" },
+            },
+            {
+              onSuccess: () =>
+                toast.success(
+                  a.statut === "PUBLIE"
+                    ? "Activité dépubliée"
+                    : "Activité publiée"
+                ),
+              onError: () =>
+                toast.error("Impossible de changer l’état de publication"),
+            }
+          ),
       }),
-    []
+    [togglePublication]
   );
 
   const handleSubmit = (values: ActiviteFormValues) => {
@@ -112,20 +135,11 @@ export function ActivitesTable() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Activités"
-        description="Gérez les activités et formations de l'association."
-        action={
-          <Button
-            onClick={() => {
-              setEditing(null);
-              setFormOpen(true);
-            }}
-            className="gap-2"
-          >
-            <Plus className="size-4" /> Ajouter
-          </Button>
-        }
+      <ActivitePageHeader
+        onAdd={() => {
+          setEditing(null);
+          setFormOpen(true);
+        }}
       />
 
       <DataTable
@@ -146,15 +160,15 @@ export function ActivitesTable() {
         isLoading={isLoading}
         emptyMessage="Aucune activité trouvée."
         toolbar={
-          <div className="relative max-w-sm flex-1">
-            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher une activité…"
-              className="pl-8"
-            />
-          </div>
+          <ActiviteToolbar
+            search={search}
+            status={statusFilter}
+            onSearchChange={setSearch}
+            onStatusChange={(value) => {
+              setStatusFilter(value);
+              setPageIndex(0);
+            }}
+          />
         }
       />
 
@@ -166,12 +180,11 @@ export function ActivitesTable() {
         isPending={isPending}
       />
 
-      <ConfirmDeleteDialog
-        open={!!deleteTarget}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
+      <ActiviteDeleteDialog
+        target={deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
         onConfirm={handleDelete}
         isPending={deleteMutation.isPending}
-        title={`Supprimer « ${deleteTarget?.titre} » ?`}
       />
     </div>
   );

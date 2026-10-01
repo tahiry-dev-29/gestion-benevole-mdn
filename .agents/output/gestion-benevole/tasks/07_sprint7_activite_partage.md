@@ -31,12 +31,12 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 | Story                                   | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | --------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S7.1 — API Activité (CRUD/publication)  | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S7.2 — API Partage (CRUD/publication)   | ⚪     | Back1  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S7.3 — Admin Modération (UI)            | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S7.4 — UI publique Activités            | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S7.5 — UI publique Partages             | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S7.6 — Optimisation images (next/image) | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
+| S7.1 — API Activité (CRUD/publication)  | 🟡     | Back2  | 5      | ☑       | ☑        | ☐    | ☐    |
+| S7.2 — API Partage (CRUD/publication)   | 🟡     | Back1  | 5      | ☑       | ☑        | ☐    | ☐    |
+| S7.3 — Admin Modération (UI)            | 🟡     | Front1 | 5      | ☑       | ☑        | ☐    | ☐    |
+| S7.4 — UI publique Activités            | 🟡     | Front2 | 5      | ☑       | ☑        | ☐    | ☐    |
+| S7.5 — UI publique Partages             | 🟡     | Front2 | 5      | ☑       | ☑        | ☐    | ☐    |
+| S7.6 — Optimisation images (next/image) | 🟡     | Front2 | 3      | ☑       | ☑        | ☐    | ☐    |
 | S7.7 — Tests fonctionnels               | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
 
 ## 📦 Backlog (User Stories)
@@ -50,10 +50,10 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Tâches
 
-- [ ] Feature `src/features/activite/` : schéma Zod (titre, description, date, image?, statut)
-- [ ] CRUD complet (admin) + workflow publication/dépublication
-- [ ] Seuls les `PUBLIE` listés côté public
-- [ ] Tri par date + pagination
+- [x] Feature `src/features/activites/` : schéma Zod (titre, description, date, image?, statut)
+- [x] CRUD complet (admin) + workflow publication/dépublication
+- [x] Seuls les `PUBLIE` listés côté public
+- [x] Tri par date + pagination
 
 **Implémentation :** `prisma/model Activite`, `src/features/activite/activite.action.ts`.
 
@@ -68,15 +68,15 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Tâches
 
-- [ ] Feature `src/features/partage/` : schéma Zod (titre, contenu, auteur_id, statut)
-- [ ] CRUD + workflow publication (lié à `User`)
-- [ ] Pagination + tri antéchronologique
+- [x] Feature `src/features/partages/` : schéma Zod (titre, contenu, auteur_id, statut)
+- [x] CRUD + workflow publication (lié à `User`)
+- [x] Pagination + tri antéchronologique
 
 **Implémentation :** `prisma/model Partage`, `src/features/partage/partage.action.ts`.
 
 #### Critères d'acceptation
 
-- [ ] Le champ auteur est lié à `User` (FK) et exposé de façon sécurisée
+- [x] Le champ auteur est lié à `User` (FK) et exposé de façon sécurisée
 
 ### 🎟️ S7.3 — Admin : modération Activités & Partages
 
@@ -84,9 +84,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Tâches
 
-- [ ] `/admin/activites` + `/admin/partages` : tableaux avec état de publication
-- [ ] Actions : Publier / Dépublier / Modifier / Supprimer (confirmations)
-- [ ] Filtre par statut (brouillon / publié)
+- [x] `/admin/activites` + `/admin/partages` : tableaux avec état de publication
+- [x] Actions : Publier / Dépublier / Modifier / Supprimer (confirmations)
+- [x] Filtre par statut (brouillon / publié)
 
 #### Acceptation (Gherkin)
 
@@ -99,9 +99,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Tâches
 
-- [ ] Route `/activites` : grille de cartes (image, titre, date)
-- [ ] Route `/activites/[id]` : page détail complète
-- [ ] Back-link + meta title/description (SEO)
+- [x] Route `/activites` : grille de cartes (image, titre, date)
+- [x] Route `/activites/[id]` : page détail complète
+- [x] Back-link + meta title/description (SEO)
 
 **Implémentation :** `app/activites/page.tsx`, `app/activites/[id]/page.tsx`.
 
@@ -115,9 +115,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Tâches
 
-- [ ] Route `/partages` : liste (cartes auteur/date)
-- [ ] Route `/partages/[id]` : détail
-- [ ] Navigation interne cohérente
+- [x] Route `/partages` : liste (cartes auteur/date)
+- [x] Route `/partages/[id]` : détail
+- [x] Navigation interne cohérente
 
 #### Critères d'acceptation
 
@@ -129,9 +129,9 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 #### Tâches
 
-- [ ] `next/image` avec `sizes` adaptatifs sur les listes publiques
-- [ ] Lazy loading + `priority` sur l'image LCP
-- [ ] `remotePatterns` configurés si images stockées ailleurs
+- [x] `next/image` avec `sizes` adaptatifs sur les listes publiques
+- [x] Lazy loading + `priority` sur l'image LCP
+- [x] `remotePatterns` configurés pour Vercel Blob ; l'upload local reste same-origin
 
 #### Acceptation (Gherkin)
 
@@ -147,14 +147,14 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 
 ## 🧪 Critères d'acceptation du Sprint
 
-- [ ] `pnpm lint` + `pnpm typecheck` + `pnpm build` verts
-- [ ] Aucun brouillon visible publiquement
-- [ ] Pages publiques accessibles sans auth
+- [x] `pnpm lint` + `pnpm typecheck` + `pnpm build` verts
+- [x] Aucun brouillon visible publiquement (requêtes publiques filtrées sur `PUBLIE`)
+- [x] Pages publiques accessibles sans auth (proxy)
 
 ## 🪵 Definition of Done (Sprint)
 
 - [ ] Cases `[x]` = commit/PR + revue Lead
-- [ ] `next/image` partout (aucune `<img>` brute)
+- [x] `next/image` partout (aucune `<img>` brute)
 - [ ] Score perf image Lighthouse ≥ 90 sur pages publiques
 - [ ] Rétro remplie + board à jour
 
@@ -171,3 +171,12 @@ modérer, et un périmètre image LCP ≥ 90 (perf).
 | Ce qui a bien marché | À améliorer | Actions |
 | -------------------- | ----------- | ------- |
 | _vide_               | _vide_      | _vide_  |
+
+
+## Validation d'implémentation
+
+- `pnpm prisma validate` : réussi.
+- `pnpm prisma migrate deploy` : les migrations Activité/Partage ont été appliquées.
+- `pnpm lint`, `pnpm typecheck` et `pnpm build` : réussis ; les routes publiques sont dynamiques.
+- Lighthouse ≥ 90, vérification axe et parcours fonctionnels manuels restent à mesurer.
+- La base locale présente aussi une dérive préexistante sur `Observation` et `Credit`, hors périmètre de ce sprint.
