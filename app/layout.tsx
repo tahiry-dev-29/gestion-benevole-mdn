@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 
 import "./globals.css";
@@ -19,6 +19,17 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Gestion Benevole",
   description: "Gestion des bénévoles et des activités associatives",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Gestion Bénévole",
+  },
+  icons: { icon: "/icons/icon-192x192.png", apple: "/icons/icon-192x192.png" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0284c7",
 };
 
 export default async function RootLayout({

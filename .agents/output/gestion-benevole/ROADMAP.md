@@ -24,7 +24,7 @@
 | 5 | **Import / Export Excel** (users + présences) | 1 semaine | ⚪ À venir | [`tasks/05_sprint5_excel_import_export.md`](./tasks/05_sprint5_excel_import_export.md) |
 | 6 | Observations mensuelles & Liste Crédit | 2 semaines | ⚪ À venir | [`tasks/06_sprint6_obs_credit.md`](./tasks/06_sprint6_obs_credit.md) |
 | 7 | Public : Activité & Partage | 2 semaines | ⚪ À venir | [`tasks/07_sprint7_activite_partage.md`](./tasks/07_sprint7_activite_partage.md) |
-| 8 | Public : Témoignage & Finalisation PWA | 2 semaines | ⚪ À venir | [`tasks/08_sprint8_temoignage_pwa.md`](./tasks/08_sprint8_temoignage_pwa.md) |
+| 8 | Public : Témoignage & Finalisation PWA | 2 semaines | 🟡 En cours — Lighthouse et validations runtime restantes | [`tasks/08_sprint8_temoignage_pwa.md`](./tasks/08_sprint8_temoignage_pwa.md) |
 | 9 | Mise en production | 1 semaine | ⚪ À venir | [`tasks/09_sprint9_production.md`](./tasks/09_sprint9_production.md) |
 
 > Sprints 6 à 9 issus de l'ancienne roadmap `todos/` (anciens sprints 4 à 7), renumérotés et alignés sur le vocabulaire `VOLUNTEER`.
