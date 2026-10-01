@@ -59,6 +59,9 @@ export const authOptions: AuthOptions = {
         );
         if (!valid) return null;
 
+        // Le rôle USER ne peut pas s'authentifier (app fermée)
+        if ((user.role as string) === "USER") return null;
+
         return {
           id: String(user.id),
           email: user.email,

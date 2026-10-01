@@ -1,5 +1,3 @@
-import type { Role } from "@prisma/client";
-
 export type CategoryType =
   "PRIMAIRE" | "COLLEGIEN" | "UNIVERSITAIRE" | "SALARIE";
 
@@ -8,7 +6,7 @@ export interface UserItem {
   nom: string;
   prenom: string;
   email: string;
-  role: Role;
+  role: "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER";
   statut: "ACTIF" | "INACTIF";
   photo: string | null;
   sexe?: string | null;

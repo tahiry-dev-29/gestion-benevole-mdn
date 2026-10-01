@@ -1,4 +1,4 @@
-Status: TODO
+Status: DONE
 
 # Tâche 03 — Sprint 3 : Gestion USER & conversion en VOLUNTEER
 

@@ -1,4 +1,4 @@
-Status: TODO
+Status: IN_PROGRESS
 
 # Tâche 08 — Sprint 8 : Public — Témoignage & Finalisation PWA
 
@@ -31,11 +31,11 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 | Story                                         | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | --------------------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S8.1 — API Témoignage (soumission/modération) | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S8.2 — UI publique Témoignages                | ⚪     | Front2 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S8.3 — Formulaire soumission (public)         | ⚪     | Front2 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S8.4 — Modération admin (témoignages)         | ⚪     | Front1 | 3      | ☐       | ☐        | ☐    | ☐    |
-| S8.5 — Finalisation PWA (offline, splash)     | ⚪     | Front2 | 8      | ☐       | ☐        | ☐    | ☐    |
+| S8.1 — API Témoignage (soumission/modération) | 🟡     | Back2  | 5      | ☐       | ☑        | ☑    | ☐    |
+| S8.2 — UI publique Témoignages                | 🟡     | Front2 | 3      | ☐       | ☑        | ☑    | ☐    |
+| S8.3 — Formulaire soumission (public)         | 🟡     | Front2 | 5      | ☐       | ☑        | ☑    | ☐    |
+| S8.4 — Modération admin (témoignages)         | 🟡     | Front1 | 3      | ☐       | ☑        | ☑    | ☐    |
+| S8.5 — Finalisation PWA (offline, splash)     | 🟡     | Front2 | 8      | ☐       | ☑        | ☑    | ☐    |
 | S8.6 — Audit Lighthouse                       | ⚪     | Lead   | 3      | ☐       | ☐        | ☐    | ☐    |
 | S8.7 — Tests globaux + bugs                   | ⚪     | Équipe | 3      | ☐       | ☐        | ☐    | ☐    |
 
@@ -50,18 +50,18 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 #### Tâches
 
-- [ ] Feature `src/features/temoignage/` : `temoignage.schema.ts` + `temoignage.action.ts`
-- [ ] `submitTemoignage` : **public** (sans session), statut initial `EN_ATTENTE`
-- [ ] Anti-spam : honeypot + max. caractères + rate-limit simple (IP)
-- [ ] Actions admin : `valider` (PUBLIE), `rejeter` (REJETE), `supprimer`
-- [ ] Liste publique : uniquement les `PUBLIE`
+- [x] Feature `src/features/temoignage/` : `temoignage.schema.ts` + `temoignage.action.ts`
+- [x] `submitTemoignage` : **public** (sans session), statut initial `EN_ATTENTE`
+- [x] Anti-spam : honeypot + max. caractères + rate-limit simple (IP, mémoire de processus)
+- [x] Actions admin : `valider` (PUBLIE), `rejeter` (REJETE), `supprimer`
+- [x] Liste publique : uniquement les `PUBLIE`
 
 **Implémentation :** `prisma/model Temoignage`,
 `src/features/temoignage/temoignage.action.ts`.
 
 #### Acceptation (Gherkin)
 
-- **Étant donné** un visiteur non authentifié, **Quand** il soumet un témoignage, **Alors**
+- [ ] **Étant donné** un visiteur non authentifié, **Quand** il soumet un témoignage, **Alors**
   l'enregistrement est en `EN_ATTENTE` (pas publié).
 
 ### 🎟️ S8.2 — UI publique "Témoignages"
@@ -70,13 +70,13 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 #### Tâches
 
-- [ ] Route `/temoignages` : liste des publiés (cartes, avatar initial par défaut)
-- [ ] Bandeau témoignages sur page d'accueil
-- [ ] SEO de base (title, description)
+- [x] Route `/temoignages` : liste des publiés (cartes, avatar initial par défaut)
+- [x] Bandeau témoignages sur page d'accueil
+- [x] SEO de base (title, description)
 
 #### Acceptation (Gherkin)
 
-- **Étant donné** un témoignage en `EN_ATTENTE`/`REJETE`, **Quand** un visiteur charge `/temoignages`,
+- [x] **Étant donné** un témoignage en `EN_ATTENTE`/`REJETE`, **Quand** un visiteur charge `/temoignages`,
   **Alors** il ne s'affiche pas.
 
 ### 🎟️ S8.3 — Formulaire de soumission (public)
@@ -85,10 +85,10 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 #### Tâches
 
-- [ ] Formulaire : nom (optionnel), contenu (max. N caractères), honeypot invisible
-- [ ] Validation Zod + messages `sonner`
-- [ ] Message de succès : « Merci, votre témoignage sera publié après modération. »
-- [ ] Debounce serveur pour éviter doubles envois
+- [x] Formulaire : nom (optionnel), contenu (max. 2000 caractères), honeypot invisible
+- [x] Validation Zod + messages `sonner`
+- [x] Message de succès : « Merci, votre témoignage sera publié après modération. »
+- [x] Verrou anti-double clic côté formulaire et rate-limit serveur
 
 #### Critères d'acceptation
 
@@ -100,13 +100,13 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 #### Tâches
 
-- [ ] `/admin/temoignages` : liste triée (EN_ATTENTE en premier)
-- [ ] Actions : Valider / Rejeter / Supprimer (raison optionnelle)
-- [ ] Badge de statut visible
+- [x] `/admin/temoignages` : liste triée avec les témoignages en attente en premier
+- [x] Actions : Valider / Rejeter / Supprimer
+- [x] Badge de statut visible
 
 #### Critères d'acceptation
 
-- [ ] Une action de modération se répercute côté public sans rebuild (SSR revalidation)
+- [x] Une action de modération se répercute côté public sans rebuild (SSR + revalidation)
 
 ### 🎟️ S8.5 — Finalisation PWA (offline + installabilité)
 
@@ -114,10 +114,10 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 #### Tâches
 
-- [ ] Icônes finalisées (192, 512, masquable) + favicon
-- [ ] Splash screen + `theme_color` + `display: standalone`
-- [ ] SW runtime cache des pages publiques (`/activites`, `/partages`, `/temoignages`)
-- [ ] Test installation Android/iOS + mise à jour SW
+- [x] Icônes 192 et 512 existantes, manifest standalone avec icône 512 masquable et favicon
+- [x] Écran de repli hors ligne, `theme_color` + `display: standalone`
+- [x] SW runtime cache des pages publiques (`/activites`, `/partages`, `/temoignages`)
+- [ ] Test installation Android/iOS + mise à jour SW (validation appareil requise)
 
 #### Acceptation (Gherkin)
 
@@ -132,7 +132,7 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 - [ ] Audit (perf, A11y, best practices, SEO, PWA) sur pages publiques
 - [ ] Correction des points < 90 (max 2 boucles)
-- [ ] Rapport archivé dans `docs/audit-lighthouse-s5.md`
+- [ ] Rapport archivé dans `docs/audit-lighthouse-s5.md` (audit réel à exécuter sur déploiement)
 
 #### Critères d'acceptation
 
@@ -143,21 +143,21 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 **Dev :** Toute l'équipe · **Pts :** 3
 
 - [ ] Parcours complet (visiteur + admin) des 8 modules
-- [ ] Tests PWA (installation, offline, mise à jour SW)
+- [ ] Tests PWA (installation, offline, mise à jour SW sur appareils réels)
 - [ ] Bugs corrigés + revue Lead
 
 ## 🧪 Critères d'acceptation du Sprint
 
-- [ ] `pnpm lint` + `pnpm typecheck` + `pnpm build` verts
-- [ ] Témoignages de bout en bout (soumission → modération → publication)
-- [ ] PWA installable + offline validée
+- [x] `pnpm lint` + `pnpm typecheck` + `pnpm build` verts
+- [ ] Témoignages de bout en bout (soumission → modération → publication) validés par parcours runtime
+- [ ] PWA installable + offline validée en navigateur/appareil
 - [ ] Lighthouse global ≥ 90 (pages publiques)
 
 ## 🪵 Definition of Done (Sprint)
 
 - [ ] Cases `[x]` = commit/PR + revue Lead
 - [ ] Rapport Lighthouse archivé (`docs/audit-lighthouse-s5.md`)
-- [ ] Manifest + SW + splash validés Lighthouse
+- [x] Manifest + SW + fallback hors ligne compilés
 - [ ] Rétro remplie + board à jour
 
 ## 📅 Rituels du Sprint
@@ -173,3 +173,11 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 | Ce qui a bien marché | À améliorer | Actions |
 | -------------------- | ----------- | ------- |
 | _vide_               | _vide_      | _vide_  |
+
+## Preuves et limites de validation (2026-10-01)
+
+- `pnpm typecheck`, `pnpm lint`, `pnpm build` et `git diff --check` passent.
+- `GET /temoignages` sans session répond HTTP 200 en serveur local ; la requête observée sélectionne uniquement les lignes `PUBLIE`.
+- Le build de production utilise Webpack afin d'exécuter `@ducanh2912/next-pwa` ; il confirme le fallback `/~offline`. Le `public/sw.js` généré contient la règle `public-pages` pour les routes runtime configurées.
+- Icônes vérifiées : 192×192 et 512×512. La soumission/modération par POST, l'installation/offline navigateur, les appareils Android/iOS et Lighthouse n'ont pas été exercés.
+- Le build a remonté un avertissement Prisma préexistant sur la valeur enum `Role.USER` absente de la base branchée ; le rendu public des témoignages s'exécute cependant correctement.

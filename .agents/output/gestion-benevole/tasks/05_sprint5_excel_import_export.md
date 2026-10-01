@@ -38,12 +38,18 @@ Export XLSX et import XLSX **fonctionnels** sur la liste USER (`/admin/users`) e
 
 ## Critères d'acceptation
 
-- [ ] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur
-- [ ] `pnpm add exceljs` dans `dependencies` (pas `devDependencies`)
+- [x] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur
+- [x] `pnpm add exceljs` dans `dependencies` (pas `devDependencies`)
 - [ ] Export `/admin/users` → fichier `.xlsx` s'ouvre dans Excel/LibreOffice avec **toutes** les colonnes du PRD
 - [ ] Export `/admin/users/presence` → présences du filtre courant avec table/siège
-- [ ] Round-trip : export → réimport à l'identique → 0 erreur, 0 doublon créé
+- [ ] Round-trip : export → réimport à l'identique → 0 erreur, 0 doublon créé (implémentation par upsert, scénario non exécuté)
 - [ ] Import d'un fichier avec 1 ligne invalide (email malformé) → `imported: N-1` + erreur listée **avec le n° de ligne**
 - [ ] Import d'un `.txt` renommé `.xlsx` → refus propre
 - [ ] Un `VOLUNTEER` appelant l'export → 403 (côté serveur)
-- [ ] Aucun `exceljs` importé côté client (vérif : `grep -r "exceljs" src --include='*.tsx'` = vide)
+- [x] Aucun `exceljs` importé côté client (vérif : `grep -r "exceljs" src --include='*.tsx'` = vide)
+
+### Blocages constatés
+
+- Le schéma Prisma déployé ne contient ni `matricule`, ni les propriétés étendues du PRD, ni modèle `Seat`/relation table-siège. Les exports suivent donc les champs présents dans `User` et `Presence`; ils ne peuvent satisfaire les colonnes complètes décrites plus haut sans migration de schéma.
+- La route de présence réellement utilisée est `/admin/presences` (la route `/admin/presence` redirige vers elle). L'export accepte des bornes `dateDebut`/`dateFin`, mais l'interface actuelle de l'historique n'expose pas ces filtres à l'export.
+- Les vérifications automatisées passent. Les scénarios HTTP avec session, fichiers malformés et round-trip n'ont pas été exécutés; le statut global reste TODO tant que ces critères ne sont pas prouvés et que le périmètre de schéma n'est pas résolu.

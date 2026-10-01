@@ -20,6 +20,10 @@ import {
 
 import type { CategoryType, UserFormData } from "../types";
 
+function selectedRole(value: string | null): UserFormData["role"] {
+  return value === "ADMIN" ? "ADMIN" : "VOLUNTEER";
+}
+
 interface CreateUserModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -113,7 +117,7 @@ export function CreateUserModal({
                 onValueChange={(v) =>
                   setFormData({
                     ...formData,
-                    role: (v as "ADMIN" | "VOLUNTEER") || "VOLUNTEER",
+                    role: selectedRole(v),
                   })
                 }
               >

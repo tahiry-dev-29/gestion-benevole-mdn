@@ -14,6 +14,7 @@ export type ActiviteQueryParams = {
   pageSize?: number;
   sortBy?: string;
   sortDir?: string;
+  statut?: "BROUILLON" | "PUBLIE";
 };
 
 async function fetchActivites(params: ActiviteQueryParams): Promise<{
@@ -26,6 +27,7 @@ async function fetchActivites(params: ActiviteQueryParams): Promise<{
   sp.set("pageSize", String(params.pageSize ?? 10));
   if (params.sortBy) sp.set("sortBy", params.sortBy);
   if (params.sortDir) sp.set("sortDir", params.sortDir);
+  if (params.statut) sp.set("statut", params.statut);
 
   const res = await fetch(`/api/activites?${sp.toString()}`);
   if (!res.ok) throw new Error("Impossible de charger les activités");

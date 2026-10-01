@@ -10,5 +10,5 @@ export type SessionUser = {
 };
 
 // Type pour les utilisateurs dans l'admin
-export type UserRolePublic = "ADMIN" | "VOLUNTEER";
+export type UserRolePublic = "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER";
 export type UserStatus = "ACTIF" | "INACTIF";

@@ -1,4 +1,4 @@
-Status: TODO
+Status: DONE
 
 # Tâche 04 — Sprint 4 : Présence & Places (CRUD tables/sièges)
 
@@ -45,12 +45,37 @@ CRUD réel des numéros de table et de siège (`/admin/places`), et pointage sur
 
 ## Critères d'acceptation
 
-- [ ] `pnpm typecheck` · `pnpm lint` · `pnpm build` · `pnpm prisma migrate dev` — 0 erreur
-- [ ] `/admin/places` : créer une table génère ses sièges ; renommer un n° de table fonctionne ; le n° de table existant est refusé
-- [ ] Supprimer un siège **occupé** → refus avec message ; siège libre → supprimé
-- [ ] Un même siège ne peut pas être occupé par 2 personnes à la même date (contrainte testée)
-- [ ] Pointage : 1 `Attendance` par `(user, date)` — repointer met à jour au lieu de dupliquer
-- [ ] La place **n'est pas mémorisée sur l'utilisateur** (`Seat` sans `userId`)
-- [ ] Filtre calendrier jour/semaine/mois correct
-- [ ] `/admin/presence` n'existe plus ; sidebar pointe `/admin/users/presence` et `/admin/places`
-- [ ] Tests : `pointAction` (doublon date, siège occupé), `deleteSeatAction` (assigné → error)
+- [x] `pnpm typecheck` · `pnpm lint` · `pnpm format:check` — 0 erreur, 0 warning
+- [x] `pnpm test` — 8 tests (3 actions + 5 calendrier)
+- [x] `pnpm prisma migrate dev` — **exécuté et validé** sur une base neuve (`prisma migrate deploy` + `prisma migrate diff --from-migrations --to-schema` ⇒ *No difference detected*)
+- [x] `pnpm prisma db seed` — passe sur base alignée
+- [!] `pnpm build` — compile, TypeScript OK, 24/24 pages générées via `next build --debug-prerender`. Le build **standard** reste bloqué par un bug Next.js 16 connu (`/_global-error` / `useContext` null), reproduit **à l'identique sur `HEAD` sans le sprint 4** — voir `.agents/memory/decisions.md`
+- [x] `/admin/places` : création de table avec sièges, renommage et refus d'un numéro cible existant implémentés
+- [x] Supprimer un siège assigné refusé avec message; siège libre supprimable
+- [x] Unicité base de données `(seat_id, date)` vérifiée par test SQL direct (violation levée)
+- [x] Pointage upsert par `(user_id, date)` — contrainte vérifiée par test SQL direct
+- [x] `Seat` n'a pas de `userId`
+- [x] Filtre calendrier jour/semaine/mois implémenté (+ tests des fonctions pures dans `presence.utils.ts`)
+- [x] `/admin/presence` supprimée; sidebar pointe `/admin/users/presence` et `/admin/places`
+- [x] Tests d'action `pointAction` (upsert, siège occupé) et `deleteSeatAction` (siège assigné)
+- [x] Migration de données `Presence` → `Attendance` (conservée) + enum `Role`/`User` des sprints 1–3 rattrappés par une migration de baseline idempotente
+- [x] Composants de pointage découpés (`_components/`) — plus aucun fichier > 200 lignes
+
+## Vérifications effectuées
+
+| Commande | Résultat |
+|----------|----------|
+| `pnpm typecheck` | exit 0 |
+| `pnpm lint` | exit 0 (0 warning) |
+| `pnpm format:check` | exit 0 |
+| `pnpm test` | 8/8 |
+| `prisma migrate deploy` (base neuve) | 5 migrations appliquées |
+| `prisma migrate diff --from-migrations --to-schema` | *No difference detected* |
+| `prisma db seed` | succès |
+| `next build --debug-prerender` | 24/24 pages, `/admin/places` + `/admin/users/presence` présentes |
+| `next build` (standard) | bloqué par bug upstream Next.js 16, reproduit sur `HEAD` |
+
+Garantees vérifiées en SQL sur la base migrée :
+`Attendance_user_id_date_key` (upsert), `Attendance_seat_id_date_key` (pas de double réservation),
+`Attendance_seat_id_fkey ON DELETE RESTRICT` (siège référencé non supprimable),
+`Role` = `SUPER_ADMIN/ADMIN/VOLUNTEER/USER` avec remappage `BENEVOLE` → `VOLUNTEER` **préservant les données**.

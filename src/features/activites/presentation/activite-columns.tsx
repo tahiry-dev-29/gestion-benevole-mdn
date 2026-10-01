@@ -6,6 +6,8 @@ import {
   ArrowUp,
   ChevronsUpDown,
   Eye,
+  Globe,
+  GlobeLock,
   MoreHorizontal,
   Pencil,
   Trash2,
@@ -27,6 +29,7 @@ interface ColumnActions {
   onView: (a: Activite) => void;
   onEdit: (a: Activite) => void;
   onDelete: (a: Activite) => void;
+  onTogglePublish: (a: Activite) => void;
 }
 
 function formatDate(iso: string) {
@@ -63,6 +66,7 @@ export function getActiviteColumns({
   onView,
   onEdit,
   onDelete,
+  onTogglePublish,
 }: ColumnActions): ColumnDef<Activite>[] {
   return [
     {
@@ -82,6 +86,25 @@ export function getActiviteColumns({
       accessorKey: "date",
       header: ({ column }) => <SortHeader column={column} label="Date" />,
       cell: ({ row }) => formatDate(row.original.date),
+    },
+    {
+      accessorKey: "statut",
+      header: "Publication",
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onTogglePublish(row.original)}
+          className="gap-2"
+        >
+          {row.original.statut === "PUBLIE" ? (
+            <Globe className="size-4 text-emerald-600" />
+          ) : (
+            <GlobeLock className="size-4 text-muted-foreground" />
+          )}
+          {row.original.statut === "PUBLIE" ? "Publié" : "Brouillon"}
+        </Button>
+      ),
     },
     {
       id: "actions",
