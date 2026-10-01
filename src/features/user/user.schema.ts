@@ -17,7 +17,9 @@ export const userSchema = z.object({
   nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
   prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
   email: z.string().email("Adresse email invalide"),
-  role: z.enum(["ADMIN", "BENEVOLE"]).default("BENEVOLE"),
+  role: z
+    .enum(["SUPER_ADMIN", "ADMIN", "VOLUNTEER", "USER"])
+    .default("VOLUNTEER"),
   statut: z.enum(["ACTIF", "INACTIF"]).default("ACTIF"),
   photo: z.string().nullable().optional(),
   sexe: SexeEnum.optional(),
@@ -35,7 +37,7 @@ export const userSchema = z.object({
 
 export const updateRoleSchema = z.object({
   userId: z.number(),
-  role: z.enum(["ADMIN", "BENEVOLE"]),
+  role: z.enum(["SUPER_ADMIN", "ADMIN", "VOLUNTEER", "USER"]),
 });
 
 export const updateProfileSchema = z.object({

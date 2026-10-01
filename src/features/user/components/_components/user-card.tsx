@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Role } from "@prisma/client";
 import {
   MoreHorizontal,
   Pencil,
@@ -40,7 +41,7 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 interface UserCardProps {
   user: UserItem;
   isPending: boolean;
-  onRoleChange: (id: number, role: "ADMIN" | "BENEVOLE") => void;
+  onRoleChange: (id: number, role: Role) => void;
   onDelete: (id: number) => void;
 }
 
@@ -103,7 +104,7 @@ export function UserCard({
               <DropdownMenuSeparator className="bg-slate-800" />
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/admin/benevoles/${u.id}`}
+                  href={`/admin/volunteer-management/${u.id}`}
                   className="cursor-pointer gap-2"
                 >
                   <Pencil className="size-3.5 text-slate-400" />
@@ -115,7 +116,7 @@ export function UserCard({
                 onClick={() =>
                   onRoleChange(
                     u.id,
-                    u.role === "ADMIN" ? "BENEVOLE" : "ADMIN"
+                    u.role === "ADMIN" ? "VOLUNTEER" : "ADMIN"
                   )
                 }
                 className="cursor-pointer gap-2"
