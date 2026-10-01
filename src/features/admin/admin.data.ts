@@ -1,3 +1,4 @@
+import type { Role } from "@prisma/client";
 import {
   BarChart3,
   CalendarCheck,
@@ -22,7 +23,8 @@ export type NavItem = {
   url: string;
   icon?: LucideIcon;
   isActive?: boolean;
-  items?: { title: string; url: string }[];
+  roles?: Role[];
+  items?: { title: string; url: string; roles?: Role[] }[];
 };
 
 export type NavGroup = {
@@ -32,11 +34,14 @@ export type NavGroup = {
   items: NavItem[];
 };
 
+const ADMIN_ONLY: Role[] = ["SUPER_ADMIN", "ADMIN"];
+
 export const adminGestionItems: NavItem[] = [
   {
     title: "Utilisateurs",
     url: "/admin/users",
     icon: Users,
+    roles: ADMIN_ONLY,
     items: [{ title: "Liste des utilisateurs", url: "/admin/users" }],
   },
   {
@@ -49,24 +54,28 @@ export const adminGestionItems: NavItem[] = [
     title: "Présences",
     url: "/admin/presences",
     icon: CalendarCheck,
+    roles: ADMIN_ONLY,
     items: [{ title: "Pointage journalier", url: "/admin/presences" }],
   },
   {
     title: "Activités",
     url: "/admin/activities",
     icon: CalendarDays,
+    roles: ADMIN_ONLY,
     items: [{ title: "Liste des activités", url: "/admin/activities" }],
   },
   {
     title: "Crédits",
     url: "/admin/credits",
     icon: Coins,
+    roles: ADMIN_ONLY,
     items: [{ title: "Liste des crédits", url: "/admin/credits" }],
   },
   {
     title: "Observations",
     url: "/admin/observations",
     icon: Eye,
+    roles: ADMIN_ONLY,
     items: [{ title: "Observations mensuelles", url: "/admin/observations" }],
   },
 ];
@@ -80,21 +89,46 @@ export const adminNavGroups: NavGroup[] = [
         url: "/admin/dashboard",
         icon: LayoutDashboard,
       },
-      { title: "Suivi du projet", url: "/admin/sprints", icon: ClipboardList },
+      {
+        title: "Suivi du projet",
+        url: "/admin/sprints",
+        icon: ClipboardList,
+        roles: ADMIN_ONLY,
+      },
     ],
   },
   {
     label: "Communication",
     items: [
-      { title: "Partages", url: "/admin/partages", icon: Share2 },
-      { title: "Témoignages", url: "/admin/temoignages", icon: MessageSquare },
+      {
+        title: "Partages",
+        url: "/admin/partages",
+        icon: Share2,
+        roles: ADMIN_ONLY,
+      },
+      {
+        title: "Témoignages",
+        url: "/admin/temoignages",
+        icon: MessageSquare,
+        roles: ADMIN_ONLY,
+      },
     ],
   },
   {
     label: "Système",
     items: [
-      { title: "Statistiques", url: "/admin/statistiques", icon: BarChart3 },
-      { title: "Paramètres", url: "/admin/parametres", icon: Settings },
+      {
+        title: "Statistiques",
+        url: "/admin/statistiques",
+        icon: BarChart3,
+        roles: ADMIN_ONLY,
+      },
+      {
+        title: "Paramètres",
+        url: "/admin/parametres",
+        icon: Settings,
+        roles: ADMIN_ONLY,
+      },
     ],
   },
 ];

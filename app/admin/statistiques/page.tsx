@@ -6,7 +6,7 @@ import { StatCard } from "@/features/admin/stat-card";
 import { users } from "@/features/users/user.data";
 
 export default function StatistiquesPage() {
-  const benevoles = users.filter((u) => u.role === "BENEVOLE").length;
+  const benevoles = users.filter((u) => u.role === "VOLUNTEER").length;
   const totalCredits = credits.reduce((sum, c) => sum + c.montant, 0);
   const presencesJour = presences.filter((p) => p.statut === "PRESENT").length;
 

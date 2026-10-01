@@ -1,4 +1,4 @@
-Status: TODO
+Status: DONE (vérifié 2026-10-01 : migrate/test/typecheck/lint/build verts + matrice login & routes × rôles testée en live sur DB locale)
 
 # Tâche 01 — Sprint 1 : Auth & RBAC (app fermée, 4 rôles)
 
@@ -51,13 +51,13 @@ Fermer l'application : `/` redirige vers `/login`, aucune page d'inscription, un
 
 ## Critères d'acceptation
 
-- [ ] `pnpm prisma migrate dev` passe sans perte de données
-- [ ] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur
-- [ ] `GET /` → redirection **307 vers `/login`** (pas de page d'accueil)
-- [ ] `/sign-up` (et `/signup`) → **404**
-- [ ] Login `user@test.com` → **refusé, aucune session créée**
-- [ ] Login `volunteer@test.com` → `/admin/dashboard` OK ; `/admin/users` → `/forbidden`
-- [ ] Login `admin@mdn.com` → `/admin/users` OK ; tentative de créer un `SUPER_ADMIN` → refus (matrice)
-- [ ] Login `superadmin@mdn.com` → tout le périmètre `ADMIN+` + création `SUPER_ADMIN`
-- [ ] `statut INACTIF` → `/forbidden` sur toutes les routes `/admin/*`
-- [ ] `canCreate()` couvert par un test exhaustif (4 rôles × 4 rôles)
+- [x] `pnpm prisma migrate dev` passe sans perte de données
+- [x] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur (+ `pnpm test` : 29/29)
+- [x] `GET /` → redirection **307 vers `/login`** (pas de page d'accueil)
+- [x] `/sign-up` (et `/signup`) → **404** (aucune route, aucune référence)
+- [x] Login `user@test.com` → **refusé, aucune session créée** (« Compte non habilité (en attente de conversion) »)
+- [x] Login `volunteer@test.com` → `/admin/dashboard` OK ; `/admin/users` → `/forbidden`
+- [x] Login `admin@mdn.com` → `/admin/users` OK ; tentative de créer un `SUPER_ADMIN` → refus (matrice)
+- [x] Login `superadmin@mdn.com` → tout le périmètre `ADMIN+` + création `SUPER_ADMIN`
+- [x] `statut INACTIF` → `/forbidden` sur toutes les routes `/admin/*`
+- [x] `canCreate()` couvert par un test exhaustif (4 rôles × 4 rôles)

@@ -219,7 +219,7 @@ export const users = [
     prenom: "Jean",
     nom: "Martin",
     email: "jean.martin@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-01-15",
   },
   {
@@ -227,7 +227,7 @@ export const users = [
     prenom: "Sophie",
     nom: "Bernard",
     email: "sophie.bernard@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-03-22",
   },
   {
@@ -235,7 +235,7 @@ export const users = [
     prenom: "Pierre",
     nom: "Lefevre",
     email: "pierre.lefevre@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2024-11-10",
   },
   {
@@ -243,7 +243,7 @@ export const users = [
     prenom: "Claire",
     nom: "Morel",
     email: "claire.morel@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-06-05",
   },
   {
@@ -251,7 +251,7 @@ export const users = [
     prenom: "Luc",
     nom: "Petit",
     email: "luc.petit@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-02-28",
   },
   {
@@ -267,7 +267,7 @@ export const users = [
     prenom: "Thomas",
     nom: "Durand",
     email: "thomas.durand@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-07-12",
   },
   {
@@ -275,7 +275,7 @@ export const users = [
     prenom: "Julie",
     nom: "Roux",
     email: "julie.roux@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-04-18",
   },
   {
@@ -283,7 +283,7 @@ export const users = [
     prenom: "Nicolas",
     nom: "Moreau",
     email: "nicolas.moreau@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2024-12-03",
   },
   {
@@ -291,7 +291,7 @@ export const users = [
     prenom: "Emma",
     nom: "Fournier",
     email: "emma.fournier@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-05-30",
   },
   {
@@ -299,7 +299,7 @@ export const users = [
     prenom: "Antoine",
     nom: "Girard",
     email: "antoine.girard@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-08-14",
   },
   {
@@ -307,7 +307,7 @@ export const users = [
     prenom: "Léa",
     nom: "Lefort",
     email: "lea.lefort@asso.fr",
-    role: "BENEVOLE",
+    role: "VOLUNTEER",
     date_entree: "2025-01-20",
   },
 ];
