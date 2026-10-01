@@ -1,4 +1,4 @@
-Status: DONE (vérifié 2026-10-01 : migrate/test/typecheck/lint/build verts + matrice login & routes × rôles testée en live sur DB locale)
+Status: DONE
 
 # Tâche 01 — Sprint 1 : Auth & RBAC (app fermée, 4 rôles)
 
@@ -52,12 +52,21 @@ Fermer l'application : `/` redirige vers `/login`, aucune page d'inscription, un
 ## Critères d'acceptation
 
 - [x] `pnpm prisma migrate dev` passe sans perte de données
-- [x] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur (+ `pnpm test` : 29/29)
+- [x] `pnpm typecheck` · `pnpm lint` · `pnpm build` — 0 erreur
 - [x] `GET /` → redirection **307 vers `/login`** (pas de page d'accueil)
-- [x] `/sign-up` (et `/signup`) → **404** (aucune route, aucune référence)
-- [x] Login `user@test.com` → **refusé, aucune session créée** (« Compte non habilité (en attente de conversion) »)
+- [x] `/sign-up` (et `/signup`) → **404**
+- [x] Login `user@test.com` → **refusé, aucune session créée**
 - [x] Login `volunteer@test.com` → `/admin/dashboard` OK ; `/admin/users` → `/forbidden`
 - [x] Login `admin@mdn.com` → `/admin/users` OK ; tentative de créer un `SUPER_ADMIN` → refus (matrice)
 - [x] Login `superadmin@mdn.com` → tout le périmètre `ADMIN+` + création `SUPER_ADMIN`
 - [x] `statut INACTIF` → `/forbidden` sur toutes les routes `/admin/*`
 - [x] `canCreate()` couvert par un test exhaustif (4 rôles × 4 rôles)
+
+> **Vérifié le 2026-10-01** — requêtes HTTP réelles (`next start`, session par rôle) :
+> - `GET /` → **307 → `/login`** ; avec session : `/sign-up`, `/signup`, `/home` → **404** (sans session ces routes renvoient 307 vers `/login`, comportement « app fermée »).
+> - `volunteer@test.com` → `/admin/dashboard` **200**, mais `/admin/users` et `/admin/volunteer-management/roles` → **rewrite `/forbidden`**.
+> - `admin@mdn.com` → `/admin/users` 200, `/roles` 200 ; `superadmin@mdn.com` → `/admin/users` 200, `/roles` 200.
+> - `user@test.com` → `error=Compte non habilité (en attente de conversion).` et **session `{}`** (aucune session).
+> - `statut INACTIF` → `/admin/dashboard`, `/admin/volunteer-management`, `/admin/users` tous **`/forbidden`** (statut rétabli ensuite).
+> - **46 tests** verts (`canCreate` 4×4) ; `typecheck` et `lint` **0 erreur**.
+> - **Bâtons en rouge :** `next build` passe avec **`NODE_ENV=production`** ; il échoue sinon pour une cause **pré-existante** (constatée sur la branche propre en `git stash`) : `NODE_ENV="development"` est forcé par `.env`. De même `prisma migrate dev` exige un `SHADOW_DATABASE_URL` corrigé (`gestion_benevole_shadow`), celui du `.env` pointant sur la base `postgres` non modifiable (`.env` partagé avec l'autre checkout).

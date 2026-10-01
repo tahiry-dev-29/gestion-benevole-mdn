@@ -7,9 +7,7 @@ import { canAccessRoute, isLoginRole } from "./src/lib/rbac";
 const PUBLIC_PATHS = ["/login", "/forbidden", "/api", "/_next"];
 
 function isPublic(pathname: string) {
-  return PUBLIC_PATHS.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`)
-  );
+  return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 export async function proxy(request: NextRequest) {
