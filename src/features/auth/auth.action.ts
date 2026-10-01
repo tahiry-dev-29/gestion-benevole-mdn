@@ -38,7 +38,7 @@ export async function registerAction(
       nom,
       email: email.toLowerCase(),
       password: hashed,
-      role: "BENEVOLE",
+      role: "VOLUNTEER",
       statut: "ACTIF",
       sexe: "Non précisé",
       age: 18,

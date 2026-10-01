@@ -109,7 +109,7 @@ export const benevoleRepository: IBenevoleRepository = {
         prenom: input.prenom,
         email: input.email,
         password: input.password,
-        role: input.role ?? "BENEVOLE",
+        role: input.role ?? "VOLUNTEER",
         date_entree: input.dateEntree ? new Date(input.dateEntree) : new Date(),
         sexe:
           ((input as Record<string, unknown>).sexe as string) ?? "Non précisé",

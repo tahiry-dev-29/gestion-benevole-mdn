@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const roleEnum = z.enum(["ADMIN", "BENEVOLE"]);
+export const roleEnum = z.enum(["ADMIN", "VOLUNTEER"]);
 
 export const createBenevoleSchema = z.object({
   nom: z.string().min(1, "Le nom est requis").max(100),
@@ -9,7 +9,7 @@ export const createBenevoleSchema = z.object({
   password: z
     .string()
     .min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-  role: roleEnum.default("BENEVOLE"),
+  role: roleEnum.default("VOLUNTEER"),
   dateEntree: z.string().optional(),
 });
 

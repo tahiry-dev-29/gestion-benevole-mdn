@@ -1,12 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  MoreHorizontal,
-  Pencil,
-  Phone,
-  Shield,
-  Trash2,
-} from "lucide-react";
+import { Eye, MoreHorizontal, Pencil, Phone, Shield, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,40 +14,27 @@ import {
 
 import type { UserItem } from "../types";
 
-function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-    </svg>
-  );
-}
+const ROLE_COLORS: Record<string, string> = {
+  SUPER_ADMIN: "bg-red-950/80 text-red-300 border-red-800/60",
+  ADMIN: "bg-purple-950/80 text-purple-300 border-purple-800/60",
+  VOLUNTEER: "bg-cyan-950/80 text-cyan-300 border-cyan-800/60",
+  USER: "bg-amber-950/80 text-amber-300 border-amber-800/60",
+};
 
 interface UserCardProps {
   user: UserItem;
   isPending: boolean;
-  onRoleChange: (id: number, role: "ADMIN" | "BENEVOLE") => void;
   onDelete: (id: number) => void;
+  certBadge?: React.ReactNode;
 }
 
-export function UserCard({
-  user: u,
-  isPending,
-  onRoleChange,
-  onDelete,
-}: UserCardProps) {
-  const initials = `${u.prenom[0] || ""}${u.nom[0] || ""}`.toUpperCase() || "U";
+export function UserCard({ user: u, isPending, onDelete, certBadge }: UserCardProps) {
+  const initials = `${u.prenom[0] ?? ""}${u.nom[0] ?? ""}`.toUpperCase() || "U";
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
     dateStyle: "medium",
   }).format(new Date(u.date_entree || u.createdAt));
+
+  const roleColor = ROLE_COLORS[u.role] ?? "bg-slate-800 text-slate-300 border-slate-700";
 
   return (
     <div className="rounded-xl border border-slate-800/80 bg-slate-900/60 p-5 hover:border-slate-700 transition-all flex flex-col justify-between">
@@ -80,6 +61,9 @@ export function UserCard({
               <p className="text-xs font-mono text-cyan-400/90 truncate mt-0.5">
                 {u.email}
               </p>
+              {u.matricule && (
+                <p className="text-[10px] text-slate-500 mt-0.5">#{u.matricule}</p>
+              )}
             </div>
           </div>
 
@@ -97,31 +81,19 @@ export function UserCard({
               align="end"
               className="w-48 bg-slate-900 border-slate-800 text-slate-200"
             >
-              <DropdownMenuLabel className="text-xs text-slate-400">
-                Actions
-              </DropdownMenuLabel>
+              <DropdownMenuLabel className="text-xs text-slate-400">Actions</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-800" />
               <DropdownMenuItem asChild>
-                <Link
-                  href={`/admin/benevoles/${u.id}`}
-                  className="cursor-pointer gap-2"
-                >
-                  <Pencil className="size-3.5 text-slate-400" />
-                  Modifier profil
+                <Link href={`/admin/users/${u.id}`} className="cursor-pointer gap-2">
+                  <Eye className="size-3.5 text-slate-400" />
+                  Voir la fiche
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled={isPending}
-                onClick={() =>
-                  onRoleChange(
-                    u.id,
-                    u.role === "ADMIN" ? "BENEVOLE" : "ADMIN"
-                  )
-                }
-                className="cursor-pointer gap-2"
-              >
-                <Shield className="size-3.5 text-slate-400" />
-                Passer en {u.role === "ADMIN" ? "Bénévole" : "Admin"}
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/users/${u.id}/update`} className="cursor-pointer gap-2">
+                  <Pencil className="size-3.5 text-slate-400" />
+                  Modifier
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-slate-800" />
               <DropdownMenuItem
@@ -137,13 +109,7 @@ export function UserCard({
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-1.5">
-          <span
-            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-              u.role === "ADMIN"
-                ? "bg-purple-950/80 text-purple-300 border border-purple-800/60"
-                : "bg-cyan-950/80 text-cyan-300 border border-cyan-800/60"
-            }`}
-          >
+          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${roleColor}`}>
             <Shield className="size-3" />
             {u.role}
           </span>
@@ -155,56 +121,30 @@ export function UserCard({
                 : "bg-slate-800 text-slate-400 border border-slate-700"
             }`}
           >
-            <span
-              className={`size-1.5 rounded-full ${
-                u.statut === "ACTIF" ? "bg-emerald-400" : "bg-slate-500"
-              }`}
-            />
+            <span className={`size-1.5 rounded-full ${u.statut === "ACTIF" ? "bg-emerald-400" : "bg-slate-500"}`} />
             {u.statut}
           </span>
 
-          {u.categorie && (
-            <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-800/80 text-slate-300 border border-slate-700/60">
-              {u.categorie}
-            </span>
-          )}
+          {certBadge}
         </div>
 
         <div className="mt-4 space-y-1.5 text-xs text-slate-400">
-          {u.contact && (
+          {u.telephone && (
             <div className="flex items-center gap-2 truncate">
               <Phone className="size-3.5 text-slate-500 shrink-0" />
-              <span className="truncate">{u.contact}</span>
+              <span className="truncate">{u.telephone}</span>
             </div>
           )}
-          {u.facebook && (
-            <div className="flex items-center gap-2 truncate">
-              <FacebookIcon className="size-3.5 text-slate-500 shrink-0" />
-              <span className="truncate">{u.facebook}</span>
-            </div>
+          {u.etablissement && u.etablissement !== "Non renseigné" && (
+            <p className="truncate">{u.etablissement}</p>
           )}
+          {u.societe && <p className="truncate">{u.societe}</p>}
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-xs">
-        <div>
-          <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-            ÉTABLISSEMENT
-          </span>
-          <span className="font-semibold text-slate-200 mt-0.5 block truncate">
-            {u.etablissement || "—"}
-          </span>
-        </div>
-
-        <div className="text-right">
-          <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-            ENTRÉE / DÉTAILS
-          </span>
-          <span className="font-semibold text-slate-200 mt-0.5 block truncate">
-            {u.sexe ? `${u.sexe}, ` : ""}
-            {u.age ? `${u.age} ans` : formattedDate}
-          </span>
-        </div>
+      <div className="mt-4 pt-3 border-t border-slate-800/60 text-xs text-slate-500 flex justify-between">
+        <span>{u.categorie ?? "—"}</span>
+        <span>{formattedDate}</span>
       </div>
     </div>
   );

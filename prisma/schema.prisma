@@ -13,7 +13,7 @@ model User {
   email         String         @unique
   emailVerified DateTime?
   password      String?
-  role          Role           @default(BENEVOLE)
+  role          Role           @default(VOLUNTEER)
   photo         String?
   statut        UserStatut     @default(ACTIF)
   deletedAt     DateTime?
@@ -32,6 +32,33 @@ model User {
   categorie     Category      @default(UNIVERSITAIRE)
   etablissement String        @default("Non renseigné")
   facebook      String?
+
+  matricule             String?          @unique
+  societe               String?
+  telephone             String?
+  dateNaissance         DateTime?
+  siteWeb               String?
+  cvUrl                 String?
+  socialProfile         String?
+  joursDisponibles      String[]         @default([])
+  disponibilites        Json?
+  contactUrgence        String?
+  spinneret             String?
+  accepteRegles         Boolean          @default(false)
+  reglesAccepteesAt     DateTime?
+  materielPC            Boolean          @default(false)
+  createdById           Int?
+  createdBy             User?            @relation("CreatedBy", fields: [createdById], references: [id])
+  createdUsers          User[]           @relation("CreatedBy")
+
+  // conversion USER → VOLUNTEER
+  certificatUrl           String?
+  certificatStatut        CertificatStatut @default(NON_DEMANDE)
+  certificatValidatedAt   DateTime?
+  certificatValidatedById Int?
+
+  @@index([certificatStatut])
+  @@index([role, statut])
 }
 
 model Presence {
@@ -104,8 +131,17 @@ model Temoignage {
 }
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
-  BENEVOLE
+  VOLUNTEER
+  USER
+}
+
+enum CertificatStatut {
+  NON_DEMANDE
+  EN_ATTENTE
+  APPROUVE
+  REJETE
 }
 
 enum UserStatut {
