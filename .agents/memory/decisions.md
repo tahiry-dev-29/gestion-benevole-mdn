@@ -9,3 +9,4 @@ Journal append-only. Une décision = une ligne datée. Ne pas effacer, ne pas r�
 2026-10-01 — Places non fixes : `Seat` sans `userId`, la table/siège est choisie à chaque pointage (`Attendance.seat_id`) — CRUD des numéros de table/siège dans `/admin/places`
 2026-10-01 — Import/Export Excel via `exceljs` (côté serveur) sur les listes USER et présences ; colonnes partagées import/export
 2026-10-01 — Dossier `todos/` supprimé : plan/sprints migés dans `.agents/output/gestion-benevole/` (idea, discovery, prd, archi, ROADMAP, tasks/00-09, references/CDC)
+2026-10-01 — Sprint 6 Observation & Crédit : contrainte d'unicité (user_id, mois, annee) et relation auteur_id sur Observation ; calcul de cumul avec arrondi 2 décimales et export CSV /api/export/credits ; découpage modulaire en sous-composants < 200 lignes et synchronisation réactive via TanStack Query
