@@ -27,7 +27,7 @@
 | 5 — Import/Export Excel | [`tasks/05_sprint5_excel_import_export.md`](./tasks/05_sprint5_excel_import_export.md) | ⚪ À venir |
 | 6 — Observations & Crédits | [`tasks/06_sprint6_obs_credit.md`](./tasks/06_sprint6_obs_credit.md) | ⚪ À venir |
 | 7 — Activités & Partages | [`tasks/07_sprint7_activite_partage.md`](./tasks/07_sprint7_activite_partage.md) | ⚪ À venir |
-| 8 — Témoignages & PWA | [`tasks/08_sprint8_temoignage_pwa.md`](./tasks/08_sprint8_temoignage_pwa.md) | ⚪ À venir |
+| 8 — Témoignages & PWA | [`tasks/08_sprint8_temoignage_pwa.md`](./tasks/08_sprint8_temoignage_pwa.md) | 🟡 En cours — contrôles finaux restants |
 | 9 — Mise en production | [`tasks/09_sprint9_production.md`](./tasks/09_sprint9_production.md) | ⚪ À venir |
 
 ## ▶️ Workflow
