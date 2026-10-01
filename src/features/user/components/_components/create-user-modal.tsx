@@ -113,7 +113,7 @@ export function CreateUserModal({
                 onValueChange={(v) =>
                   setFormData({
                     ...formData,
-                    role: (v as "ADMIN" | "BENEVOLE") || "BENEVOLE",
+                    role: (v as "ADMIN" | "VOLUNTEER") || "VOLUNTEER",
                   })
                 }
               >
@@ -121,7 +121,7 @@ export function CreateUserModal({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
-                  <SelectItem value="BENEVOLE">Bénévole</SelectItem>
+                  <SelectItem value="VOLUNTEER">Bénévole</SelectItem>
                   <SelectItem value="ADMIN">Administrateur</SelectItem>
                 </SelectContent>
               </Select>

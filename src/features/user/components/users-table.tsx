@@ -22,7 +22,7 @@ const INITIAL_FORM_DATA: UserFormData = {
   prenom: "",
   nom: "",
   email: "",
-  role: "BENEVOLE",
+  role: "VOLUNTEER",
   sexe: "",
   age: "",
   contact: "",
@@ -60,7 +60,7 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + pageSize);
 
-  const handleRoleChange = (id: number, newRole: "ADMIN" | "BENEVOLE") => {
+  const handleRoleChange = (id: number, newRole: "ADMIN" | "VOLUNTEER") => {
     startTransition(async () => {
       await updateUserRoleAction({ userId: id, role: newRole });
       router.refresh();

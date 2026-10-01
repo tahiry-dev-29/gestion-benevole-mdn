@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import type { Role } from "@prisma/client";
 import { ChevronsUpDown, FolderClosed } from "lucide-react";
 
 import {
@@ -19,6 +21,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { isRole } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
 
 import { adminGestionItems } from "./admin.data";
@@ -30,10 +33,15 @@ function isActive(pathname: string, url: string) {
 export function GestionGroup() {
   const { state } = useSidebar();
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const sessionRole = session?.user?.role;
+  const role: Role | undefined = isRole(sessionRole) ? sessionRole : undefined;
 
-  const activeItem = adminGestionItems.find((item) =>
-    isActive(pathname, item.url)
+  const items = adminGestionItems.filter(
+    (item) => !role || !item.roles || item.roles.includes(role)
   );
+
+  const activeItem = items.find((item) => isActive(pathname, item.url));
   const isCollapsed = state === "collapsed";
 
   if (isCollapsed) {
@@ -59,7 +67,7 @@ export function GestionGroup() {
                 sideOffset={4}
                 className="w-56 rounded-lg"
               >
-                {adminGestionItems.map((item) => (
+                {items.map((item) => (
                   <DropdownMenuItem key={item.url} asChild>
                     <Link
                       href={item.url}
@@ -112,7 +120,7 @@ export function GestionGroup() {
               sideOffset={4}
               className="w-56 rounded-lg"
             >
-              {adminGestionItems.map((item) => (
+              {items.map((item) => (
                 <DropdownMenuItem key={item.url} asChild>
                   <Link
                     href={item.url}

@@ -1,12 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  MoreHorizontal,
-  Pencil,
-  Phone,
-  Shield,
-  Trash2,
-} from "lucide-react";
+import { MoreHorizontal, Pencil, Phone, Shield, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +34,7 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 interface UserCardProps {
   user: UserItem;
   isPending: boolean;
-  onRoleChange: (id: number, role: "ADMIN" | "BENEVOLE") => void;
+  onRoleChange: (id: number, role: "ADMIN" | "VOLUNTEER") => void;
   onDelete: (id: number) => void;
 }
 
@@ -113,10 +107,7 @@ export function UserCard({
               <DropdownMenuItem
                 disabled={isPending}
                 onClick={() =>
-                  onRoleChange(
-                    u.id,
-                    u.role === "ADMIN" ? "BENEVOLE" : "ADMIN"
-                  )
+                  onRoleChange(u.id, u.role === "ADMIN" ? "VOLUNTEER" : "ADMIN")
                 }
                 className="cursor-pointer gap-2"
               >

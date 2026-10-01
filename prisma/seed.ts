@@ -6,20 +6,25 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  const superAdminPassword = await bcryptjs.hash("superadmin123", 10);
   const adminPassword = await bcryptjs.hash("admin123", 10);
-  const benevolePassword = await bcryptjs.hash("benevole123", 10);
-  const mdnAdminPassword = await bcryptjs.hash("Password123", 10);
+  const volunteerPassword = await bcryptjs.hash("volunteer123", 10);
 
   await prisma.user.upsert({
-    where: { email: "admin@mdn.com" },
-    update: { password: mdnAdminPassword, role: Role.ADMIN, statut: UserStatut.ACTIF },
+    where: { email: "superadmin@mdn.com" },
+    update: {
+      password: superAdminPassword,
+      role: Role.SUPER_ADMIN,
+      statut: UserStatut.ACTIF,
+    },
     create: {
-      nom: "Admin",
+      nom: "SuperAdmin",
       prenom: "MDN",
-      email: "admin@mdn.com",
-      password: mdnAdminPassword,
-      role: Role.ADMIN,
-      sexe: "Masculin",
+      email: "superadmin@mdn.com",
+      password: superAdminPassword,
+      role: Role.SUPER_ADMIN,
+      statut: UserStatut.ACTIF,
+      sexe: "Non précisé",
       age: 30,
       categorie: "SALARIE",
       etablissement: "Maison du Numérique",
@@ -27,34 +32,62 @@ async function main() {
   });
 
   await prisma.user.upsert({
-    where: { email: "admin@benevol.local" },
-    update: { statut: UserStatut.ACTIF },
-    create: {
-      nom: "Dupont",
-      prenom: "Jean",
-      email: "admin@benevol.local",
+    where: { email: "admin@mdn.com" },
+    update: {
       password: adminPassword,
       role: Role.ADMIN,
-      sexe: "Masculin",
-      age: 28,
+      statut: UserStatut.ACTIF,
+    },
+    create: {
+      nom: "Admin",
+      prenom: "MDN",
+      email: "admin@mdn.com",
+      password: adminPassword,
+      role: Role.ADMIN,
+      statut: UserStatut.ACTIF,
+      sexe: "Non précisé",
+      age: 30,
       categorie: "SALARIE",
-      etablissement: "MDN",
+      etablissement: "Maison du Numérique",
     },
   });
 
   await prisma.user.upsert({
-    where: { email: "benevole@benevol.local" },
-    update: { statut: UserStatut.ACTIF },
+    where: { email: "volunteer@test.com" },
+    update: {
+      password: volunteerPassword,
+      role: Role.VOLUNTEER,
+      statut: UserStatut.ACTIF,
+    },
     create: {
-      nom: "Martin",
-      prenom: "Marie",
-      email: "benevole@benevol.local",
-      password: benevolePassword,
-      role: Role.BENEVOLE,
-      sexe: "Féminin",
+      nom: "Bénévole",
+      prenom: "Test",
+      email: "volunteer@test.com",
+      password: volunteerPassword,
+      role: Role.VOLUNTEER,
+      statut: UserStatut.ACTIF,
+      sexe: "Non précisé",
       age: 22,
       categorie: "UNIVERSITAIRE",
       etablissement: "Université",
+    },
+  });
+
+  // Compte pré-conversion : aucun mot de passe, ne peut pas se connecter.
+  await prisma.user.upsert({
+    where: { email: "user@test.com" },
+    update: { password: null, role: Role.USER, statut: UserStatut.ACTIF },
+    create: {
+      nom: "Compte",
+      prenom: "Test",
+      email: "user@test.com",
+      password: null,
+      role: Role.USER,
+      statut: UserStatut.ACTIF,
+      sexe: "Non précisé",
+      age: 20,
+      categorie: "UNIVERSITAIRE",
+      etablissement: "Non renseigné",
     },
   });
 

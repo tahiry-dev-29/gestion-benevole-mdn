@@ -13,7 +13,7 @@ model User {
   email         String         @unique
   emailVerified DateTime?
   password      String?
-  role          Role           @default(BENEVOLE)
+  role          Role           @default(VOLUNTEER)
   photo         String?
   statut        UserStatut     @default(ACTIF)
   deletedAt     DateTime?
@@ -32,6 +32,11 @@ model User {
   categorie     Category      @default(UNIVERSITAIRE)
   etablissement String        @default("Non renseigné")
   facebook      String?
+  createdById   Int?
+  createdBy     User?         @relation("CreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdUsers  User[]        @relation("CreatedBy")
+
+  @@index([role, statut])
 }
 
 model Presence {
@@ -104,8 +109,10 @@ model Temoignage {
 }
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
-  BENEVOLE
+  VOLUNTEER
+  USER
 }
 
 enum UserStatut {

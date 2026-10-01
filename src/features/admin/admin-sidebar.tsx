@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import type { Role } from "@prisma/client";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -15,6 +17,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { isRole } from "@/lib/rbac";
 
 import { adminNavGroups, adminUser } from "./admin.data";
 import { GestionGroup } from "./gestion-group";
@@ -27,22 +30,34 @@ function isActive(pathname: string, url: string) {
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const sessionRole = session?.user?.role;
+  const role: Role | undefined = isRole(sessionRole) ? sessionRole : undefined;
 
-  const groups = adminNavGroups.map((group) => ({
-    label: group.label,
-    items: group.items.map((item) => {
-      const activeChildUrl = item.items?.find((child) =>
-        isActive(pathname, child.url)
-      )?.url;
-      return {
-        ...item,
-        isActive: item.items?.length
-          ? Boolean(activeChildUrl)
-          : isActive(pathname, item.url),
-        activeChildUrl: item.items?.length ? (activeChildUrl ?? null) : null,
-      };
-    }),
-  }));
+  const groups = adminNavGroups
+    .map((group) => ({
+      label: group.label,
+      items: group.items
+        .filter((item) => !role || !item.roles || item.roles.includes(role))
+        .map((item) => {
+          const children = item.items?.filter(
+            (child) => !role || !child.roles || child.roles.includes(role)
+          );
+          const activeChildUrl = children?.find((child) =>
+            isActive(pathname, child.url)
+          )?.url;
+          return {
+            ...item,
+            items: children,
+            isActive: children?.length
+              ? Boolean(activeChildUrl)
+              : isActive(pathname, item.url),
+            activeChildUrl: children?.length ? (activeChildUrl ?? null) : null,
+          };
+        })
+        .filter((item) => !item.items || item.items.length > 0),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <Sidebar collapsible="icon" className="bg-card border-r h-full">

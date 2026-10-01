@@ -44,7 +44,14 @@ export const authOptions: AuthOptions = {
         const user = await prisma.user.findUnique({
           where: { email: parsed.data.email.toLowerCase() },
         });
-        if (!user || !user.password) return null;
+        if (!user || user.deletedAt) return null;
+
+        // App fermée : le rôle `USER` (pré-conversion) ne peut pas ouvrir de session.
+        if (user.role === "USER") {
+          throw new Error("Compte non habilité (en attente de conversion).");
+        }
+
+        if (!user.password) return null;
 
         const valid = await bcryptjs.compare(
           parsed.data.password,

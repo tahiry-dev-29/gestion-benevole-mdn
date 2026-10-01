@@ -47,7 +47,12 @@ export function LoginForm({
     });
 
     if (result?.error) {
-      toast.error("Identifiants incorrects. Veuillez réessayer.");
+      // Un compte `USER` (pré-conversion) reçoit un message explicite du serveur.
+      toast.error(
+        result.error === "CredentialsSignin"
+          ? "Identifiants incorrects. Veuillez réessayer."
+          : result.error
+      );
       return;
     }
 

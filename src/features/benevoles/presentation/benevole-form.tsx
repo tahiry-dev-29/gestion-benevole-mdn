@@ -35,7 +35,7 @@ const formSchema = z.object({
     .string()
     .optional()
     .refine((v) => !v || v.length >= 6, "Au moins 6 caractères"),
-  role: z.enum(["ADMIN", "BENEVOLE"]),
+  role: z.enum(["SUPER_ADMIN", "ADMIN", "VOLUNTEER", "USER"]),
   dateEntree: z.string().optional(),
 });
 
@@ -72,7 +72,7 @@ export function BenevoleForm({
       prenom: initialData?.prenom ?? "",
       email: initialData?.email ?? "",
       password: "",
-      role: initialData?.role ?? "BENEVOLE",
+      role: initialData?.role ?? "VOLUNTEER",
       dateEntree: initialData?.dateEntree
         ? initialData.dateEntree.slice(0, 10)
         : "",
@@ -86,7 +86,7 @@ export function BenevoleForm({
         prenom: initialData?.prenom ?? "",
         email: initialData?.email ?? "",
         password: "",
-        role: initialData?.role ?? "BENEVOLE",
+        role: initialData?.role ?? "VOLUNTEER",
         dateEntree: initialData?.dateEntree
           ? initialData.dateEntree.slice(0, 10)
           : "",
@@ -185,7 +185,7 @@ export function BenevoleForm({
                     <SelectValue placeholder="Sélectionner un rôle" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="BENEVOLE">Bénévole</SelectItem>
+                    <SelectItem value="VOLUNTEER">Bénévole</SelectItem>
                     <SelectItem value="ADMIN">Administrateur</SelectItem>
                   </SelectContent>
                 </Select>
