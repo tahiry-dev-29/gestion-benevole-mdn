@@ -4,6 +4,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().optional(),
   NEXTAUTH_SECRET: z.string().optional(),
   NEXTAUTH_URL: z.string().optional(),
+  AUTH_TRUST_HOST: z.string().optional(),
   AUTH0_CLIENT_ID: z.string().optional(),
   AUTH0_CLIENT_SECRET: z.string().optional(),
   AUTH0_ISSUER: z.string().optional(),

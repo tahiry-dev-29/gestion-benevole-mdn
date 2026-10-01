@@ -192,7 +192,9 @@ DATABASE_URL="postgresql://gestio_benevole:votre_mot_de_passe@localhost:5432/ges
 SHADOW_DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
 
 # NextAuth
-NEXTAUTH_URL="http://localhost:3000"
+# En dev : pas de NEXTAUTH_URL — Next.js prend 3000, ou 3001/3002... si 3000 est pris.
+# AUTH_TRUST_HOST suit le port réel du serveur. NEXTAUTH_URL ne sert qu'en production.
+AUTH_TRUST_HOST="true"
 NEXTAUTH_SECRET="generer-un-secret-ici"
 
 # Environnement
