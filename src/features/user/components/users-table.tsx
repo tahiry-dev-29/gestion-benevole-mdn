@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Shield } from "lucide-react";
 
+import { ImportExportButtons } from "@/features/excel/import-export-buttons";
 import {
   createUserAction,
   deleteUserAction,
@@ -106,6 +107,7 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
 
   return (
     <div className="space-y-6">
+      <ImportExportButtons dataset="users" />
       <UsersTableHeader onOpenCreate={() => setIsCreateOpen(true)} />
 
       <UsersTableFilterBar
