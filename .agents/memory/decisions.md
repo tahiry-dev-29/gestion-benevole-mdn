@@ -9,3 +9,4 @@ Journal append-only. Une décision = une ligne datée. Ne pas effacer, ne pas r�
 2026-10-01 — Places non fixes : `Seat` sans `userId`, la table/siège est choisie à chaque pointage (`Attendance.seat_id`) — CRUD des numéros de table/siège dans `/admin/places`
 2026-10-01 — Import/Export Excel via `exceljs` (côté serveur) sur les listes USER et présences ; colonnes partagées import/export
 2026-10-01 — Dossier `todos/` supprimé : plan/sprints migés dans `.agents/output/gestion-benevole/` (idea, discovery, prd, archi, ROADMAP, tasks/00-09, references/CDC)
+2026-10-01 — Activités et Partages utilisent `PublicationStatut` (BROUILLON/PUBLIE), les routes publiques filtrent toujours sur PUBLIE, et la modération passe par des API admin protégées — les contenus ne paraissent pas sur la vitrine avant publication

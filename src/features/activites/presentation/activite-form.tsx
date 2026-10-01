@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
@@ -9,6 +9,13 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Sheet,
   SheetContent,
@@ -24,6 +31,8 @@ const formSchema = z.object({
   titre: z.string().min(1, "Le titre est requis").max(150),
   description: z.string().min(1, "La description est requise"),
   date: z.string().min(1, "La date est requise"),
+  image: z.union([z.string().url(), z.literal("")]),
+  statut: z.enum(["BROUILLON", "PUBLIE"]),
 });
 
 export type ActiviteFormValues = z.infer<typeof formSchema>;
@@ -49,6 +58,8 @@ export function ActiviteForm({
     register,
     handleSubmit,
     reset,
+    setValue,
+    control,
     formState: { errors },
   } = useForm<ActiviteFormValues>({
     resolver: zodResolver(formSchema),
@@ -56,6 +67,8 @@ export function ActiviteForm({
       titre: initialData?.titre ?? "",
       description: initialData?.description ?? "",
       date: initialData?.date ? initialData.date.slice(0, 10) : "",
+      image: initialData?.image ?? "",
+      statut: initialData?.statut ?? "BROUILLON",
     },
   });
 
@@ -65,11 +78,14 @@ export function ActiviteForm({
         titre: initialData?.titre ?? "",
         description: initialData?.description ?? "",
         date: initialData?.date ? initialData.date.slice(0, 10) : "",
+        image: initialData?.image ?? "",
+        statut: initialData?.statut ?? "BROUILLON",
       });
     }
   }, [open, initialData, reset]);
 
   const submit = handleSubmit((values) => onSubmit(values));
+  const statut = useWatch({ control, name: "statut" });
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -99,6 +115,65 @@ export function ActiviteForm({
             {errors.titre ? (
               <p className="text-xs text-destructive">{errors.titre.message}</p>
             ) : null}
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="image">Image (URL)</Label>
+            <Input
+              id="image"
+              type="url"
+              placeholder="https://…"
+              {...register("image")}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="statut">Publication</Label>
+            <Select
+              value={statut}
+              onValueChange={(value) =>
+                value === "BROUILLON" || value === "PUBLIE"
+                  ? setValue("statut", value)
+                  : undefined
+              }
+            >
+              <SelectTrigger id="statut">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BROUILLON">Brouillon</SelectItem>
+                <SelectItem value="PUBLIE">Publié</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="image">Image (URL)</Label>
+            <Input
+              id="image"
+              type="url"
+              placeholder="https://…"
+              {...register("image")}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="statut">Publication</Label>
+            <Select
+              value={statut}
+              onValueChange={(value) =>
+                value === "BROUILLON" || value === "PUBLIE"
+                  ? setValue("statut", value)
+                  : undefined
+              }
+            >
+              <SelectTrigger id="statut">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BROUILLON">Brouillon</SelectItem>
+                <SelectItem value="PUBLIE">Publié</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex flex-col gap-2">
