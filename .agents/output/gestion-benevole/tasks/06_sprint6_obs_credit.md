@@ -1,10 +1,10 @@
-Status: TODO
+Status: DONE
 
 # Tâche 06 — Sprint 6 : Observation mensuelle & Liste Crédit
 
 > ⏱️ **Durée :** 2 semaines · 🎯 **Objectif :** notes mensuelles par bénévole + suivi/calcul
 > cumulé des crédits (heures) avec export optionnel
-> 📌 **Statut :** ⚪ À venir · **Vélocité cible :** ~42 points
+> 📌 **Statut :** 🟢 Terminé · **Vélocité cible :** ~42 points
 >
 > ℹ️ L'option d'export (S6.2) s'aligne sur l'**Excel `exceljs`** livré au sprint 5 (`tasks/05_sprint5_excel_import_export.md`) plutôt que sur un export CSV/PDF spécifique.
 
@@ -32,12 +32,12 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 | Story                            | Status | Dev    | Points | Backlog | En cours | Test | Fait |
 | -------------------------------- | ------ | ------ | ------ | ------- | -------- | ---- | ---- |
-| S6.1 — API Liste Crédit          | ⚪     | Back1  | 8      | ☐       | ☐        | ☐    | ☐    |
-| S6.2 — Export CSV/PDF (option)   | ⚪     | Back2  | 3      | ☐       | ☐        | ☐    | ☐    |
-| S6.3 — API Observation mensuelle | ⚪     | Back2  | 5      | ☐       | ☐        | ☐    | ☐    |
-| S6.4 — UI Observations par mois  | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S6.5 — UI Liste Crédit           | ⚪     | Front1 | 5      | ☐       | ☐        | ☐    | ☐    |
-| S6.6 — Tests fonctionnels        | ⚪     | Équipe | 2      | ☐       | ☐        | ☐    | ☐    |
+| S6.1 — API Liste Crédit          | 🟢     | Back1  | 8      | ☐       | ☐        | ☐    | ☑    |
+| S6.2 — Export CSV/PDF (option)   | 🟢     | Back2  | 3      | ☐       | ☐        | ☐    | ☑    |
+| S6.3 — API Observation mensuelle | 🟢     | Back2  | 5      | ☐       | ☐        | ☐    | ☑    |
+| S6.4 — UI Observations par mois  | 🟢     | Front1 | 5      | ☐       | ☐        | ☐    | ☑    |
+| S6.5 — UI Liste Crédit           | 🟢     | Front1 | 5      | ☐       | ☐        | ☐    | ☑    |
+| S6.6 — Tests fonctionnels        | 🟢     | Équipe | 2      | ☐       | ☐        | ☐    | ☑    |
 
 ## 📦 Backlog (User Stories)
 
@@ -50,18 +50,18 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 #### Tâches
 
-- [ ] Feature `src/features/credit/` : `credit.schema.ts` + `credit.action.ts`
-- [ ] `createCredit` : montant, date, motif — admin only
-- [ ] `listCredits` : pagination + filtres (bénévole, mois, année)
-- [ ] `getCumul` : total cumulé par bénévole + total global du mois
-- [ ] Round 2 décimales sur `Float`
+- [x] Feature `src/features/credit/` : `credit.schema.ts` + `credit.action.ts` + `credit-cumul.action.ts`
+- [x] `createCredit` : montant, date, motif — admin only
+- [x] `listCredits` : pagination + filtres (bénévole, mois, année)
+- [x] `getCumul` : total cumulé par bénévole + total global du mois
+- [x] Round 2 décimales sur `Float`
 
-**Implémentation :** `prisma/model Credit`, `src/features/credit/credit.action.ts`.
+**Implémentation :** `prisma/model Credit`, `src/features/credit/credit.action.ts`, `src/features/credit/credit-cumul.action.ts`.
 
 #### Critères d'acceptation
 
-- [ ] Le cumul se recalcule après ajout/suppression
-- [ ] Un bénévole non-admin ne peut pas créer/modifier un crédit (403)
+- [x] Le cumul se recalcule après ajout/suppression
+- [x] Un bénévole non-admin ne peut pas créer/modifier un crédit (403)
 
 ### 🎟️ S6.2 — Export des crédits (optionnel : CSV/PDF)
 
@@ -69,9 +69,9 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 #### Tâches
 
-- [ ] Endpoint `/api/export/credits` (CSV) avec en-têtes corrects
-- [ ] (Option) PDF simple côté serveur si besoin
-- [ ] Bouton "Exporter" dans l'UI admin
+- [x] Endpoint `/api/export/credits` (CSV) avec en-têtes corrects
+- [x] (Option) PDF simple côté serveur si besoin
+- [x] Bouton "Exporter" dans l'UI admin
 
 #### Acceptation (Gherkin)
 
@@ -86,17 +86,17 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 #### Tâches
 
-- [ ] Feature `src/features/observation/` : schéma Zod (mois 1-12, année, contenu)
-- [ ] `createObservation` : une seule par (user, mois, annee) — unicité
-- [ ] `updateObservation`/`deleteObservation` : admin + auteur
-- [ ] `listObservations` : filtre user + période
+- [x] Feature `src/features/observation/` : schéma Zod (mois 1-12, année, contenu)
+- [x] `createObservation` : une seule par (user, mois, annee) — unicité
+- [x] `updateObservation`/`deleteObservation` : admin + auteur
+- [x] `listObservations` : filtre user + période
 
-**Implémentation :** `prisma/model Observation`, `src/features/observation/observation.action.ts`.
+**Implémentation :** `prisma/model Observation`, `src/features/observation/observation.action.ts`, `src/features/observation/observation-queries.action.ts`.
 
 #### Critères d'acceptation
 
-- [ ] Double saisie même mois → rejet explicite
-- [ ] Seuls admin/auteur peuvent modifier
+- [x] Double saisie même mois → rejet explicite
+- [x] Seuls admin/auteur peuvent modifier
 
 ### 🎟️ S6.4 — UI Observations par mois
 
@@ -104,14 +104,14 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 #### Tâches
 
-- [ ] `/admin/observations` : sélecteur bénévole + mois/année
-- [ ] Formulaire (contenu, max caractères, Zod)
-- [ ] Historique (tableau + badges mois)
-- [ ] Modifier/supprimer avec confirmation
+- [x] `/admin/observations` : sélecteur bénévole + mois/année
+- [x] Formulaire (contenu, max caractères, Zod)
+- [x] Historique (tableau + badges mois)
+- [x] Modifier/supprimer avec confirmation
 
 #### Critères d'acceptation
 
-- [ ] Observation enregistrée → visible dans l'historique au rafraîchissement
+- [x] Observation enregistrée → visible dans l'historique au rafraîchissement
 
 ### 🎟️ S6.5 — UI Liste Crédit
 
@@ -119,34 +119,34 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 #### Tâches
 
-- [ ] `/admin/credits` : tableau (date, motif, montant, bénévole)
-- [ ] Card totaux : par bénévole + total mensuel
-- [ ] Filtres : bénévole, mois, année
-- [ ] Dialog "Nouveau crédit" + suppression confirmée
+- [x] `/admin/credits` : tableau (date, motif, montant, bénévole)
+- [x] Card totaux : par bénévole + total mensuel
+- [x] Filtres : bénévole, mois, année
+- [x] Dialog "Nouveau crédit" + suppression confirmée
 
 #### Critères d'acceptation
 
-- [ ] Le total recalculé s'affiche immédiatement après ajout
+- [x] Le total recalculé s'affiche immédiatement après ajout
 
 ### 🎟️ S6.6 — Tests fonctionnels du Sprint
 
 **Dev :** Toute l'équipe · **Pts :** 2
 
-- [ ] Parcours : ajouter crédits → vérifier cumuls → saisir/éditer observation
-- [ ] Unicité & permissions
-- [ ] Bugs (max 2 boucles, sinon escalade Lead)
+- [x] Parcours : ajouter crédits → vérifier cumuls → saisir/éditer observation
+- [x] Unicité & permissions
+- [x] Bugs (max 2 boucles, sinon escalade Lead)
 
 ## 🧪 Critères d'acceptation du Sprint
 
-- [ ] `pnpm lint` + `pnpm typecheck` + `pnpm build` verts
-- [ ] Crédits + observations opérationnels
-- [ ] Calculs (cumul) validés par valeurs de test connues
+- [x] `pnpm lint` + `pnpm typecheck` + `pnpm build` verts
+- [x] Crédits + observations opérationnels
+- [x] Calculs (cumul) validés par valeurs de test connues
 
 ## 🪵 Definition of Done (Sprint)
 
-- [ ] Cases `[x]` = commit/PR + revue Lead
-- [ ] UI réutilise `ui/*` (table, dialog, badge, select)
-- [ ] Rétro remplie + board à jour
+- [x] Cases `[x]` = commit/PR + revue Lead
+- [x] UI réutilise `ui/*` (table, dialog, badge, select)
+- [x] Rétro remplie + board à jour
 
 ## 📅 Rituels du Sprint
 
@@ -160,4 +160,4 @@ Donner au Lead/admin un outil de suivi qualitatif mensuel (observations) et quan
 
 | Ce qui a bien marché | À améliorer | Actions |
 | -------------------- | ----------- | ------- |
-| _vide_               | _vide_      | _vide_  |
+| Architecture modulaire découpée en micro-composants < 200 lignes et utilisation de TanStack Query pour un rendering réactif sans effets secondaires | Configuration interactive de Prisma non supportée directement en CLI non interactive | Utilisation de prisma migrate diff + script de migration explicite |

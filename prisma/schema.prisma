@@ -22,7 +22,8 @@ model User {
   updatedAt     DateTime       @updatedAt
   activites     Activite[]
   credits       Credit[]
-  observations  Observation[]
+  observations  Observation[]  @relation("UserObservations")
+  observationsRedigees Observation[] @relation("ObservationAuthor")
   partages      Partage[]
   presences     Presence[]
   temoignages   Temoignage[]
@@ -51,12 +52,19 @@ model Presence {
 model Observation {
   id        Int      @id @default(autoincrement())
   user_id   Int
+  auteur_id Int?
   mois      Int
   annee     Int
   contenu   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user      User     @relation("UserObservations", fields: [user_id], references: [id], onDelete: Cascade)
+  auteur    User?    @relation("ObservationAuthor", fields: [auteur_id], references: [id], onDelete: SetNull)
+
+  @@unique([user_id, mois, annee])
+  @@index([user_id])
+  @@index([auteur_id])
+  @@index([annee, mois])
 }
 
 model Credit {
@@ -68,6 +76,9 @@ model Credit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([date])
 }
 
 model Activite {

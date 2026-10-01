@@ -1,75 +1,40 @@
-import { Plus } from "lucide-react";
+import { getServerSession } from "next-auth";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { observations } from "@/features/admin/admin.data";
 import { PageHeader } from "@/features/admin/page-header";
-import { TableCard } from "@/features/admin/table-card";
+import { ObservationsList } from "@/features/observation/observations-list";
+import { listUsersAction } from "@/features/user/user.action";
+import { authOptions } from "@/lib/auth-options";
 
-const mois = [
-  "",
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Août",
-  "Septembre",
-  "Octobre",
-  "Novembre",
-  "Décembre",
-];
+export default async function ObservationsPage() {
+  const [session, usersRes] = await Promise.all([
+    getServerSession(authOptions),
+    listUsersAction(),
+  ]);
 
-export default function ObservationsPage() {
+  const benevoles =
+    usersRes.success && usersRes.data
+      ? usersRes.data.map((u) => ({
+          id: u.id,
+          nom: u.nom,
+          prenom: u.prenom,
+        }))
+      : [];
+
+  const currentUserId = session?.user?.id ? parseInt(session.user.id, 10) : 0;
+  const isAdmin =
+    session?.user?.role === "ADMIN" || session?.user?.role === "SUPER_ADMIN";
+
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Observations"
-        description="Notes et suivis mensuels des bénévoles."
-        action={
-          <Button size="sm">
-            <Plus className="size-4" />
-            Ajouter une observation
-          </Button>
-        }
+        title="Observations mensuelles"
+        description="Notes et suivis mensuels des bénévoles par le responsable."
       />
-
-      <TableCard>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Bénévole</TableHead>
-              <TableHead>Période</TableHead>
-              <TableHead>Contenu</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {observations.map((o) => (
-              <TableRow key={o.id}>
-                <TableCell className="font-medium">{o.benevole}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">
-                    {mois[o.mois]} {o.annee}
-                  </Badge>
-                </TableCell>
-                <TableCell className="max-w-md text-muted-foreground">
-                  {o.contenu}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableCard>
+      <ObservationsList
+        benevoles={benevoles}
+        currentUserId={currentUserId}
+        isAdmin={isAdmin}
+      />
     </div>
   );
 }
