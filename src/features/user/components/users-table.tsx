@@ -4,31 +4,31 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Shield } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   createUserAction,
   deleteUserAction,
+  updateUserRoleAction,
 } from "@/features/user/user.action";
+import type { Sexe } from "@/features/user/user.schema";
 
 import { CreateUserModal } from "./_components/create-user-modal";
 import { UserCard } from "./_components/user-card";
 import { UsersPagination } from "./_components/users-pagination";
-import type { CertificatStatutType, UserItem } from "./types";
+import { UsersTableFilterBar } from "./_components/users-table-filter-bar";
+import { UsersTableHeader } from "./_components/users-table-header";
+import type { CategoryType, UserFormData, UserItem } from "./types";
 
-const CERT_LABELS: Record<CertificatStatutType, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-  NON_DEMANDE: { label: "—", variant: "outline" },
-  EN_ATTENTE: { label: "En attente", variant: "secondary" },
-  APPROUVE: { label: "Approuvé", variant: "default" },
-  REJETE: { label: "Rejeté", variant: "destructive" },
+const INITIAL_FORM_DATA: UserFormData = {
+  prenom: "",
+  nom: "",
+  email: "",
+  role: "VOLUNTEER",
+  sexe: "",
+  age: "",
+  contact: "",
+  categorie: "",
+  etablissement: "",
+  facebook: "",
 };
 
 export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
@@ -36,28 +36,36 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
   const [isPending, startTransition] = useTransition();
 
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("ALL");
-  const [certFilter, setCertFilter] = useState("ALL");
+  const [roleFilter, setRoleFilter] = useState<string>("ALL");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 9;
+  const pageSize = 6;
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [formError, setFormError] = useState("");
+  const [formData, setFormData] = useState<UserFormData>(INITIAL_FORM_DATA);
 
   const filteredUsers = initialUsers.filter((u) => {
-    const target =
-      `${u.prenom} ${u.nom} ${u.email} ${u.matricule ?? ""} ${u.etablissement ?? ""} ${u.societe ?? ""}`.toLowerCase();
-    const matchesSearch = search === "" || target.includes(search.toLowerCase());
+    const searchTarget =
+      `${u.prenom} ${u.nom} ${u.email} ${u.role} ${u.etablissement || ""} ${u.contact || ""}`.toLowerCase();
+    const matchesSearch =
+      search === "" || searchTarget.includes(search.toLowerCase());
     const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
-    const matchesCert =
-      certFilter === "ALL" || u.certificatStatut === certFilter;
-    return matchesSearch && matchesRole && matchesCert;
+    const matchesStatus = statusFilter === "ALL" || u.statut === statusFilter;
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
   const totalUsers = filteredUsers.length;
   const totalPages = Math.ceil(totalUsers / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + pageSize);
+
+  const handleRoleChange = (id: number, newRole: "ADMIN" | "VOLUNTEER") => {
+    startTransition(async () => {
+      await updateUserRoleAction({ userId: id, role: newRole });
+      router.refresh();
+    });
+  };
 
   const handleDelete = (id: number) => {
     if (confirm("Voulez-vous vraiment désactiver cet utilisateur ?")) {
@@ -68,81 +76,57 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
     }
   };
 
-  const handleCreateSubmit = async (data: Record<string, unknown>) => {
+  const handleCreateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     setFormError("");
+
     startTransition(async () => {
-      const res = await createUserAction(data as Parameters<typeof createUserAction>[0]);
+      const res = await createUserAction({
+        prenom: formData.prenom,
+        nom: formData.nom,
+        email: formData.email,
+        role: formData.role,
+        sexe: (formData.sexe as Sexe) || undefined,
+        age: formData.age ? Number(formData.age) : undefined,
+        contact: formData.contact || undefined,
+        categorie: (formData.categorie as CategoryType) || undefined,
+        etablissement: formData.etablissement || undefined,
+        facebook: formData.facebook || undefined,
+      });
+
       if (res.success) {
         setIsCreateOpen(false);
+        setFormData(INITIAL_FORM_DATA);
         router.refresh();
       } else {
-        setFormError(res.error ?? "Erreur lors de la création.");
+        setFormError(res.error || "Erreur lors de la création.");
       }
     });
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-slate-100">Utilisateurs</h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Gestion des comptes USER et conversion en VOLUNTEER
-          </p>
-        </div>
-        <Button
-          onClick={() => setIsCreateOpen(true)}
-          className="bg-cyan-600 hover:bg-cyan-500 text-white text-xs gap-2"
-        >
-          + Ajouter un utilisateur
-        </Button>
-      </div>
+      <UsersTableHeader onOpenCreate={() => setIsCreateOpen(true)} />
 
-      {/* Filtres */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <Input
-          placeholder="Rechercher nom, email, matricule…"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="max-w-xs bg-slate-950/60 border-slate-800 text-slate-200 text-xs"
-        />
+      <UsersTableFilterBar
+        search={search}
+        onSearchChange={(val) => {
+          setSearch(val);
+          setCurrentPage(1);
+        }}
+        roleFilter={roleFilter}
+        onRoleFilterChange={(val) => {
+          setRoleFilter(val ?? "ALL");
+          setCurrentPage(1);
+        }}
+        statusFilter={statusFilter}
+        onStatusFilterChange={(val) => {
+          setStatusFilter(val ?? "ALL");
+          setCurrentPage(1);
+        }}
+        totalResults={filteredUsers.length}
+      />
 
-        <Select value={roleFilter} onValueChange={(v) => { setRoleFilter(v ?? "ALL"); setCurrentPage(1); }}>
-          <SelectTrigger className="w-36 bg-slate-950/60 border-slate-800 text-slate-200 text-xs h-9">
-            <SelectValue placeholder="Rôle" />
-          </SelectTrigger>
-          <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
-            <SelectItem value="ALL">Tous les rôles</SelectItem>
-            <SelectItem value="USER">USER</SelectItem>
-            <SelectItem value="VOLUNTEER">VOLUNTEER</SelectItem>
-            <SelectItem value="ADMIN">ADMIN</SelectItem>
-            <SelectItem value="SUPER_ADMIN">SUPER_ADMIN</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={certFilter} onValueChange={(v) => { setCertFilter(v ?? "ALL"); setCurrentPage(1); }}>
-          <SelectTrigger className="w-40 bg-slate-950/60 border-slate-800 text-slate-200 text-xs h-9">
-            <SelectValue placeholder="Certificat" />
-          </SelectTrigger>
-          <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
-            <SelectItem value="ALL">Tous</SelectItem>
-            <SelectItem value="NON_DEMANDE">Non demandé</SelectItem>
-            <SelectItem value="EN_ATTENTE">En attente</SelectItem>
-            <SelectItem value="APPROUVE">Approuvé</SelectItem>
-            <SelectItem value="REJETE">Rejeté</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <span className="text-xs text-slate-400 ml-auto">
-          {filteredUsers.length} résultat{filteredUsers.length !== 1 ? "s" : ""}
-        </span>
-      </div>
-
-      {/* Grille */}
       {paginatedUsers.length === 0 ? (
         <div className="text-center py-12 rounded-xl border border-dashed border-slate-800 bg-slate-900/20 text-slate-400">
           <Shield className="mx-auto size-10 opacity-30 mb-3" />
@@ -153,22 +137,15 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {paginatedUsers.map((u) => {
-            const certMeta = CERT_LABELS[u.certificatStatut ?? "NON_DEMANDE"];
-            return (
-              <UserCard
-                key={u.id}
-                user={u}
-                isPending={isPending}
-                onDelete={handleDelete}
-                certBadge={
-                  <Badge variant={certMeta.variant} className="text-xs">
-                    {certMeta.label}
-                  </Badge>
-                }
-              />
-            );
-          })}
+          {paginatedUsers.map((u) => (
+            <UserCard
+              key={u.id}
+              user={u}
+              isPending={isPending}
+              onRoleChange={handleRoleChange}
+              onDelete={handleDelete}
+            />
+          ))}
         </div>
       )}
 
@@ -184,6 +161,8 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
       <CreateUserModal
         isOpen={isCreateOpen}
         onOpenChange={setIsCreateOpen}
+        formData={formData}
+        setFormData={setFormData}
         formError={formError}
         isPending={isPending}
         onSubmit={handleCreateSubmit}
