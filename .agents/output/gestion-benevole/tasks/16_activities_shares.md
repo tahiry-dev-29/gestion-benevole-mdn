@@ -1,4 +1,4 @@
-Status: TODO
+Status: IN_PROGRESS
 
 # Feature tasks: Activités, partages et modération (S7)
 
@@ -14,7 +14,7 @@ Les administrateurs créent et modèrent les activités/partages; le public ne v
 
 ## Parent task: Publication publique sans fuite de brouillon
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Depends on:** Task 10.1 — permissions admin établies.
 
 Goal: vérifier CRUD, publication, rendu public et cohérence des caches.
@@ -39,7 +39,7 @@ Acceptance criteria:
 
 ### Task 16.1: Contrat API et autorisation de publication
 
-**Status:** TODO
+**Status:** DONE (2026-10-02 — preuve runtime repositories : brouillon masqué anonyme, publication visible sans rebuild, dépublication masquée, Zod rejette, auteur sérialisé `prenom nom` sans fuite)
 **Parent:** Publication publique sans fuite de brouillon
 **Depends on:** Task 10.1
 
@@ -49,11 +49,11 @@ Files to create/modify:
 - `src/features/activites/infrastructure/`, `src/features/partages/infrastructure/`, `app/api/activites/`, `app/api/partages/`.
 
 Steps:
-1. [ ] tester liste, détail, create/update/delete et transitions `BROUILLON`/`PUBLIE`.
-2. [ ] vérifier validation Zod, auteur et rôle aux frontières serveur.
+1. [x] tester liste, détail, create/update/delete et transitions `BROUILLON`/`PUBLIE`.
+2. [x] vérifier validation Zod, auteur et rôle aux frontières serveur.
 
 Acceptance criteria:
-- [ ] requête anonyme de détail non publié ne révèle pas son contenu; requête admin autorisée réalise la transition.
+- [x] requête anonyme de détail non publié ne révèle pas son contenu; requête admin autorisée réalise la transition.
 
 ### Task 16.2: Admin et expérience publique
 
