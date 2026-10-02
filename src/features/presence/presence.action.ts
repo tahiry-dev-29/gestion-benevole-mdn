@@ -51,6 +51,12 @@ export async function pointAction(input: unknown) {
   const data = parsed.data;
   const date = dayFromString(data.date);
   try {
+    const person = await prisma.user.findFirst({
+      where: { id: data.userId, deletedAt: null },
+      select: { id: true },
+    });
+    if (!person)
+      return { success: false, error: "Ce bénévole n'existe pas." };
     if (data.seatId) {
       const seat = await prisma.seat.findUnique({ where: { id: data.seatId } });
       if (!seat) return { success: false, error: "Ce siège n'existe pas." };

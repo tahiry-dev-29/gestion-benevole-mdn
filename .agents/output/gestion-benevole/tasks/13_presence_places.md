@@ -14,7 +14,7 @@ Le pointage quotidien avec arrivée, départ, statut, table et siège fonctionne
 
 ## Parent task: Workflow quotidien de présence
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Depends on:** Task 10.1 — routes et rôles sont définis; Task 12.1 — modèle de personne cohérent.
 
 Goal: rendre le pointage praticable et sûr pour les rôles autorisés.
@@ -38,7 +38,7 @@ Acceptance criteria:
 
 ### Task 13.1: Requêtes, validation et règles de pointage
 
-**Status:** TODO
+**Status:** DONE (2026-10-02 — refus explicite utilisateur inconnu dans `pointAction`, tests action négatifs, preuve DB locale : unicité (user,date), Restrict siège, FK user, fixtures nettoyées)
 **Parent:** Workflow quotidien de présence
 **Depends on:** Task 12.1
 
@@ -48,11 +48,11 @@ Files to create/modify:
 - `src/features/presence/presence.action.ts`, `presence.schema.ts`, `presence.utils.ts`, tests.
 
 Steps:
-1. [ ] tester créations, modifications, filtres dates, heures, statuts et relations siège.
-2. [ ] corriger validation et invalidations/revalidation selon preuves.
+1. [x] tester créations, modifications, filtres dates, heures, statuts et relations siège.
+2. [x] corriger validation et invalidations/revalidation selon preuves.
 
 Acceptance criteria:
-- [ ] dates/heures invalides, utilisateurs inconnus et accès interdits sont refusés sans écriture partielle.
+- [x] dates/heures invalides, utilisateurs inconnus et accès interdits sont refusés sans écriture partielle.
 
 ### Task 13.2: Page admin, navigation et UX responsive
 

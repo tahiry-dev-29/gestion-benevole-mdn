@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const { auth, prisma, revalidatePath } = vi.hoisted(() => ({
   auth: vi.fn(),
   prisma: {
+    user: { findFirst: vi.fn() },
     seat: { findUnique: vi.fn() },
     attendance: {
       findFirst: vi.fn(),
@@ -25,6 +26,7 @@ describe("attendance and seat actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     auth.mockResolvedValue({ user: { role: "ADMIN" } });
+    prisma.user.findFirst.mockResolvedValue({ id: 3 });
   });
 
   it("upserts a user's attendance for the date instead of creating a duplicate", async () => {
@@ -86,5 +88,48 @@ describe("attendance and seat actions", () => {
       error: "Ce siège est associé à un pointage et ne peut pas être supprimé.",
     });
     expect(prisma.attendance.delete).not.toHaveBeenCalled();
+  });
+
+  it("refuses pointage for an unknown user without writing", async () => {
+    prisma.user.findFirst.mockResolvedValue(null);
+
+    const result = await pointAction({
+      userId: 9999,
+      date: "2026-10-01",
+      statut: "PRESENT",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Ce bénévole n'existe pas.",
+    });
+    expect(prisma.attendance.upsert).not.toHaveBeenCalled();
+  });
+
+  it("refuses pointage without an admin session", async () => {
+    auth.mockResolvedValue(null);
+
+    const result = await pointAction({
+      userId: 3,
+      date: "2026-10-01",
+      statut: "PRESENT",
+    });
+
+    expect(result).toEqual({ success: false, error: "Accès refusé." });
+    expect(prisma.attendance.upsert).not.toHaveBeenCalled();
+  });
+
+  it("refuses pointage with an invalid date without writing", async () => {
+    const result = await pointAction({
+      userId: 3,
+      date: "not-a-date",
+      statut: "PRESENT",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Données de pointage invalides.",
+    });
+    expect(prisma.attendance.upsert).not.toHaveBeenCalled();
   });
 });
