@@ -1,5 +1,7 @@
 Status: DONE
 
+> **Suivi de remise en état:** les preuves fonctionnelles restantes du socle/navigation sont suivies dans [`10_foundation_auth.md`](10_foundation_auth.md), Plan `plan-001`.
+
 # Tâche 00 — Sprint 0 : Initialisation & Setup
 
 > **Contexte :** Sprint 0 clôturé (statut DONE) — socle infrastructure & delivery livré ; les cases non cochées (PWA, hébergement, CI/CD, page optionnelle) restent reportées.

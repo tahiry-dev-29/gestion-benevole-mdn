@@ -1,5 +1,7 @@
 Status: DONE
 
+> **Suivi de remise en état:** les vérifications auth/RBAC et navigation sont suivies dans [`10_foundation_auth.md`](10_foundation_auth.md), Plan `plan-001`.
+
 # Tâche 01 — Sprint 1 : Auth & RBAC (app fermée, 4 rôles)
 
 **Sprint:** 1 · **Durée:** 2 semaines · **Priorité:** Haute · **Plan:** [`prd.md`](../prd.md) §1–§2 · **Archi:** [`archi.md`](../archi.md)

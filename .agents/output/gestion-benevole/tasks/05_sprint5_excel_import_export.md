@@ -1,5 +1,7 @@
 Status: TODO
 
+> **Suivi de remise en état:** preuves runtime et round-trip XLSX sont suivis dans [`14_excel.md`](14_excel.md), Plan `plan-001`.
+
 # Tâche 05 — Sprint 5 : Import / Export Excel (users + présences)
 
 **Sprint:** 5 · **Durée:** 1 semaine · **Priorité:** Moyenne · **Dépend de:** Tâche 03, Tâche 04 · **Plan:** [`prd.md`](../prd.md) §6 · **Archi:** [`archi.md`](../archi.md)

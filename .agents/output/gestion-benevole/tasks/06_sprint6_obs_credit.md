@@ -1,5 +1,7 @@
 Status: DONE
 
+> **Suivi de remise en état:** règles et parcours observations/crédits sont suivis dans [`15_observation_credit.md`](15_observation_credit.md), Plan `plan-001`.
+
 # Tâche 06 — Sprint 6 : Observation mensuelle & Liste Crédit
 
 > ⏱️ **Durée :** 2 semaines · 🎯 **Objectif :** notes mensuelles par bénévole + suivi/calcul

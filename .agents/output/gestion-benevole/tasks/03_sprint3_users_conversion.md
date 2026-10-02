@@ -1,5 +1,7 @@
 Status: DONE
 
+> **Suivi de remise en état:** l'audit correctif des comptes USER et de la conversion est suivi dans [`12_user_management.md`](12_user_management.md), Plan `plan-001`.
+
 # Tâche 03 — Sprint 3 : Gestion USER & conversion en VOLUNTEER
 
 **Sprint:** 3 · **Durée:** 2 semaines · **Priorité:** Haute · **Dépend de:** Tâche 01, Tâche 02 · **Plan:** [`prd.md`](../prd.md) §4 · **Archi:** [`archi.md`](../archi.md)

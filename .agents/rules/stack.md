@@ -14,7 +14,7 @@ Fullstack dans un seul repo : Next.js 16 App Router pour front + Server Actions/
 ## Frontend
 
 1. **Server Components par défaut** ; `"use client"` seulement quand interactivité/state nécessaire (forms, tables, dropdowns).
-2. **Data fetching** : TanStack Query (`@tanstack/react-query`) côté client pour les données dynamiques, Server Components pour le SSR statique. `QueryProvider` dans `src/features/admin/query-provider.tsx`.
+2. **Data fetching** : tout appel réseau déclenché par une interface cliente (lectures, mutations, formulaires, import/export et upload) passe par TanStack Query (`useQuery`/`useMutation`) avec invalidation de cache explicite. Les Server Components peuvent lire directement les services/repositories pour le SSR sans appel HTTP interne ; les endpoints binaires restent des Route Handlers appelés depuis une mutation Query. `QueryProvider` dans `src/features/admin/query-provider.tsx`.
 3. **UI** : Tailwind CSS 4 (CSS-first, `@import "tailwindcss"`), shadcn/ui (composants dans `src/components/ui/`). Zéro CSS custom/SCSS — classes Tailwind uniquement.
 4. **Tables** : TanStack Table (`@tanstack/react-table`) pour toute table de données. Patterns dans `src/components/shared/data-table.tsx`.
 5. **Forms** : React Hook Form + Zod resolver (`@hookform/resolvers`). Validation front = validation back (même schéma Zod).

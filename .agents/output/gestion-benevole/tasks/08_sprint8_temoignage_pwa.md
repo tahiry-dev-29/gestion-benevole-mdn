@@ -1,5 +1,7 @@
 Status: IN_PROGRESS
 
+> **Suivi de remise en état:** soumission/modération/offline et validation intégrée sont suivies dans [`17_testimonials_pwa.md`](17_testimonials_pwa.md) et [`18_end_to_end.md`](18_end_to_end.md), Plan `plan-001`.
+
 # Tâche 08 — Sprint 8 : Public — Témoignage & Finalisation PWA
 
 > ⏱️ **Durée :** 2 semaines · 🎯 **Objectif :** soumission/publique des témoignages,

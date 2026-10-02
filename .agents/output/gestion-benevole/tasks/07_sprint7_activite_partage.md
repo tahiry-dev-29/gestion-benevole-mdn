@@ -1,5 +1,7 @@
 Status: TODO
 
+> **Suivi de remise en état:** modération et visibilité publique sont suivies dans [`16_activities_shares.md`](16_activities_shares.md), Plan `plan-001`.
+
 # Tâche 07 — Sprint 7 : Public — Activité & Partage
 
 > ⏱️ **Durée :** 2 semaines · 🎯 **Objectif :** vitrine publique des activités & partages,
