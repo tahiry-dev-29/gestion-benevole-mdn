@@ -1,4 +1,4 @@
-Status: IN_PROGRESS
+Status: DONE
 
 # Feature tasks: Pointage des présences et gestion des places (S4)
 
@@ -14,7 +14,7 @@ Le pointage quotidien avec arrivée, départ, statut, table et siège fonctionne
 
 ## Parent task: Workflow quotidien de présence
 
-**Status:** IN_PROGRESS
+**Status:** DONE
 **Depends on:** Task 10.1 — routes et rôles sont définis; Task 12.1 — modèle de personne cohérent.
 
 Goal: rendre le pointage praticable et sûr pour les rôles autorisés.
@@ -24,15 +24,15 @@ Files to create/modify:
 - `app/admin/presences/`, `app/admin/users/presence/`, `app/admin/places/`, navigation.
 
 Steps:
-1. [ ] vérifier schémas, requêtes/actions et unicité utilisateur/date sans toucher aux historiques.
-2. [ ] fournir `/admin/presences`; choisir une route canonique et préserver l'ancienne avec redirect/alias.
-3. [ ] relier table/siège au formulaire, filtres calendrier, vues et liste TanStack.
-4. [ ] finaliser CRUD places, erreurs de conflit et UX `thr-design`.
+1. [x] vérifier schémas, requêtes/actions et unicité utilisateur/date sans toucher aux historiques.
+2. [x] fournir `/admin/presences`; choisir une route canonique et préserver l'ancienne avec redirect/alias.
+3. [x] relier table/siège au formulaire, filtres calendrier, vues et liste TanStack.
+4. [x] finaliser CRUD places, erreurs de conflit et UX `thr-design`.
 
 Acceptance criteria:
-- [ ] la page `/admin/presences` est réelle, navigable et autorisée; un pointage est ajouté puis affiché dans les filtres pertinents.
-- [ ] un même utilisateur n'a pas deux pointages incohérents le même jour; une place référencée ne peut pas être supprimée sans gestion explicite.
-- [ ] une mutation Query met à jour la liste et les indicateurs affectés.
+- [x] la page `/admin/presences` est réelle, navigable et autorisée; un pointage est ajouté puis affiché dans les filtres pertinents.
+- [x] un même utilisateur n'a pas deux pointages incohérents le même jour; une place référencée ne peut pas être supprimée sans gestion explicite.
+- [x] une mutation Query met à jour la liste et les indicateurs affectés.
 
 ## Child tasks
 
@@ -56,7 +56,7 @@ Acceptance criteria:
 
 ### Task 13.2: Page admin, navigation et UX responsive
 
-**Status:** IN_PROGRESS
+**Status:** DONE (2026-10-02 — route /admin/presences + alias legacy prouvés en navigateur, viewport 390px sans débordement)
 **Parent:** Workflow quotidien de présence
 **Depends on:** Task 13.1
 
@@ -71,7 +71,7 @@ Steps:
 3. [x] édition d'un pointage depuis l'historique, avec retour à sa date et modification du statut, des heures ou de la place.
 
 Acceptance criteria:
-- [ ] un administrateur termine et modifie un pointage sans route morte ni rechargement manuel; vérifier le parcours complet au navigateur et le layout aux largeurs mobiles.
+- [x] un administrateur termine et modifie un pointage sans route morte ni rechargement manuel; vérifier le parcours complet au navigateur et le layout aux largeurs mobiles.
 
 ## Verification
 
@@ -89,6 +89,7 @@ Le schéma peut contenir un modèle historique `Presence` et un modèle `Attenda
 - Recherche serveur par nom, prénom, email et matricule; filtres statut et place par identifiant de siège; la recherche est différée côté client.
 - Historique basé sur TanStack Table, avec actualisation accessible, indicateur de chargement, état vide, erreur et action d'édition par ligne.
 - L'occupation des sièges est relue sans les filtres d'historique actifs; un filtre de recherche/statut ne peut donc pas rendre disponible à tort un siège déjà pris.
-- `pnpm test` : 19 fichiers, 127 tests réussis; tests ajoutés pour validation des filtres et composition de requête date/statut/place/recherche.
-- `pnpm typecheck`, lint ciblé des fichiers présence et formatage ciblé réussis; `pnpm build` génère les 33 routes dont `/admin/presences` et `/admin/places`.
+- `pnpm test` : 19 fichiers, 128 tests réussis; tests ajoutés pour validation des filtres, recherche réservée aux bénévoles actifs, conflit d'unicité et composition de requête date/statut/place/recherche.
+- `pnpm typecheck`, `pnpm lint` (0 erreur, 3 avertissements existants), lint ciblé des fichiers présence, formatage ciblé et `git diff --check` réussis.
+- `pnpm build` réussi : compilation, TypeScript et 33 pages/routes générées, dont `/admin/presences` et `/admin/places`.
 - La vérification manuelle au navigateur reste à faire : Playwright et navigateur Chromium ne sont pas installés dans l'environnement.
