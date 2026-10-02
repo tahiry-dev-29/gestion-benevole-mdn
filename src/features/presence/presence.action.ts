@@ -53,10 +53,19 @@ export async function pointAction(input: unknown) {
   const date = dayFromString(data.date);
   try {
     const person = await prisma.user.findFirst({
-      where: { id: data.userId, deletedAt: null },
+      where: {
+        id: data.userId,
+        role: "VOLUNTEER",
+        statut: "ACTIF",
+        deletedAt: null,
+      },
       select: { id: true },
     });
-    if (!person) return { success: false, error: "Ce bénévole n'existe pas." };
+    if (!person)
+      return {
+        success: false,
+        error: "Ce bénévole n'existe pas ou n'est pas actif.",
+      };
     if (data.seatId) {
       const seat = await prisma.seat.findUnique({ where: { id: data.seatId } });
       if (!seat) return { success: false, error: "Ce siège n'existe pas." };
@@ -90,10 +99,7 @@ export async function pointAction(input: unknown) {
     revalidatePath("/admin/users/presence");
     return { success: true, data: attendance };
   } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message.toLowerCase().includes("unique")
-    ) {
+    if (isUniqueConstraintError(error)) {
       return {
         success: false,
         error: "Ce siège est déjà occupé à cette date.",
@@ -101,6 +107,15 @@ export async function pointAction(input: unknown) {
     }
     return { success: false, error: "Impossible d'enregistrer le pointage." };
   }
+}
+
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "P2002"
+  );
 }
 
 export async function listAttendanceAction(input: unknown = {}) {

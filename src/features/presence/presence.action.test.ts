@@ -52,6 +52,15 @@ describe("attendance and seat actions", () => {
     });
 
     expect(result.success).toBe(true);
+    expect(prisma.user.findFirst).toHaveBeenCalledWith({
+      where: {
+        id: 3,
+        role: "VOLUNTEER",
+        statut: "ACTIF",
+        deletedAt: null,
+      },
+      select: { id: true },
+    });
     expect(prisma.attendance.upsert).toHaveBeenCalledOnce();
     expect(prisma.attendance.upsert).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -82,6 +91,22 @@ describe("attendance and seat actions", () => {
     expect(prisma.attendance.upsert).not.toHaveBeenCalled();
   });
 
+  it("turns a database seat uniqueness conflict into a clear action error", async () => {
+    prisma.attendance.upsert.mockRejectedValue({ code: "P2002" });
+
+    const result = await pointAction({
+      userId: 3,
+      date: "2026-10-01",
+      seatId: 8,
+      statut: "PRESENT",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Ce siège est déjà occupé à cette date.",
+    });
+  });
+
   it("refuses to delete a seat already referenced by attendance", async () => {
     prisma.attendance.count.mockResolvedValue(1);
 
@@ -105,7 +130,7 @@ describe("attendance and seat actions", () => {
 
     expect(result).toEqual({
       success: false,
-      error: "Ce bénévole n'existe pas.",
+      error: "Ce bénévole n'existe pas ou n'est pas actif.",
     });
     expect(prisma.attendance.upsert).not.toHaveBeenCalled();
   });

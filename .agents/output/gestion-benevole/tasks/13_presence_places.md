@@ -66,11 +66,12 @@ Files to create/modify:
 - `app/admin/presences/`, route historique, `src/features/presence/presentation/`, `src/features/admin/admin.data.ts`.
 
 Steps:
-1. [ ] ajouter route/alias et sélectionner les composants shadcn/TanStack Table existants.
-2. [ ] fournir recherche, date, statut, table/siège et états loading/empty/error/success.
+1. [x] route admin `/admin/presences`, redirection de l'ancienne URL `/admin/users/presence`, navigation et composants shadcn/TanStack Table.
+2. [x] recherche différée, date, statut et place; états loading/empty/error/success; invalidation Query après pointage et actualisation accessible.
+3. [x] édition d'un pointage depuis l'historique, avec retour à sa date et modification du statut, des heures ou de la place.
 
 Acceptance criteria:
-- [ ] un administrateur termine un pointage sans route morte ni rechargement manuel; le layout reste exploitable sur mobile.
+- [ ] un administrateur termine et modifie un pointage sans route morte ni rechargement manuel; vérifier le parcours complet au navigateur et le layout aux largeurs mobiles.
 
 ## Verification
 
@@ -82,3 +83,12 @@ Acceptance criteria:
 ## Risks and rollback
 
 Le schéma peut contenir un modèle historique `Presence` et un modèle `Attendance`; inspecter la DB et migrations avant toute évolution.
+
+## Vérifications de reprise — 2026-10-02
+
+- Recherche serveur par nom, prénom, email et matricule; filtres statut et place par identifiant de siège; la recherche est différée côté client.
+- Historique basé sur TanStack Table, avec actualisation accessible, indicateur de chargement, état vide, erreur et action d'édition par ligne.
+- L'occupation des sièges est relue sans les filtres d'historique actifs; un filtre de recherche/statut ne peut donc pas rendre disponible à tort un siège déjà pris.
+- `pnpm test` : 19 fichiers, 127 tests réussis; tests ajoutés pour validation des filtres et composition de requête date/statut/place/recherche.
+- `pnpm typecheck`, lint ciblé des fichiers présence et formatage ciblé réussis; `pnpm build` génère les 33 routes dont `/admin/presences` et `/admin/places`.
+- La vérification manuelle au navigateur reste à faire : Playwright et navigateur Chromium ne sont pas installés dans l'environnement.
