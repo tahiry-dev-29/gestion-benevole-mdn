@@ -21,6 +21,31 @@ const EXPECTED_CREATE_MATRIX: Record<Role, Role[]> = {
   VOLUNTEER: ["VOLUNTEER"],
   USER: [],
 };
+const ROUTE_ACCESS_CASES = [
+  { path: "/admin", allowed: LOGIN_ROLES },
+  { path: "/admin/dashboard", allowed: LOGIN_ROLES },
+  { path: "/admin/profil", allowed: LOGIN_ROLES },
+  { path: "/admin/volunteer-management", allowed: MANAGED_ROLES },
+  { path: "/admin/volunteers", allowed: MANAGED_ROLES },
+  { path: "/admin/volunteer-management/add", allowed: MANAGED_ROLES },
+  {
+    path: "/admin/volunteer-management/roles",
+    allowed: ["SUPER_ADMIN", "ADMIN"],
+  },
+  { path: "/admin/users", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/users/presence", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/places", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/credits", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/observations", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/statistiques", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/parametres", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/activites", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/activities", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/presences", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/partages", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/temoignages", allowed: ["SUPER_ADMIN", "ADMIN"] },
+  { path: "/admin/sprints", allowed: ["SUPER_ADMIN", "ADMIN"] },
+] as const;
 
 describe("canCreate — matrice 4 rôles × 4 rôles (exhaustif)", () => {
   for (const actor of ROLES) {
@@ -77,6 +102,11 @@ describe("connexion & routes", () => {
       expect(canAccessRoute("/admin/volunteer-management", role)).toBe(true);
     }
   });
+  it("/admin/dashboard autorisé aux 3 rôles habilités", () => {
+    for (const role of MANAGED_ROLES) {
+      expect(canAccessRoute("/admin/dashboard", role)).toBe(true);
+    }
+  });
   it("/admin/volunteer-management/roles réservé ADMIN+", () => {
     expect(
       canAccessRoute("/admin/volunteer-management/roles", "VOLUNTEER")
@@ -88,6 +118,42 @@ describe("connexion & routes", () => {
   it("/admin/users réservé ADMIN+", () => {
     expect(canAccessRoute("/admin/users", "VOLUNTEER")).toBe(false);
     expect(canAccessRoute("/admin/users", "ADMIN")).toBe(true);
+  });
+  it("les routes métier ADMIN+ restent fermées aux bénévoles", () => {
+    const adminOnlyRoutes = [
+      "/admin/places",
+      "/admin/credits",
+      "/admin/observations",
+      "/admin/statistiques",
+      "/admin/parametres",
+      "/admin/activities",
+      "/admin/presences",
+      "/admin/partages",
+      "/admin/temoignages",
+      "/admin/sprints",
+    ];
+
+    for (const path of adminOnlyRoutes) {
+      expect(canAccessRoute(path, "VOLUNTEER"), path).toBe(false);
+      expect(canAccessRoute(path, "ADMIN"), path).toBe(true);
+      expect(canAccessRoute(path, "SUPER_ADMIN"), path).toBe(true);
+    }
+  });
+  it("refuse les routes admin qui ne sont pas dans la matrice", () => {
+    expect(canAccessRoute("/admin/secret", "ADMIN")).toBe(false);
+    expect(canAccessRoute("/admin/users-malformed", "ADMIN")).toBe(false);
+    expect(
+      canAccessRoute("/admin/volunteer-management/roles-malformed", "VOLUNTEER")
+    ).toBe(false);
+  });
+  it("couvre chaque route métier pour chaque rôle", () => {
+    for (const { path, allowed } of ROUTE_ACCESS_CASES) {
+      for (const role of ROLES) {
+        expect(canAccessRoute(path, role), `${role} → ${path}`).toBe(
+          allowed.some((allowedRole) => allowedRole === role)
+        );
+      }
+    }
   });
   it("USER est refusé sur toutes les routes /admin", () => {
     expect(canAccessRoute("/admin/dashboard", "USER")).toBe(false);

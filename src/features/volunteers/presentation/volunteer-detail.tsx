@@ -83,7 +83,9 @@ export function VolunteerDetail({ volunteer }: { volunteer: Volunteer }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-lg">
             Informations
-            <Badge variant={volunteer.role === "VOLUNTEER" ? "secondary" : "default"}>
+            <Badge
+              variant={volunteer.role === "VOLUNTEER" ? "secondary" : "default"}
+            >
               {roleLabel(volunteer.role)}
             </Badge>
             <Badge
@@ -96,23 +98,18 @@ export function VolunteerDetail({ volunteer }: { volunteer: Volunteer }) {
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <InfoRow label="Nom complet" value={formatFullName(volunteer)} />
           <InfoRow label="Email" value={volunteer.email} />
-          <InfoRow label="Date d'entrée" value={formatDate(volunteer.dateEntree)} />
           <InfoRow
-            label="Créé le"
-            value={formatDate(volunteer.createdAt)}
+            label="Date d'entrée"
+            value={formatDate(volunteer.dateEntree)}
           />
+          <InfoRow label="Créé le" value={formatDate(volunteer.createdAt)} />
           <InfoRow
             label="Créé par"
             value={
-              volunteer.createdBy
-                ? formatFullName(volunteer.createdBy)
-                : "—"
+              volunteer.createdBy ? formatFullName(volunteer.createdBy) : "—"
             }
           />
-          <InfoRow
-            label="ID créateur"
-            value={volunteer.createdById ?? "—"}
-          />
+          <InfoRow label="ID créateur" value={volunteer.createdById ?? "—"} />
         </CardContent>
       </Card>
 

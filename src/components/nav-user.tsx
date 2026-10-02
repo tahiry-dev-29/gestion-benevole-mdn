@@ -1,6 +1,8 @@
 "use client";
 
-import { Bell, ChevronsUpDown, LogOut, Settings, User } from "lucide-react";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -88,21 +90,18 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User className="text-muted-foreground" />
-                Profil
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="text-muted-foreground" />
-                Paramètres
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell className="text-muted-foreground" />
-                Notifications
+              <DropdownMenuItem asChild>
+                <Link href="/admin/profil">
+                  <User className="text-muted-foreground" />
+                  Profil
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
+            <DropdownMenuItem
+              onSelect={() => void signOut({ callbackUrl: "/login" })}
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            >
               <LogOut className="text-destructive" />
               Se déconnecter
             </DropdownMenuItem>

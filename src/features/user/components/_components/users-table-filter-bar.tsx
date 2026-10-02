@@ -1,4 +1,4 @@
-import { Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -12,60 +12,77 @@ import {
 interface UsersTableFilterBarProps {
   search: string;
   onSearchChange: (val: string) => void;
-  roleFilter: string;
-  onRoleFilterChange: (val: string | null) => void;
   statusFilter: string;
   onStatusFilterChange: (val: string | null) => void;
+  certificateFilter: string;
+  onCertificateFilterChange: (val: string | null) => void;
   totalResults: number;
 }
 
 export function UsersTableFilterBar({
   search,
   onSearchChange,
-  roleFilter,
-  onRoleFilterChange,
   statusFilter,
   onStatusFilterChange,
+  certificateFilter,
+  onCertificateFilterChange,
   totalResults,
 }: UsersTableFilterBarProps) {
   return (
-    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-slate-900/40 p-3 rounded-xl border border-slate-800/60">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+    <div className="flex w-full flex-col gap-2 rounded-xl border bg-card p-2 sm:flex-row sm:items-center">
+      <div className="relative min-w-48 flex-1">
+        <Search
+          className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
         <Input
+          aria-label="Rechercher les comptes USER"
           placeholder="Rechercher par nom, email, contact..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9 bg-slate-950/50 border-slate-800 text-slate-200 placeholder:text-slate-500 h-9 text-xs"
+          className="h-9 border-transparent bg-muted/50 pl-9 focus-visible:border-input"
         />
       </div>
 
-      <div className="flex items-center gap-2">
-        <Select value={roleFilter} onValueChange={onRoleFilterChange}>
-          <SelectTrigger className="w-[130px] bg-slate-950/50 border-slate-800 text-slate-300 h-9 text-xs">
-            <Filter className="mr-1.5 size-3.5 text-slate-400" />
-            <SelectValue placeholder="Rôle" />
+      <div className="flex flex-wrap items-center gap-2">
+        <Select
+          value={certificateFilter}
+          onValueChange={onCertificateFilterChange}
+        >
+          <SelectTrigger
+            className="h-9 w-[160px]"
+            aria-label="Filtrer par certificat"
+          >
+            <SelectValue placeholder="Certificat" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
-            <SelectItem value="ALL">Tous les rôles</SelectItem>
-            <SelectItem value="ADMIN">Admin</SelectItem>
-            <SelectItem value="VOLUNTEER">Bénévole</SelectItem>
+          <SelectContent>
+            <SelectItem value="ALL">Tous certificats</SelectItem>
+            <SelectItem value="NON_DEMANDE">Non demandé</SelectItem>
+            <SelectItem value="EN_ATTENTE">En attente</SelectItem>
+            <SelectItem value="APPROUVE">Approuvé</SelectItem>
+            <SelectItem value="REJETE">Rejeté</SelectItem>
           </SelectContent>
         </Select>
 
         <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="w-[130px] bg-slate-950/50 border-slate-800 text-slate-300 h-9 text-xs">
+          <SelectTrigger
+            className="h-9 w-[130px]"
+            aria-label="Filtrer par statut du compte"
+          >
             <SelectValue placeholder="Statut" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
+          <SelectContent>
             <SelectItem value="ALL">Tous statuts</SelectItem>
             <SelectItem value="ACTIF">Actif</SelectItem>
             <SelectItem value="INACTIF">Inactif</SelectItem>
           </SelectContent>
         </Select>
 
-        <div className="text-xs text-slate-400 whitespace-nowrap pl-2 border-l border-slate-800">
-          <span className="font-semibold text-slate-200">{totalResults}</span>{" "}
+        <div
+          className="whitespace-nowrap px-2 text-sm text-muted-foreground"
+          aria-live="polite"
+        >
+          <span className="font-medium text-foreground">{totalResults}</span>{" "}
           résultats
         </div>
       </div>

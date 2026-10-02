@@ -3,7 +3,11 @@ import { z } from "zod";
 
 const literalSchema = z.union([z.string(), z.number(), z.boolean()]);
 export const jsonSchema: z.ZodType<Prisma.InputJsonValue> = z.lazy(() =>
-  z.union([literalSchema, z.array(jsonSchema), z.record(z.string(), jsonSchema)])
+  z.union([
+    literalSchema,
+    z.array(jsonSchema),
+    z.record(z.string(), jsonSchema),
+  ])
 );
 
 export const CategoryEnum = z.enum([
@@ -31,40 +35,44 @@ export const CertificatStatutEnum = z.enum([
 export type CertificatStatut = z.infer<typeof CertificatStatutEnum>;
 
 // Schéma de création d'un USER (role forcé à USER côté serveur)
-export const createUserSchema = z.object({
-  role: RoleEnum.extract(["ADMIN", "VOLUNTEER"]).default("VOLUNTEER"),
-  contact: z.string().optional(),
-  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-  email: z.string().email("Adresse email invalide"),
-  sexe: SexeEnum.optional(),
-  matricule: z.string().optional(),
-  telephone: z.string().optional(),
-  materielPC: z.boolean().optional(),
-  accepteRegles: z.boolean().optional(),
-  spinneret: z.string().optional(),
-  etablissement: z.string().optional(),
-  societe: z.string().optional(),
-  // Optionnels
-  age: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(120)
-    .optional(),
-  dateNaissance: z.string().optional(),
-  socialProfile: z.string().url("URL invalide").optional().or(z.literal("")),
-  cvUrl: z
-    .string()
-    .optional()
-    .refine((v) => !v || v.endsWith(".pdf"), { message: "Le CV doit être un fichier PDF" }),
-  siteWeb: z.string().url("URL invalide").optional().or(z.literal("")),
-  joursDisponibles: z.array(z.string()).optional(),
-  disponibilites: jsonSchema.optional(),
-  contactUrgence: z.string().optional(),
-  facebook: z.string().optional(),
-  categorie: CategoryEnum.optional(),
-});
+export const createUserSchema = z
+  .object({
+    contact: z.string().optional(),
+    nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+    prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
+    email: z.string().email("Adresse email invalide"),
+    sexe: SexeEnum.optional(),
+    matricule: z.string().trim().min(1, "Le matricule est requis"),
+    telephone: z.string().trim().min(1, "Le téléphone est requis"),
+    materielPC: z.boolean(),
+    accepteRegles: z.boolean(),
+    spinneret: z.string().trim().min(1, "Le spinneret est requis").optional(),
+    etablissement: z.string().optional(),
+    societe: z.string().optional(),
+    // Optionnels
+    age: z.coerce.number().int().min(1).max(120).optional(),
+    dateNaissance: z.string().optional(),
+    socialProfile: z.string().url("URL invalide").optional().or(z.literal("")),
+    cvUrl: z
+      .string()
+      .optional()
+      .refine((v) => !v || v.endsWith(".pdf"), {
+        message: "Le CV doit être un fichier PDF",
+      }),
+    siteWeb: z.string().url("URL invalide").optional().or(z.literal("")),
+    joursDisponibles: z.array(z.string()).optional(),
+    disponibilites: jsonSchema.optional(),
+    contactUrgence: z.string().optional(),
+    facebook: z.string().optional(),
+    categorie: CategoryEnum.optional(),
+  })
+  .refine(
+    (data) => Boolean(data.etablissement?.trim() || data.societe?.trim()),
+    {
+      message: "Une école ou une société est requise",
+      path: ["etablissement"],
+    }
+  );
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 
@@ -78,7 +86,7 @@ export const updateUserSchema = z.object({
   telephone: z.string().min(1, "Le téléphone est requis"),
   materielPC: z.boolean(),
   accepteRegles: z.boolean(),
-  spinneret: z.string().optional(),
+  spinneret: z.string().trim().min(1, "Le spinneret est requis").optional(),
   etablissement: z.string().optional(),
   societe: z.string().optional(),
   age: z.coerce.number().int().min(1).max(120).optional(),
@@ -87,11 +95,15 @@ export const updateUserSchema = z.object({
   cvUrl: z
     .string()
     .optional()
-    .refine((v) => !v || v.endsWith(".pdf"), { message: "Le CV doit être un fichier PDF" }),
+    .refine((v) => !v || v.endsWith(".pdf"), {
+      message: "Le CV doit être un fichier PDF",
+    }),
   certificatUrl: z
     .string()
     .optional()
-    .refine((v) => !v || v.endsWith(".pdf"), { message: "Le certificat doit être un fichier PDF" }),
+    .refine((v) => !v || v.endsWith(".pdf"), {
+      message: "Le certificat doit être un fichier PDF",
+    }),
   siteWeb: z.string().url("URL invalide").optional().or(z.literal("")),
   joursDisponibles: z.array(z.string()).optional(),
   disponibilites: jsonSchema.optional(),
@@ -99,6 +111,13 @@ export const updateUserSchema = z.object({
   facebook: z.string().optional(),
   categorie: CategoryEnum.optional(),
   statut: z.enum(["ACTIF", "INACTIF"]).optional(),
+});
+
+export const userListFiltersSchema = z.object({
+  query: z.string().trim().max(120).optional(),
+  role: z.enum(["ALL", "USER", "ADMIN", "VOLUNTEER", "SUPER_ADMIN"]).optional(),
+  certificatStatut: z.enum(["ALL", ...CertificatStatutEnum.options]).optional(),
+  statut: z.enum(["ALL", "ACTIF", "INACTIF"]).optional(),
 });
 
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;

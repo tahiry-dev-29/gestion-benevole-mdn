@@ -1,107 +1,108 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Shield } from "lucide-react";
+import { toast } from "sonner";
 
+import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
+import { DataTable } from "@/components/shared/data-table";
 import { ImportExportButtons } from "@/features/excel/import-export-buttons";
-import {
-  createUserAction,
-  deleteUserAction,
-  updateUserRoleAction,
-} from "@/features/user/user.action";
-import type { Sexe } from "@/features/user/user.schema";
+import { createUserSchema } from "@/features/user/user.schema";
 
 import { CreateUserModal } from "./_components/create-user-modal";
-import { UserCard } from "./_components/user-card";
-import { UsersPagination } from "./_components/users-pagination";
-import { UsersTableFilterBar } from "./_components/users-table-filter-bar";
+import { createUserColumns } from "./_components/user-columns";
+import { UsersListToolbar } from "./_components/users-list-toolbar";
 import { UsersTableHeader } from "./_components/users-table-header";
-import type { CategoryType, UserFormData, UserItem } from "./types";
+import { filterUsers } from "./filter-users";
+import type { UserFormData, UserItem } from "./types";
+import { useCreateUser, useDeleteUser, useUsers } from "./use-users";
 
 const INITIAL_FORM_DATA: UserFormData = {
   prenom: "",
   nom: "",
   email: "",
-  role: "VOLUNTEER",
+  role: "USER",
   sexe: "",
   age: "",
   contact: "",
   categorie: "",
   etablissement: "",
+  societe: "",
   facebook: "",
+  matricule: "",
+  telephone: "",
+  materielPC: false,
+  accepteRegles: false,
+  spinneret: "",
 };
 
 export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const usersQuery = useUsers();
+  const queryClient = useQueryClient();
+  const createUser = useCreateUser();
+  const deleteUser = useDeleteUser();
+  const [deleteTarget, setDeleteTarget] = useState<UserItem | null>(null);
 
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string>("ALL");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 6;
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [certificateFilter, setCertificateFilter] = useState("ALL");
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [formError, setFormError] = useState("");
   const [formData, setFormData] = useState<UserFormData>(INITIAL_FORM_DATA);
 
-  const filteredUsers = initialUsers.filter((u) => {
-    const searchTarget =
-      `${u.prenom} ${u.nom} ${u.email} ${u.role} ${u.etablissement || ""} ${u.contact || ""}`.toLowerCase();
-    const matchesSearch =
-      search === "" || searchTarget.includes(search.toLowerCase());
-    const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
-    const matchesStatus = statusFilter === "ALL" || u.statut === statusFilter;
-    return matchesSearch && matchesRole && matchesStatus;
+  const users =
+    usersQuery.data ?? initialUsers.filter((user) => user.role === "USER");
+  const filteredUsers = filterUsers(users, {
+    query: search,
+    statut: statusFilter,
+    certificat: certificateFilter,
   });
 
   const totalUsers = filteredUsers.length;
-  const totalPages = Math.ceil(totalUsers / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
-  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + pageSize);
-
-  const handleRoleChange = (id: number, newRole: "ADMIN" | "VOLUNTEER") => {
-    startTransition(async () => {
-      await updateUserRoleAction({ userId: id, role: newRole });
-      router.refresh();
-    });
-  };
-
-  const handleDelete = (id: number) => {
-    if (confirm("Voulez-vous vraiment désactiver cet utilisateur ?")) {
-      startTransition(async () => {
-        await deleteUserAction(id);
-        router.refresh();
-      });
-    }
-  };
+  const columns = createUserColumns();
 
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
 
-    startTransition(async () => {
-      const res = await createUserAction({
-        prenom: formData.prenom,
-        nom: formData.nom,
-        email: formData.email,
-        role: formData.role,
-        sexe: (formData.sexe as Sexe) || undefined,
-        age: formData.age ? Number(formData.age) : undefined,
-        contact: formData.contact || undefined,
-        categorie: (formData.categorie as CategoryType) || undefined,
-        etablissement: formData.etablissement || undefined,
-        facebook: formData.facebook || undefined,
-      });
+    const parsed = createUserSchema.safeParse({
+      prenom: formData.prenom,
+      nom: formData.nom,
+      email: formData.email,
+      role: "USER",
+      sexe: formData.sexe || undefined,
+      age: formData.age ? Number(formData.age) : undefined,
+      contact: formData.contact || undefined,
+      matricule: formData.matricule,
+      telephone: formData.telephone,
+      materielPC: formData.materielPC,
+      accepteRegles: formData.accepteRegles,
+      spinneret: formData.spinneret || undefined,
+      categorie: formData.categorie || undefined,
+      etablissement: formData.etablissement || undefined,
+      societe: formData.societe || undefined,
+      facebook: formData.facebook || undefined,
+    });
+    if (!parsed.success) {
+      const message =
+        parsed.error.issues[0]?.message ?? "Vérifiez les champs saisis.";
+      setFormError(message);
+      toast.error(message);
+      return;
+    }
 
-      if (res.success) {
+    createUser.mutate(parsed.data, {
+      onSuccess: () => {
+        toast.success("Compte USER créé.");
         setIsCreateOpen(false);
         setFormData(INITIAL_FORM_DATA);
-        router.refresh();
-      } else {
-        setFormError(res.error || "Erreur lors de la création.");
-      }
+      },
+      onError: (error) => {
+        setFormError(error.message);
+        toast.error(error.message);
+      },
     });
   };
 
@@ -109,56 +110,42 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
     <div className="space-y-6">
       <ImportExportButtons dataset="users" />
       <UsersTableHeader onOpenCreate={() => setIsCreateOpen(true)} />
-
-      <UsersTableFilterBar
+      <UsersListToolbar
+        total={totalUsers}
         search={search}
-        onSearchChange={(val) => {
-          setSearch(val);
-          setCurrentPage(1);
-        }}
-        roleFilter={roleFilter}
-        onRoleFilterChange={(val) => {
-          setRoleFilter(val ?? "ALL");
-          setCurrentPage(1);
-        }}
-        statusFilter={statusFilter}
-        onStatusFilterChange={(val) => {
-          setStatusFilter(val ?? "ALL");
-          setCurrentPage(1);
-        }}
-        totalResults={filteredUsers.length}
+        onSearchChange={setSearch}
+        status={statusFilter}
+        onStatusChange={(value) => setStatusFilter(value ?? "ALL")}
+        certificate={certificateFilter}
+        onCertificateChange={(value) => setCertificateFilter(value ?? "ALL")}
+        onRefresh={() =>
+          void queryClient.invalidateQueries({ queryKey: ["users"] })
+        }
+        isRefreshing={usersQuery.isFetching}
       />
 
-      {paginatedUsers.length === 0 ? (
+      {usersQuery.isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          Impossible de charger les comptes USER. Réessayez.
+        </p>
+      ) : null}
+      {filteredUsers.length === 0 && !usersQuery.isPending ? (
         <div className="text-center py-12 rounded-xl border border-dashed border-slate-800 bg-slate-900/20 text-slate-400">
           <Shield className="mx-auto size-10 opacity-30 mb-3" />
-          <p className="text-sm font-medium">Aucun utilisateur trouvé</p>
+          <p className="text-sm font-medium">Aucun compte USER trouvé</p>
           <p className="text-xs text-slate-500 mt-1">
             Essayez de modifier vos filtres ou effectuez une autre recherche.
           </p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {paginatedUsers.map((u) => (
-            <UserCard
-              key={u.id}
-              user={u}
-              isPending={isPending}
-              onRoleChange={handleRoleChange}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
+      ) : null}
+      {(filteredUsers.length > 0 || usersQuery.isPending) && (
+        <DataTable
+          columns={columns}
+          data={filteredUsers}
+          isLoading={usersQuery.isPending}
+          emptyMessage="Aucun compte USER trouvé."
+        />
       )}
-
-      <UsersPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        startIndex={startIndex}
-        pageSize={pageSize}
-        totalUsers={totalUsers}
-        onPageChange={setCurrentPage}
-      />
 
       <CreateUserModal
         isOpen={isCreateOpen}
@@ -166,8 +153,27 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
         formData={formData}
         setFormData={setFormData}
         formError={formError}
-        isPending={isPending}
+        isPending={createUser.isPending}
         onSubmit={handleCreateSubmit}
+      />
+      <ConfirmDeleteDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        title="Désactiver ce compte USER ?"
+        description="Le compte sera archivé et ne pourra plus ouvrir de session."
+        isPending={deleteUser.isPending}
+        onConfirm={() => {
+          if (!deleteTarget) return;
+          deleteUser.mutate(deleteTarget.id, {
+            onSuccess: () => {
+              toast.success("Compte USER archivé.");
+              setDeleteTarget(null);
+            },
+            onError: (error) => toast.error(error.message),
+          });
+        }}
       />
     </div>
   );

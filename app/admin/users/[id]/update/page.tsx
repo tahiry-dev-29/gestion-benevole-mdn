@@ -23,7 +23,11 @@ export default async function UserUpdatePage({ params }: Props) {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <Link href={`/admin/users/${userId}`}>
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-100">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-slate-400 hover:text-slate-100"
+          >
             <ArrowLeft className="size-5" />
           </Button>
         </Link>

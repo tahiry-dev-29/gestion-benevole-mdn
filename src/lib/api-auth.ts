@@ -14,7 +14,10 @@ export async function requireAdmin(
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
-  if (token.role !== "ADMIN" || token.statut === "INACTIF") {
+  if (
+    (token.role !== "ADMIN" && token.role !== "SUPER_ADMIN") ||
+    token.statut === "INACTIF"
+  ) {
     return NextResponse.json({ error: "Accès interdit" }, { status: 403 });
   }
 

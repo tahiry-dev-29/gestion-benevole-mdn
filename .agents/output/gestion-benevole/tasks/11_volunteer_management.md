@@ -1,4 +1,4 @@
-Status: TODO
+Status: IN_PROGRESS
 
 # Feature tasks: Gestion des bénévoles et comptes habilités (S2)
 

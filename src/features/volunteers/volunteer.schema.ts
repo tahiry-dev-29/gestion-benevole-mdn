@@ -7,10 +7,7 @@ export const volunteerRoleSchema = z.enum(VOLUNTEER_ROLES);
 export const volunteerStatutSchema = z.enum(["ACTIF", "INACTIF"]);
 
 export const createVolunteerSchema = z.object({
-  nom: z
-    .string()
-    .min(2, "Le nom doit contenir au moins 2 caractères")
-    .max(100),
+  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères").max(100),
   prenom: z
     .string()
     .min(2, "Le prénom doit contenir au moins 2 caractères")
@@ -26,7 +23,11 @@ export const createVolunteerSchema = z.object({
 });
 
 export const updateVolunteerSchema = z.object({
-  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères").max(100).optional(),
+  nom: z
+    .string()
+    .min(2, "Le nom doit contenir au moins 2 caractères")
+    .max(100)
+    .optional(),
   prenom: z
     .string()
     .min(2, "Le prénom doit contenir au moins 2 caractères")

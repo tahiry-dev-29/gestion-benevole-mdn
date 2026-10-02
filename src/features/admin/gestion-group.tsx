@@ -10,7 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -37,9 +36,18 @@ export function GestionGroup() {
   const sessionRole = session?.user?.role;
   const role: Role | undefined = isRole(sessionRole) ? sessionRole : undefined;
 
-  const items = adminGestionItems.filter(
-    (item) => !role || !item.roles || item.roles.includes(role)
-  );
+  const items = adminGestionItems
+    .filter(
+      (item) => !item.roles || (role !== undefined && item.roles.includes(role))
+    )
+    .map((item) => ({
+      ...item,
+      items: item.items?.filter(
+        (child) =>
+          !child.roles || (role !== undefined && child.roles.includes(role))
+      ),
+    }))
+    .filter((item) => !item.items || item.items.length > 0);
 
   const activeItem = items.find((item) => isActive(pathname, item.url));
   const isCollapsed = state === "collapsed";
@@ -84,12 +92,6 @@ export function GestionGroup() {
                     </Link>
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="gap-2 p-2">
-                  <div className="font-medium text-muted-foreground">
-                    Tout afficher
-                  </div>
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
@@ -137,12 +139,6 @@ export function GestionGroup() {
                   </Link>
                 </DropdownMenuItem>
               ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="gap-2 p-2">
-                <div className="font-medium text-muted-foreground">
-                  Tout afficher
-                </div>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

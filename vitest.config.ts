@@ -8,6 +8,10 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: ["./src/test-setup.ts"],
+    alias: {
+      "server-only": new URL("./src/test-server-only.ts", import.meta.url)
+        .pathname,
+    },
     include: ["src/**/*.{test,spec}.{ts,tsx}", "tests/**/*.test.ts"],
     exclude: ["node_modules", ".next", "dist", "build"],
     coverage: {

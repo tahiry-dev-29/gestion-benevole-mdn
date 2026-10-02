@@ -34,16 +34,10 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 interface UserCardProps {
   user: UserItem;
   isPending: boolean;
-  onRoleChange: (id: number, role: "ADMIN" | "VOLUNTEER") => void;
   onDelete: (id: number) => void;
 }
 
-export function UserCard({
-  user: u,
-  isPending,
-  onRoleChange,
-  onDelete,
-}: UserCardProps) {
+export function UserCard({ user: u, isPending, onDelete }: UserCardProps) {
   const initials = `${u.prenom[0] || ""}${u.nom[0] || ""}`.toUpperCase() || "U";
   const formattedDate = new Intl.DateTimeFormat("fr-FR", {
     dateStyle: "medium",
@@ -97,22 +91,12 @@ export function UserCard({
               <DropdownMenuSeparator className="bg-slate-800" />
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/admin/benevoles/${u.id}`}
+                  href={`/admin/users/${u.id}`}
                   className="cursor-pointer gap-2"
                 >
                   <Pencil className="size-3.5 text-slate-400" />
                   Modifier profil
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled={isPending}
-                onClick={() =>
-                  onRoleChange(u.id, u.role === "ADMIN" ? "VOLUNTEER" : "ADMIN")
-                }
-                className="cursor-pointer gap-2"
-              >
-                <Shield className="size-3.5 text-slate-400" />
-                Passer en {u.role === "ADMIN" ? "Bénévole" : "Admin"}
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-slate-800" />
               <DropdownMenuItem
@@ -136,7 +120,7 @@ export function UserCard({
             }`}
           >
             <Shield className="size-3" />
-            {u.role}
+            Compte USER
           </span>
 
           <span
@@ -157,6 +141,11 @@ export function UserCard({
           {u.categorie && (
             <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-800/80 text-slate-300 border border-slate-700/60">
               {u.categorie}
+            </span>
+          )}
+          {u.certificatStatut && (
+            <span className="rounded-full border px-2.5 py-0.5 text-xs text-muted-foreground">
+              Certificat : {u.certificatStatut.replaceAll("_", " ")}
             </span>
           )}
         </div>
@@ -184,6 +173,14 @@ export function UserCard({
           </span>
           <span className="font-semibold text-slate-200 mt-0.5 block truncate">
             {u.etablissement || "—"}
+          </span>
+        </div>
+        <div>
+          <span className="block text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+            MATRICULE
+          </span>
+          <span className="font-semibold text-slate-200 mt-0.5 block truncate">
+            {u.matricule || "À renseigner"}
           </span>
         </div>
 

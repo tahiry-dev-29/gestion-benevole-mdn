@@ -11,10 +11,11 @@ export function UsersTableHeader({ onOpenCreate }: UsersTableHeaderProps) {
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <h2 className="text-xl font-bold tracking-tight text-foreground">
-          Utilisateurs
+          Comptes USER
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Gérez l&apos;ensemble des comptes et leurs permissions.
+          Gérez les pré-inscriptions, leurs informations et certificats de
+          conversion.
         </p>
       </div>
 

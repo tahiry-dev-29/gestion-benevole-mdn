@@ -16,8 +16,6 @@ import {
   Users,
 } from "lucide-react";
 
-export * from "./data/mock-data";
-
 const ADMIN_ONLY: Role[] = ["SUPER_ADMIN", "ADMIN"];
 
 export type NavItem = {
@@ -63,14 +61,17 @@ export const adminGestionItems: NavItem[] = [
     url: "/admin/presences",
     icon: CalendarCheck,
     roles: ADMIN_ONLY,
-    items: [{ title: "Pointage journalier", url: "/admin/presences" }],
+    items: [
+      { title: "Pointage journalier", url: "/admin/presences" },
+      { title: "Tables et places", url: "/admin/places", roles: ADMIN_ONLY },
+    ],
   },
   {
     title: "Activités",
-    url: "/admin/activities",
+    url: "/admin/activites",
     icon: CalendarDays,
     roles: ADMIN_ONLY,
-    items: [{ title: "Liste des activités", url: "/admin/activities" }],
+    items: [{ title: "Liste des activités", url: "/admin/activites" }],
   },
   {
     title: "Crédits",
@@ -144,9 +145,3 @@ export const adminNavGroups: NavGroup[] = [
 export const adminTeams = [
   { name: "Gestion Bénévole", logo: Package, plan: "Espace administration" },
 ];
-
-export const adminUser = {
-  name: "Marie Dupont",
-  email: "marie.dupont@asso.fr",
-  avatar: "",
-};

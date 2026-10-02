@@ -1,14 +1,11 @@
 import { CalendarCheck, Coins, UserCheck, Users } from "lucide-react";
 
-import { activities, credits, presences } from "@/features/admin/admin.data";
+import { getAdminStatistics } from "@/features/admin/metrics";
 import { PageHeader } from "@/features/admin/page-header";
 import { StatCard } from "@/features/admin/stat-card";
-import { users } from "@/features/users/user.data";
 
-export default function StatistiquesPage() {
-  const benevoles = users.filter((u) => u.role === "VOLUNTEER").length;
-  const totalCredits = credits.reduce((sum, c) => sum + c.montant, 0);
-  const presencesJour = presences.filter((p) => p.statut === "PRESENT").length;
+export default async function StatistiquesPage() {
+  const metrics = await getAdminStatistics();
 
   return (
     <div className="space-y-6">
@@ -20,30 +17,22 @@ export default function StatistiquesPage() {
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Bénévoles"
-          value={String(benevoles)}
-          change="+12%"
-          trend="up"
+          value={String(metrics.activeVolunteers)}
           icon={Users}
         />
         <StatCard
           label="Activités"
-          value={String(activities.length)}
-          change="+3"
-          trend="up"
+          value={String(metrics.publishedActivities)}
           icon={CalendarCheck}
         />
         <StatCard
           label="Crédits cumulés"
-          value={`${totalCredits} €`}
-          change="+8%"
-          trend="up"
+          value={`${metrics.totalCredits.toFixed(2)} €`}
           icon={Coins}
         />
         <StatCard
           label="Présents aujourd'hui"
-          value={String(presencesJour)}
-          change="-2"
-          trend="down"
+          value={String(metrics.presentToday)}
           icon={UserCheck}
         />
       </section>

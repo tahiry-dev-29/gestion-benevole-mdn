@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isAdminOrAbove, isRole } from "@/lib/rbac";
 
 import { moderationSchema, temoignageSchema } from "./temoignage.schema";
 
@@ -16,10 +17,6 @@ const submissions =
 globalForRateLimit.temoignageSubmissions = submissions;
 const WINDOW_MS = 60_000;
 const MAX_SUBMISSIONS = 3;
-
-function isAdminRole(role: string | undefined) {
-  return role === "ADMIN";
-}
 
 export async function submitTemoignage(input: unknown) {
   const parsed = temoignageSchema.safeParse(input);
@@ -60,7 +57,7 @@ export async function submitTemoignage(input: unknown) {
 
 export async function moderateTemoignage(input: unknown) {
   const session = await auth();
-  if (!isAdminRole(session?.user?.role))
+  if (!isRole(session?.user?.role) || !isAdminOrAbove(session.user.role))
     return { success: false, error: "Accès refusé." };
   const parsed = moderationSchema.safeParse(input);
   if (!parsed.success) return { success: false, error: "Action invalide." };

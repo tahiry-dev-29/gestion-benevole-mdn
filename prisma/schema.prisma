@@ -52,6 +52,7 @@ model User {
   createdUsers            User[]           @relation("CreatedBy")
   certificatUrl           String?
   certificatStatut        CertificatStatut @default(NON_DEMANDE)
+  certificatMotifRejet    String?
   certificatValidatedAt   DateTime?
   certificatValidatedById Int?
 

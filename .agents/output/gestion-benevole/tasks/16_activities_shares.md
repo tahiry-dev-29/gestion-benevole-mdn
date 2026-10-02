@@ -57,7 +57,7 @@ Acceptance criteria:
 
 ### Task 16.2: Admin et expérience publique
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Parent:** Publication publique sans fuite de brouillon
 **Depends on:** Task 16.1
 

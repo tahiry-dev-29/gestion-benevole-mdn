@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
@@ -53,11 +53,9 @@ export function ObservationsList({
   );
   const [editingId, setEditingId] = React.useState<number | null>(null);
   const [editContenu, setEditContenu] = React.useState("");
-  const [isSaving, setIsSaving] = React.useState(false);
   const [deleteTarget, setDeleteTarget] = React.useState<number | null>(null);
-  const [isDeleting, setIsDeleting] = React.useState(false);
 
-  const { data: observations = [] } = useQuery({
+  const observationsQuery = useQuery({
     queryKey: ["observations", filterUserId, filterMois, filterAnnee],
     queryFn: async () => {
       const res = await listObservationsAction({
@@ -65,8 +63,28 @@ export function ObservationsList({
         mois: filterMois,
         annee: filterAnnee,
       });
-      return res.success && res.data ? res.data : [];
+      if (!res.success) throw new Error(res.error);
+      return res.data ?? [];
     },
+  });
+  const observations = observationsQuery.data ?? [];
+
+  const updateMutation = useMutation({
+    mutationFn: async (input: { observationId: number; contenu: string }) => {
+      const result = await updateObservationAction(input);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["observations"] }),
+  });
+  const deleteMutation = useMutation({
+    mutationFn: async (observationId: number) => {
+      const result = await deleteObservationAction({ observationId });
+      if (!result.success) throw new Error(result.error);
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["observations"] }),
   });
 
   function handleRefresh() {
@@ -79,40 +97,26 @@ export function ObservationsList({
 
   async function handleSaveEdit(obs: ObservationItem) {
     if (!editContenu.trim()) return;
-    setIsSaving(true);
     try {
-      const result = await updateObservationAction({
+      await updateMutation.mutateAsync({
         observationId: obs.id,
         contenu: editContenu,
       });
-      if (!result.success) {
-        toast.error(result.error ?? "Erreur");
-        return;
-      }
       toast.success("Observation mise à jour");
       setEditingId(null);
-      handleRefresh();
-    } finally {
-      setIsSaving(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erreur");
     }
   }
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    setIsDeleting(true);
     try {
-      const result = await deleteObservationAction({
-        observationId: deleteTarget,
-      });
-      if (!result.success) {
-        toast.error(result.error ?? "Erreur");
-        return;
-      }
+      await deleteMutation.mutateAsync(deleteTarget);
       toast.success("Observation supprimée");
       setDeleteTarget(null);
-      handleRefresh();
-    } finally {
-      setIsDeleting(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erreur");
     }
   }
 
@@ -130,6 +134,16 @@ export function ObservationsList({
       />
 
       <TableCard title="Historique des observations">
+        {observationsQuery.isPending ? (
+          <p role="status" className="p-4 text-sm text-muted-foreground">
+            Chargement des observations…
+          </p>
+        ) : null}
+        {observationsQuery.isError ? (
+          <p role="alert" className="p-4 text-sm text-destructive">
+            {observationsQuery.error.message}
+          </p>
+        ) : null}
         <Table>
           <TableHeader>
             <TableRow>
@@ -158,7 +172,7 @@ export function ObservationsList({
                   canModify={canModify(obs)}
                   isEditing={editingId === obs.id}
                   editContenu={editContenu}
-                  isSaving={isSaving}
+                  isSaving={updateMutation.isPending}
                   onStartEdit={() => {
                     setEditingId(obs.id);
                     setEditContenu(obs.contenu);
@@ -178,7 +192,7 @@ export function ObservationsList({
         open={deleteTarget !== null}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
         onConfirm={handleDelete}
-        isPending={isDeleting}
+        isPending={deleteMutation.isPending}
         title="Supprimer cette observation ?"
         description="Cette observation sera définitivement supprimée."
       />

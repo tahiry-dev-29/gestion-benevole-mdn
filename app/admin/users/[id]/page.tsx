@@ -1,15 +1,14 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Check, Mail, Phone, X } from "lucide-react";
+import { ArrowLeft, Mail, Phone, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  approveCertificateAction,
-  getUserDetailsAction,
-} from "@/features/user/user.action";
+import { getUserDetailsAction } from "@/features/user/user.action";
 import { gravatarUrl } from "@/lib/gravatar";
 
+import { ApproveCertificateButton } from "./_components/approve-certificate-button";
 import { CertificatBadge } from "./_components/certificat-badge";
 import { RejectDialog } from "./_components/reject-dialog";
 
@@ -27,10 +26,15 @@ export default async function UserDetailsPage({ params }: Props) {
 
   const u = result.data;
   const avatarUrl = gravatarUrl(u.email, 200);
+  const disponibilites = u.disponibilites
+    ? JSON.stringify(u.disponibilites)
+    : "—";
 
   const formattedDate = (d: Date | string | null | undefined) =>
     d
-      ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(d))
+      ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(
+          new Date(d)
+        )
       : "—";
 
   return (
@@ -38,7 +42,11 @@ export default async function UserDetailsPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link href="/admin/users">
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-100">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-slate-400 hover:text-slate-100"
+          >
             <ArrowLeft className="size-5" />
           </Button>
         </Link>
@@ -50,7 +58,11 @@ export default async function UserDetailsPage({ params }: Props) {
         </div>
         <div className="ml-auto flex gap-2">
           <Link href={`/admin/users/${userId}/update`}>
-            <Button size="sm" variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 text-xs">
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-slate-700 text-slate-300 hover:bg-slate-800 text-xs"
+            >
               Modifier
             </Button>
           </Link>
@@ -59,12 +71,12 @@ export default async function UserDetailsPage({ params }: Props) {
 
       {/* Profil & Gravatar */}
       <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6 flex gap-6 items-start">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={avatarUrl}
           alt={`${u.prenom} ${u.nom}`}
           width={80}
           height={80}
+          sizes="80px"
           className="rounded-full border-2 border-slate-700 shrink-0"
         />
         <div className="space-y-2 min-w-0">
@@ -72,7 +84,10 @@ export default async function UserDetailsPage({ params }: Props) {
             <Badge variant="outline" className="text-xs">
               {u.role}
             </Badge>
-            <Badge variant={u.statut === "ACTIF" ? "default" : "secondary"} className="text-xs">
+            <Badge
+              variant={u.statut === "ACTIF" ? "default" : "secondary"}
+              className="text-xs"
+            >
               {u.statut}
             </Badge>
             <CertificatBadge statut={u.certificatStatut} />
@@ -88,18 +103,22 @@ export default async function UserDetailsPage({ params }: Props) {
             </div>
           )}
           {u.matricule && (
-            <p className="text-xs text-slate-400">Matricule : <strong className="text-slate-200">#{u.matricule}</strong></p>
+            <p className="text-xs text-slate-400">
+              Matricule :{" "}
+              <strong className="text-slate-200">#{u.matricule}</strong>
+            </p>
           )}
         </div>
       </div>
 
       {/* Certificat — actions admin */}
-      {(u.certificatStatut === "EN_ATTENTE" || u.certificatStatut === "NON_DEMANDE") && u.role === "USER" && (
-        <div className="rounded-xl border border-amber-800/60 bg-amber-950/20 p-5 space-y-3">
-          <p className="text-sm font-medium text-amber-300">
-            Conversion USER → VOLUNTEER
-          </p>
-          {u.certificatUrl ? (
+      {u.certificatStatut === "EN_ATTENTE" &&
+        u.certificatUrl &&
+        u.role === "USER" && (
+          <div className="rounded-xl border border-amber-800/60 bg-amber-950/20 p-5 space-y-3">
+            <p className="text-sm font-medium text-amber-300">
+              Conversion USER → VOLUNTEER
+            </p>
             <a
               href={u.certificatUrl}
               target="_blank"
@@ -108,40 +127,25 @@ export default async function UserDetailsPage({ params }: Props) {
             >
               Voir le certificat PDF
             </a>
-          ) : (
-            <p className="text-xs text-slate-400">Aucun certificat uploadé.</p>
-          )}
-          <div className="flex gap-3">
-            <form
-              action={async () => {
-                "use server";
-                await approveCertificateAction({ userId });
-              }}
-            >
-              <Button
-                type="submit"
-                size="sm"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white gap-1.5 text-xs"
-              >
-                <Check className="size-3.5" />
-                Approuver
-              </Button>
-            </form>
-            <RejectDialog userId={userId} />
+            <div className="flex gap-3">
+              <ApproveCertificateButton userId={userId} />
+              <RejectDialog userId={userId} />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {u.certificatStatut === "APPROUVE" && (
         <div className="rounded-xl border border-emerald-800/60 bg-emerald-950/20 p-4 text-sm text-emerald-300">
-          ✅ Certificat approuvé le {formattedDate(u.certificatValidatedAt)} — compte converti en VOLUNTEER.
+          ✅ Certificat approuvé le {formattedDate(u.certificatValidatedAt)} —
+          compte converti en VOLUNTEER.
         </div>
       )}
 
       {u.certificatStatut === "REJETE" && (
         <div className="rounded-xl border border-red-800/60 bg-red-950/20 p-4 text-sm text-red-300">
           <X className="size-4 inline mr-1" />
-          Certificat rejeté.
+          Certificat rejeté.{" "}
+          {u.certificatMotifRejet ? `Motif : ${u.certificatMotifRejet}` : ""}
         </div>
       )}
 
@@ -151,8 +155,12 @@ export default async function UserDetailsPage({ params }: Props) {
         <Field label="Nom" value={u.nom} />
         <Field label="Genre" value={u.sexe} />
         <Field label="Âge" value={u.age ? `${u.age} ans` : undefined} />
-        <Field label="Date de naissance" value={formattedDate(u.dateNaissance)} />
+        <Field
+          label="Date de naissance"
+          value={formattedDate(u.dateNaissance)}
+        />
         <Field label="Catégorie" value={u.categorie} />
+        <Field label="Contact / WhatsApp" value={u.contact} />
         <Field label="École" value={u.etablissement} />
         <Field label="Société" value={u.societe} />
         <Field label="Spinneret" value={u.spinneret} />
@@ -165,25 +173,34 @@ export default async function UserDetailsPage({ params }: Props) {
             value={u.joursDisponibles?.join(", ") || "—"}
           />
         </div>
+        <div className="col-span-2 min-w-0">
+          <Field label="Disponibilités horaires" value={disponibilites} />
+        </div>
         <div className="col-span-2">
           <Field
             label="CV"
             value={
               u.cvUrl ? (
-                <a href={u.cvUrl} target="_blank" rel="noreferrer" className="text-cyan-400 underline text-xs">
+                <a
+                  href={u.cvUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-cyan-400 underline text-xs"
+                >
                   Télécharger le CV
                 </a>
               ) : undefined
             }
           />
         </div>
-        <Field
-          label="Matériel PC"
-          value={u.materielPC ? "Oui" : "Non"}
-        />
+        <Field label="Matériel PC" value={u.materielPC ? "Oui" : "Non"} />
         <Field
           label="Règles acceptées"
-          value={u.accepteRegles ? `Oui (${formattedDate(u.reglesAccepteesAt)})` : "Non"}
+          value={
+            u.accepteRegles
+              ? `Oui (${formattedDate(u.reglesAccepteesAt)})`
+              : "Non"
+          }
         />
         <Field label="Entrée" value={formattedDate(u.date_entree)} />
         <Field label="Inscrit le" value={formattedDate(u.createdAt)} />

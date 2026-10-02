@@ -1,7 +1,23 @@
 "use client";
 
+import Link from "next/link";
+import {
+  Eye,
+  Globe,
+  GlobeLock,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -19,6 +35,7 @@ type Props = {
   isLoading: boolean;
   onEdit: (partage: Partage) => void;
   onDelete: (partage: Partage) => void;
+  onTogglePublish: (partage: Partage) => void;
 };
 
 export function PartagesTableGrid({
@@ -26,6 +43,7 @@ export function PartagesTableGrid({
   isLoading,
   onEdit,
   onDelete,
+  onTogglePublish,
 }: Props) {
   return (
     <TableCard>
@@ -54,30 +72,61 @@ export function PartagesTableGrid({
                 {new Date(partage.datePublication).toLocaleDateString("fr-FR")}
               </TableCell>
               <TableCell>
-                <Badge
-                  variant={
-                    partage.statut === "PUBLIE" ? "default" : "secondary"
-                  }
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onTogglePublish(partage)}
+                  className="h-8 gap-2 px-2"
+                  aria-label={`${partage.statut === "PUBLIE" ? "Dépublier" : "Publier"} ${partage.titre}`}
+                  title={`${partage.statut === "PUBLIE" ? "Dépublier" : "Publier"} ce partage`}
                 >
-                  {partage.statut === "PUBLIE" ? "Publié" : "Brouillon"}
-                </Badge>
+                  <Badge
+                    variant={
+                      partage.statut === "PUBLIE" ? "default" : "secondary"
+                    }
+                    className="gap-1.5 font-medium"
+                  >
+                    {partage.statut === "PUBLIE" ? (
+                      <Globe className="size-3.5" aria-hidden="true" />
+                    ) : (
+                      <GlobeLock className="size-3.5" aria-hidden="true" />
+                    )}
+                    {partage.statut === "PUBLIE" ? "Publié" : "Brouillon"}
+                  </Badge>
+                </Button>
               </TableCell>
               <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onEdit(partage)}
-                  >
-                    Modifier
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => onDelete(partage)}
-                  >
-                    Supprimer
-                  </Button>
+                <div className="flex justify-end">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        aria-label={`Actions pour ${partage.titre}`}
+                        title="Actions"
+                      >
+                        <MoreHorizontal className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {partage.statut === "PUBLIE" ? (
+                        <DropdownMenuItem asChild>
+                          <Link href={`/partages/${partage.id}`}>
+                            <Eye className="size-4" /> Voir le partage
+                          </Link>
+                        </DropdownMenuItem>
+                      ) : null}
+                      <DropdownMenuItem onClick={() => onEdit(partage)}>
+                        <Pencil className="size-4" /> Modifier
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => onDelete(partage)}
+                        className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                      >
+                        <Trash2 className="size-4" /> Supprimer
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </TableCell>
             </TableRow>

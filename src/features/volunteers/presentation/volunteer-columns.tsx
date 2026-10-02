@@ -76,9 +76,7 @@ export function getVolunteerColumns({
       header: ({ column }) => <SortHeader column={column} label="Rôle" />,
       cell: ({ row }) => (
         <Badge
-          variant={
-            row.original.role === "VOLUNTEER" ? "secondary" : "default"
-          }
+          variant={row.original.role === "VOLUNTEER" ? "secondary" : "default"}
         >
           {roleLabel(row.original.role)}
         </Badge>
@@ -88,7 +86,9 @@ export function getVolunteerColumns({
       accessorKey: "statut",
       header: ({ column }) => <SortHeader column={column} label="Statut" />,
       cell: ({ row }) => (
-        <Badge variant={row.original.statut === "ACTIF" ? "outline" : "secondary"}>
+        <Badge
+          variant={row.original.statut === "ACTIF" ? "outline" : "secondary"}
+        >
           {statutLabel(row.original.statut)}
         </Badge>
       ),

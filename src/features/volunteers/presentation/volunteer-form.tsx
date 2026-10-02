@@ -58,7 +58,10 @@ export function VolunteerForm({
     formState: { errors },
   } = useForm<VolunteerFormValues>({
     resolver: zodResolver(volunteerFormSchema),
-    defaultValues: buildVolunteerDefaults(initialData, allowed[0] ?? "VOLUNTEER"),
+    defaultValues: buildVolunteerDefaults(
+      initialData,
+      allowed[0] ?? "VOLUNTEER"
+    ),
   });
 
   React.useEffect(() => {

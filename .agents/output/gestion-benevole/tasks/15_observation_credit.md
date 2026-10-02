@@ -1,4 +1,4 @@
-Status: TODO
+Status: IN_PROGRESS
 
 # Feature tasks: Observations mensuelles et crédits (S6)
 

@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createCreditAction } from "@/features/credit/credit.action";
+import { useCreateCredit } from "@/features/credit/use-credits";
 
 const formSchema = z.object({
   userId: z.number().int().positive("Sélectionnez un bénévole"),
@@ -51,7 +51,7 @@ export function CreateCreditDialog({
   onCreated,
 }: CreateCreditDialogProps) {
   const [open, setOpen] = React.useState(false);
-  const [isPending, setIsPending] = React.useState(false);
+  const createCredit = useCreateCredit();
 
   const {
     register,
@@ -67,26 +67,21 @@ export function CreateCreditDialog({
   });
 
   async function onSubmit(values: FormValues) {
-    setIsPending(true);
     try {
-      const result = await createCreditAction({
+      await createCredit.mutateAsync({
         userId: values.userId,
         montant: values.montant,
         date: new Date(values.date),
         motif: values.motif,
       });
-
-      if (!result.success) {
-        toast.error(result.error ?? "Erreur lors de la création");
-        return;
-      }
-
       toast.success("Crédit ajouté avec succès");
       reset();
       setOpen(false);
       onCreated();
-    } finally {
-      setIsPending(false);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erreur lors de la création"
+      );
     }
   }
 
@@ -187,10 +182,12 @@ export function CreateCreditDialog({
               </Button>
               <Button
                 type="submit"
-                disabled={isPending}
-                className={isPending ? "gap-2" : undefined}
+                disabled={createCredit.isPending}
+                className={createCredit.isPending ? "gap-2" : undefined}
               >
-                {isPending && <Loader2 className="size-4 animate-spin" />}
+                {createCredit.isPending && (
+                  <Loader2 className="size-4 animate-spin" />
+                )}
                 Enregistrer
               </Button>
             </DialogFooter>

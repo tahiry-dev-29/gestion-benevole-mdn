@@ -12,11 +12,11 @@ export function StatCard({
 }: {
   label: string;
   value: string;
-  change: string;
-  trend: "up" | "down";
+  change?: string;
+  trend?: "up" | "down";
   icon: LucideIcon;
 }) {
-  const up = trend === "up";
+  const up = trend !== "down";
 
   return (
     <Card>
@@ -28,19 +28,21 @@ export function StatCard({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        <div
-          className={cn(
-            "mt-1 flex items-center gap-1 text-xs font-medium",
-            up ? "text-primary" : "text-destructive"
-          )}
-        >
-          {up ? (
-            <TrendingUp className="size-3" />
-          ) : (
-            <TrendingDown className="size-3" />
-          )}
-          {change} vs mois dernier
-        </div>
+        {change ? (
+          <div
+            className={cn(
+              "mt-1 flex items-center gap-1 text-xs font-medium",
+              up ? "text-primary" : "text-destructive"
+            )}
+          >
+            {up ? (
+              <TrendingUp className="size-3" />
+            ) : (
+              <TrendingDown className="size-3" />
+            )}
+            {change} vs mois dernier
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );

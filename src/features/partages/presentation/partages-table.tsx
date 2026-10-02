@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
@@ -44,6 +45,24 @@ export function PartagesTable() {
   const save = useSavePartage();
   const remove = useDeletePartage();
 
+  function togglePublish(partage: Partage) {
+    const next = partage.statut === "PUBLIE" ? "BROUILLON" : "PUBLIE";
+    save.mutate(
+      {
+        id: partage.id,
+        input: { titre: partage.titre, contenu: partage.contenu, statut: next },
+      },
+      {
+        onSuccess: () =>
+          toast.success(
+            next === "PUBLIE" ? "Partage publié" : "Partage dépublié"
+          ),
+        onError: () =>
+          toast.error("Impossible de changer l’état de publication"),
+      }
+    );
+  }
+
   function submit(values: PartageFormValues) {
     const input: PartageInput = values;
     save.mutate(
@@ -57,6 +76,11 @@ export function PartagesTable() {
         onError: () => toast.error("Impossible d'enregistrer le partage"),
       }
     );
+  }
+
+  function startEditing(partage: Partage) {
+    setEditing(partage);
+    setOpen(true);
   }
 
   function confirmDelete() {
@@ -86,7 +110,7 @@ export function PartagesTable() {
           </Button>
         }
       />
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-2">
         <Select
           value={statusFilter}
           onValueChange={(value) => {
@@ -101,7 +125,7 @@ export function PartagesTable() {
           }}
         >
           <SelectTrigger
-            className="w-full sm:w-48"
+            className="h-9 w-[170px]"
             aria-label="Filtrer par publication"
           >
             <SelectValue />
@@ -112,15 +136,31 @@ export function PartagesTable() {
             <SelectItem value="PUBLIE">Publié</SelectItem>
           </SelectContent>
         </Select>
+        <Button
+          variant="outline"
+          size="icon"
+          className="size-9"
+          onClick={() => void query.refetch()}
+          disabled={query.isFetching}
+          aria-label="Actualiser les partages"
+          title="Actualiser"
+        >
+          <RefreshCw
+            className={query.isFetching ? "size-4 animate-spin" : "size-4"}
+          />
+        </Button>
       </div>
+      {query.isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          Impossible de charger les partages.
+        </p>
+      ) : null}
       <PartagesTableGrid
         rows={query.data?.data ?? []}
         isLoading={query.isLoading}
-        onEdit={(partage) => {
-          setEditing(partage);
-          setOpen(true);
-        }}
+        onEdit={startEditing}
         onDelete={setDeleting}
+        onTogglePublish={togglePublish}
       />
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>{query.data?.total ?? 0} partage(s)</span>

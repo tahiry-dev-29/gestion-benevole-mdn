@@ -17,7 +17,9 @@ export async function GET(request: Request, { params }: Context) {
   if (id === null)
     return NextResponse.json({ error: "Partage introuvable" }, { status: 404 });
   const token = await getApiToken(request);
-  const canModerate = token?.role === "ADMIN" && token.statut !== "INACTIF";
+  const canModerate =
+    (token?.role === "ADMIN" || token?.role === "SUPER_ADMIN") &&
+    token.statut !== "INACTIF";
   const partage = await partageRepository.getById(id, !canModerate);
   return partage
     ? NextResponse.json(partage)

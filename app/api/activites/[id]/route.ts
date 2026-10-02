@@ -21,7 +21,9 @@ export async function GET(request: Request, { params }: Context) {
     );
   }
   const token = await getApiToken(request);
-  const canModerate = token?.role === "ADMIN" && token.statut !== "INACTIF";
+  const canModerate =
+    (token?.role === "ADMIN" || token?.role === "SUPER_ADMIN") &&
+    token.statut !== "INACTIF";
 
   const activite = await activiteRepository.getById(parsedId, !canModerate);
 

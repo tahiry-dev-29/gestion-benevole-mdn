@@ -119,8 +119,8 @@ export function RolesManagement() {
                         const isSelf = currentId === account.id;
                         const canManage = Boolean(
                           actorRole &&
-                            canManageRole(actorRole, account.role) &&
-                            !isSelf
+                          canManageRole(actorRole, account.role) &&
+                          !isSelf
                         );
                         const nextStatut =
                           account.statut === "ACTIF" ? "INACTIF" : "ACTIF";
@@ -153,7 +153,9 @@ export function RolesManagement() {
                                 variant="outline"
                                 size="sm"
                                 className="gap-2"
-                                disabled={!canManage || statutMutation.isPending}
+                                disabled={
+                                  !canManage || statutMutation.isPending
+                                }
                                 onClick={() => toggle(account.id, nextStatut)}
                               >
                                 {statutMutation.isPending ? (

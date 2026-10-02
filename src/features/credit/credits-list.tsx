@@ -1,12 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
-import { deleteCreditAction, listCreditsAction } from "@/features/credit/credit.action";
-import { getCumulCreditsAction } from "@/features/credit/credit-cumul.action";
+import {
+  useCredits,
+  useCreditTotals,
+  useDeleteCredit,
+} from "@/features/credit/use-credits";
 
 import { CreditFilters } from "./_components/credit-filters";
 import { CreditTable } from "./_components/credit-table";
@@ -28,29 +31,19 @@ export function CreditsList({ benevoles }: CreditsListProps) {
   const queryClient = useQueryClient();
   const [filterUserId, setFilterUserId] = React.useState<number | undefined>();
   const [filterMois, setFilterMois] = React.useState<number | undefined>();
-  const [filterAnnee, setFilterAnnee] = React.useState<number | undefined>(CURRENT_YEAR);
+  const [filterAnnee, setFilterAnnee] = React.useState<number | undefined>(
+    CURRENT_YEAR
+  );
   const [deleteTarget, setDeleteTarget] = React.useState<number | null>(null);
-  const [isDeleting, setIsDeleting] = React.useState(false);
-
-  const { data: credits = [] } = useQuery({
-    queryKey: ["credits", filterUserId, filterMois, filterAnnee],
-    queryFn: async () => {
-      const res = await listCreditsAction({
-        userId: filterUserId,
-        mois: filterMois,
-        annee: filterAnnee,
-      });
-      return res.success ? res.data ?? [] : [];
-    },
+  const creditsQuery = useCredits({
+    userId: filterUserId,
+    mois: filterMois,
+    annee: filterAnnee,
   });
-
-  const { data: cumulData = { parBenevole: [], totalGlobal: 0 } } = useQuery({
-    queryKey: ["credits-cumul", filterMois, filterAnnee],
-    queryFn: async () => {
-      const res = await getCumulCreditsAction({ mois: filterMois, annee: filterAnnee });
-      return res.success && res.data ? res.data : { parBenevole: [], totalGlobal: 0 };
-    },
-  });
+  const totalsQuery = useCreditTotals({ mois: filterMois, annee: filterAnnee });
+  const deleteCredit = useDeleteCredit();
+  const credits = creditsQuery.data ?? [];
+  const cumulData = totalsQuery.data ?? { parBenevole: [], totalGlobal: 0 };
 
   function handleRefresh() {
     void queryClient.invalidateQueries({ queryKey: ["credits"] });
@@ -59,18 +52,14 @@ export function CreditsList({ benevoles }: CreditsListProps) {
 
   async function handleDelete() {
     if (!deleteTarget) return;
-    setIsDeleting(true);
     try {
-      const result = await deleteCreditAction({ creditId: deleteTarget });
-      if (!result.success) {
-        toast.error(result.error ?? "Erreur lors de la suppression");
-        return;
-      }
+      await deleteCredit.mutateAsync(deleteTarget);
       toast.success("Crédit supprimé");
       setDeleteTarget(null);
-      handleRefresh();
-    } finally {
-      setIsDeleting(false);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erreur lors de la suppression"
+      );
     }
   }
 
@@ -94,11 +83,22 @@ export function CreditsList({ benevoles }: CreditsListProps) {
 
       <CreditTable credits={credits} onDeleteClick={setDeleteTarget} />
 
+      {creditsQuery.isPending || totalsQuery.isPending ? (
+        <p role="status" className="text-sm text-muted-foreground">
+          Chargement des crédits…
+        </p>
+      ) : null}
+      {creditsQuery.isError || totalsQuery.isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          {creditsQuery.error?.message ?? totalsQuery.error?.message}
+        </p>
+      ) : null}
+
       <ConfirmDeleteDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
         onConfirm={handleDelete}
-        isPending={isDeleting}
+        isPending={deleteCredit.isPending}
         title="Supprimer ce crédit ?"
         description="Ce crédit sera définitivement supprimé. Le cumul sera recalculé."
       />

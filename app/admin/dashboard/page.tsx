@@ -1,4 +1,4 @@
-import { AlertCircle, Calendar, ClipboardCheck, Users } from "lucide-react";
+import { AlertCircle, CalendarCheck, CalendarDays, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,14 +10,51 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dashboardStats } from "@/features/admin/admin.data";
+import { getAdminDashboardMetrics } from "@/features/admin/metrics";
 import { StatCard } from "@/features/admin/stat-card";
 import { TableCard } from "@/features/admin/table-card";
-import { users } from "@/features/users/user.data";
+export default async function AdminPage() {
+  const metrics = await getAdminDashboardMetrics();
+  const stats = [
+    { label: "Bénévoles actifs", value: metrics.activeVolunteers, icon: Users },
+    {
+      label: "Activités publiées",
+      value: metrics.publishedActivities,
+      icon: CalendarDays,
+    },
+    {
+      label: "Présents aujourd’hui",
+      value: metrics.presentToday,
+      icon: CalendarCheck,
+    },
+    {
+      label: "Témoignages à modérer",
+      value: metrics.pendingTestimonials,
+      icon: AlertCircle,
+    },
+  ];
+  const distribution = [
+    {
+      label: "Bénévoles actifs",
+      value: metrics.activeVolunteers,
+      color: "bg-primary",
+    },
+    {
+      label: "Administrateurs",
+      value: metrics.adminCount,
+      color: "bg-muted-foreground/40",
+    },
+    {
+      label: "Comptes USER",
+      value: metrics.pendingUsers,
+      color: "bg-destructive",
+    },
+  ];
+  const distributionTotal = distribution.reduce(
+    (sum, row) => sum + row.value,
+    0
+  );
 
-const statIcons = [Users, Calendar, ClipboardCheck, AlertCircle];
-
-export default function AdminPage() {
   return (
     <div className="space-y-6">
       <section>
@@ -28,14 +65,12 @@ export default function AdminPage() {
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {dashboardStats.map((stat, i) => (
+        {stats.map((stat) => (
           <StatCard
             key={stat.label}
             label={stat.label}
-            value={stat.value}
-            change={stat.change}
-            trend={stat.trend === "up" ? "up" : "down"}
-            icon={statIcons[i]}
+            value={String(stat.value)}
+            icon={stat.icon}
           />
         ))}
       </section>
@@ -51,7 +86,14 @@ export default function AdminPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.slice(0, 5).map((u) => (
+              {metrics.recentUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-muted-foreground">
+                    Aucun compte n’est encore enregistré.
+                  </TableCell>
+                </TableRow>
+              ) : null}
+              {metrics.recentUsers.map((u) => (
                 <TableRow key={u.id}>
                   <TableCell className="font-medium">
                     {u.prenom} {u.nom}
@@ -61,9 +103,17 @@ export default function AdminPage() {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={u.role === "ADMIN" ? "default" : "secondary"}
+                      variant={
+                        u.role === "ADMIN" || u.role === "SUPER_ADMIN"
+                          ? "default"
+                          : "secondary"
+                      }
                     >
-                      {u.role === "ADMIN" ? "Admin" : "Bénévole"}
+                      {u.role === "SUPER_ADMIN"
+                        ? "Super Admin"
+                        : u.role === "ADMIN"
+                          ? "Admin"
+                          : u.role}
                     </Badge>
                   </TableCell>
                 </TableRow>
@@ -77,15 +127,7 @@ export default function AdminPage() {
             <CardTitle>Répartition</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {[
-              { label: "Bénévoles", value: 38, color: "bg-primary" },
-              {
-                label: "Administrateurs",
-                value: 4,
-                color: "bg-muted-foreground/40",
-              },
-              { label: "En attente", value: 5, color: "bg-destructive" },
-            ].map((row) => (
+            {distribution.map((row) => (
               <div key={row.label}>
                 <div className="mb-1 flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{row.label}</span>
@@ -95,7 +137,7 @@ export default function AdminPage() {
                   <div
                     className={`h-full ${row.color}`}
                     style={{
-                      width: `${(row.value / 47) * 100}%`,
+                      width: `${distributionTotal === 0 ? 0 : (row.value / distributionTotal) * 100}%`,
                     }}
                   />
                 </div>

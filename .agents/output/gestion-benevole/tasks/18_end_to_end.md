@@ -1,4 +1,4 @@
-Status: TODO
+Status: IN_PROGRESS
 
 # Feature tasks: Validation intégrée des sprints 0 à 8
 
@@ -14,7 +14,7 @@ Les fonctions des sprints 0–8 passent des scénarios représentatifs intégré
 
 ## Parent task: Preuves intégrées sans confondre build et fonctionnement
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Depends on:** Tasks 10.1–17.2 — workflows de domaine prêts à être intégrés.
 
 Goal: démontrer la fonctionnalité globale, corriger les défauts reproduits et documenter les limites restantes.
@@ -37,11 +37,18 @@ Acceptance criteria:
 - [ ] aucune route métier référencée n'est 404; les bugs résiduels, dépendances DB et contrôles appareils sont nommés.
 - [ ] aucune exigence S9, production ou Lighthouse n'est ajoutée à cette validation.
 
+## Progression du 2026-10-02
+
+- Tests unitaires : `pnpm test:all` — 19 fichiers, 117 tests réussis.
+- Qualité : `pnpm lint` et `pnpm typecheck` réussis; lint conserve deux avertissements historiques (`excel.import-users.ts` complexité, `user.action.ts` longueur).
+- Formatage : Prettier passe sur `app`, `src`, `vitest.config.ts`, `next.config.ts` et `proxy.ts`. Le contrôle global signale seulement `pnpm-lock.yaml` et le bundle généré `public/fallback-ce627215c0e4a9af.js`.
+- `git diff --check` réussi. Build, tests d'intégration et parcours UI intégrés ne sont pas rerun dans cette reprise; critères correspondants restent ouverts.
+
 ## Child tasks
 
 ### Task 18.1: Scénarios par domaine
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Parent:** Preuves intégrées sans confondre build et fonctionnement
 **Depends on:** Tasks 10.1–17.2
 

@@ -2,18 +2,22 @@ import { getServerSession } from "next-auth";
 
 import { PageHeader } from "@/features/admin/page-header";
 import { ObservationsList } from "@/features/observation/observations-list";
-import { listUsersAction } from "@/features/user/user.action";
+import { listVolunteersAction } from "@/features/volunteers/volunteer.action";
 import { authOptions } from "@/lib/auth-options";
 
 export default async function ObservationsPage() {
-  const [session, usersRes] = await Promise.all([
+  const [session, volunteersRes] = await Promise.all([
     getServerSession(authOptions),
-    listUsersAction(),
+    listVolunteersAction({
+      role: "VOLUNTEER",
+      statut: "ACTIF",
+      pageSize: 1000,
+    }),
   ]);
 
   const benevoles =
-    usersRes.success && usersRes.data
-      ? usersRes.data.map((u) => ({
+    volunteersRes.success && volunteersRes.data
+      ? volunteersRes.data.data.map((u) => ({
           id: u.id,
           nom: u.nom,
           prenom: u.prenom,

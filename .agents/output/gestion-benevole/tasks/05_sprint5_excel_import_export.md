@@ -1,4 +1,6 @@
-Status: TODO
+Status: IN_PROGRESS
+
+> Vérifications API locales ajoutées le 2026-10-02 (XLSX, erreur ligne, import répété, accès rôle). Le round-trip XLSX complet et les critères listés ci-dessous restent à clôturer; voir [`STATUS-01-17.md`](./STATUS-01-17.md).
 
 > **Suivi de remise en état:** preuves runtime et round-trip XLSX sont suivis dans [`14_excel.md`](14_excel.md), Plan `plan-001`.
 

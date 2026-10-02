@@ -5,16 +5,16 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth-options";
 import { prisma } from "@/lib/prisma";
-import { isAdminOrAbove } from "@/lib/rbac";
 
 import {
   approveCertificateSchema,
-  type CreateUserInput,
   rejectCertificateSchema,
   type UpdateProfileInput,
   updateProfileSchema,
+  updateRoleSchema,
   type UpdateUserInput,
   updateUserSchema,
+  userListFiltersSchema,
   userSchema,
 } from "./user.schema";
 
@@ -25,7 +25,8 @@ import {
 async function requireAdminSession() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { error: "Non authentifié." } as const;
-  if (!isAdminOrAbove(session.user.role as "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER")) {
+  const actorRole = session.user.role;
+  if (actorRole !== "ADMIN" && actorRole !== "SUPER_ADMIN") {
     return { error: "Accès réservé aux administrateurs." } as const;
   }
   return { session } as const;
@@ -35,27 +36,57 @@ async function requireAdminSession() {
 // createUserAction
 // ---------------------------------------------------------------------------
 
-export async function createUserAction(data: CreateUserInput) {
+export async function createUserAction(data: unknown) {
+  const auth = await requireAdminSession();
+  if ("error" in auth) return { success: false, error: auth.error };
+
   const parsed = userSchema.safeParse(data);
   if (!parsed.success) return { success: false, error: "Données invalides." };
+  const creatorId = Number.parseInt(auth.session.user.id, 10);
+  if (!Number.isSafeInteger(creatorId)) {
+    return { success: false, error: "Session administrateur invalide." };
+  }
 
   try {
     const user = await prisma.user.create({
       data: {
         ...parsed.data,
+        role: "USER",
+        password: null,
+        createdById: creatorId,
         statut: "ACTIF",
         date_entree: new Date(),
         sexe: parsed.data.sexe ?? "Non précisé",
         age: parsed.data.age ?? 18,
         categorie: parsed.data.categorie ?? "UNIVERSITAIRE",
         etablissement: parsed.data.etablissement ?? "Non renseigné",
+        reglesAccepteesAt: parsed.data.accepteRegles ? new Date() : null,
+        contact: parsed.data.telephone,
       },
     });
     revalidatePath("/admin/users");
     return { success: true, data: user };
-  } catch {
-    return { success: false, error: "Erreur lors de la création de l'utilisateur." };
+  } catch (err: unknown) {
+    if (isUniqueConstraintError(err)) {
+      return {
+        success: false,
+        error: "Ce matricule ou email est déjà utilisé.",
+      };
+    }
+    return {
+      success: false,
+      error: "Erreur lors de la création de l'utilisateur.",
+    };
   }
+}
+
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "P2002"
+  );
 }
 
 export async function listUsersAction(filters?: {
@@ -67,17 +98,24 @@ export async function listUsersAction(filters?: {
   const auth = await requireAdminSession();
   if ("error" in auth) return { success: false, error: auth.error };
 
-  const { query, role, certificatStatut, statut } = filters ?? {};
+  const parsedFilters = userListFiltersSchema.safeParse(filters ?? {});
+  if (!parsedFilters.success) {
+    return { success: false, error: "Filtres de recherche invalides." };
+  }
+  const { query, role, certificatStatut, statut } = parsedFilters.data;
 
   try {
     const users = await prisma.user.findMany({
       where: {
         deletedAt: null,
-        ...(role && role !== "ALL" ? { role: role as "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER" } : {}),
+        role: "USER",
+        ...(role && role !== "ALL" && role !== "USER" ? { id: -1 } : {}),
         ...(certificatStatut && certificatStatut !== "ALL"
-          ? { certificatStatut: certificatStatut as "NON_DEMANDE" | "EN_ATTENTE" | "APPROUVE" | "REJETE" }
+          ? {
+              certificatStatut,
+            }
           : {}),
-        ...(statut && statut !== "ALL" ? { statut: statut as "ACTIF" | "INACTIF" } : {}),
+        ...(statut && statut !== "ALL" ? { statut } : {}),
         ...(query
           ? {
               OR: [
@@ -109,6 +147,14 @@ export async function listUsersAction(filters?: {
         matricule: true,
         societe: true,
         telephone: true,
+        dateNaissance: true,
+        siteWeb: true,
+        cvUrl: true,
+        socialProfile: true,
+        joursDisponibles: true,
+        disponibilites: true,
+        contactUrgence: true,
+        reglesAccepteesAt: true,
         materielPC: true,
         accepteRegles: true,
         spinneret: true,
@@ -120,7 +166,10 @@ export async function listUsersAction(filters?: {
 
     return { success: true, data: users };
   } catch {
-    return { success: false, error: "Impossible de récupérer les utilisateurs." };
+    return {
+      success: false,
+      error: "Impossible de récupérer les utilisateurs.",
+    };
   }
 }
 
@@ -134,7 +183,7 @@ export async function getUserDetailsAction(userId: number) {
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: userId, deletedAt: null },
+      where: { id: userId, deletedAt: null, role: "USER" },
       select: {
         id: true,
         nom: true,
@@ -167,6 +216,7 @@ export async function getUserDetailsAction(userId: number) {
         materielPC: true,
         certificatUrl: true,
         certificatStatut: true,
+        certificatMotifRejet: true,
         certificatValidatedAt: true,
         certificatValidatedById: true,
         createdById: true,
@@ -184,63 +234,97 @@ export async function getUserDetailsAction(userId: number) {
 // updateUserAction
 // ---------------------------------------------------------------------------
 
+function buildUserUpdateData(
+  data: UpdateUserInput,
+  existing: {
+    accepteRegles: boolean;
+    reglesAccepteesAt: Date | null;
+    certificatUrl: string | null;
+  }
+) {
+  const certificateChanged =
+    Boolean(data.certificatUrl) &&
+    data.certificatUrl !== existing.certificatUrl;
+  return {
+    nom: data.nom,
+    prenom: data.prenom,
+    email: data.email.toLowerCase(),
+    sexe: data.sexe ?? "Non précisé",
+    matricule: data.matricule,
+    telephone: data.telephone,
+    materielPC: data.materielPC,
+    accepteRegles: data.accepteRegles,
+    reglesAccepteesAt: acceptedRulesTimestamp(data, existing),
+    spinneret: data.spinneret ?? null,
+    etablissement: data.etablissement ?? "Non renseigné",
+    societe: data.societe ?? null,
+    age: data.age ?? 18,
+    dateNaissance: data.dateNaissance ? new Date(data.dateNaissance) : null,
+    socialProfile: data.socialProfile ?? null,
+    cvUrl: data.cvUrl ?? null,
+    certificatUrl: data.certificatUrl || null,
+    ...(certificateChanged
+      ? {
+          certificatStatut: "EN_ATTENTE" as const,
+          certificatMotifRejet: null,
+          certificatValidatedAt: null,
+          certificatValidatedById: null,
+        }
+      : {}),
+    siteWeb: data.siteWeb ?? null,
+    joursDisponibles: data.joursDisponibles ?? [],
+    disponibilites: data.disponibilites ?? undefined,
+    contactUrgence: data.contactUrgence ?? null,
+    facebook: data.facebook ?? null,
+    categorie: data.categorie ?? "UNIVERSITAIRE",
+    ...(data.statut ? { statut: data.statut } : {}),
+  };
+}
+
+function acceptedRulesTimestamp(
+  data: UpdateUserInput,
+  existing: { accepteRegles: boolean; reglesAccepteesAt: Date | null }
+) {
+  if (data.accepteRegles && !existing.accepteRegles) return new Date();
+  return existing.reglesAccepteesAt;
+}
+
 export async function updateUserAction(userId: number, data: UpdateUserInput) {
   const auth = await requireAdminSession();
   if ("error" in auth) return { success: false, error: auth.error };
 
   const parsed = updateUserSchema.safeParse(data);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0]?.message ?? "Données invalides." };
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? "Données invalides.",
+    };
   }
 
-  const {
-    nom, prenom, email, sexe, matricule, telephone, materielPC,
-    accepteRegles, spinneret, etablissement, societe, age,
-    dateNaissance, socialProfile, cvUrl, certificatUrl,
-    siteWeb, joursDisponibles, disponibilites, contactUrgence,
-    facebook, categorie, statut,
-  } = parsed.data;
-
   try {
-    const existing = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { accepteRegles: true, reglesAccepteesAt: true },
-    });
-
-    const reglesAccepteesAt =
-      accepteRegles && !existing?.accepteRegles
-        ? new Date()
-        : (existing?.reglesAccepteesAt ?? null);
-
-    const updated = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        nom,
-        prenom,
-        email: email.toLowerCase(),
-        sexe: sexe ?? "Non précisé",
-        matricule,
-        telephone,
-        materielPC,
-        accepteRegles,
-        reglesAccepteesAt,
-        spinneret: spinneret ?? null,
-        etablissement: etablissement ?? "Non renseigné",
-        societe: societe ?? null,
-        age: age ?? 18,
-        dateNaissance: dateNaissance ? new Date(dateNaissance) : null,
-        socialProfile: socialProfile ?? null,
-        cvUrl: cvUrl ?? null,
-        certificatUrl: certificatUrl ?? undefined,
-        siteWeb: siteWeb ?? null,
-        joursDisponibles: joursDisponibles ?? [],
-        disponibilites: disponibilites ?? undefined,
-        contactUrgence: contactUrgence ?? null,
-        facebook: facebook ?? null,
-        categorie: categorie ?? "UNIVERSITAIRE",
-        ...(statut ? { statut } : {}),
+    const existing = await prisma.user.findFirst({
+      where: { id: userId, role: "USER", deletedAt: null },
+      select: {
+        accepteRegles: true,
+        reglesAccepteesAt: true,
+        certificatUrl: true,
       },
     });
+
+    if (!existing)
+      return { success: false, error: "Utilisateur USER introuvable." };
+
+    const updated = await prisma.user.update({
+      where: { id: userId, role: "USER", deletedAt: null },
+      data: buildUserUpdateData(parsed.data, existing),
+    });
+
+    if (updated.role !== "USER") {
+      return {
+        success: false,
+        error: "Seuls les comptes USER peuvent être modifiés ici.",
+      };
+    }
 
     revalidatePath("/admin/users");
     revalidatePath(`/admin/users/${userId}`);
@@ -250,9 +334,12 @@ export async function updateUserAction(userId: number, data: UpdateUserInput) {
       typeof err === "object" &&
       err !== null &&
       "code" in err &&
-      (err as { code: string }).code === "P2002"
+      err.code === "P2002"
     ) {
-      return { success: false, error: "Ce matricule ou email est déjà utilisé." };
+      return {
+        success: false,
+        error: "Ce matricule ou email est déjà utilisé.",
+      };
     }
     return { success: false, error: "Erreur lors de la mise à jour." };
   }
@@ -269,11 +356,20 @@ export async function approveCertificateAction(data: { userId: number }) {
   const parsed = approveCertificateSchema.safeParse(data);
   if (!parsed.success) return { success: false, error: "Données invalides." };
 
-  const adminId = parseInt(auth.session.user.id, 10);
+  const adminId = Number.parseInt(auth.session.user.id, 10);
+  if (!Number.isSafeInteger(adminId)) {
+    return { success: false, error: "Session administrateur invalide." };
+  }
 
   try {
-    await prisma.user.update({
-      where: { id: parsed.data.userId },
+    const result = await prisma.user.updateMany({
+      where: {
+        id: parsed.data.userId,
+        role: "USER",
+        certificatStatut: "EN_ATTENTE",
+        certificatUrl: { not: null },
+        deletedAt: null,
+      },
       data: {
         role: "VOLUNTEER",
         certificatStatut: "APPROUVE",
@@ -282,11 +378,21 @@ export async function approveCertificateAction(data: { userId: number }) {
       },
     });
 
+    if (result.count !== 1) {
+      return {
+        success: false,
+        error: "Un certificat PDF en attente est requis.",
+      };
+    }
+
     revalidatePath("/admin/users");
     revalidatePath(`/admin/users/${parsed.data.userId}`);
     return { success: true };
   } catch {
-    return { success: false, error: "Erreur lors de l'approbation du certificat." };
+    return {
+      success: false,
+      error: "Erreur lors de l'approbation du certificat.",
+    };
   }
 }
 
@@ -294,21 +400,40 @@ export async function approveCertificateAction(data: { userId: number }) {
 // rejectCertificateAction
 // ---------------------------------------------------------------------------
 
-export async function rejectCertificateAction(data: { userId: number; motif: string }) {
+export async function rejectCertificateAction(data: {
+  userId: number;
+  motif: string;
+}) {
   const auth = await requireAdminSession();
   if ("error" in auth) return { success: false, error: auth.error };
 
   const parsed = rejectCertificateSchema.safeParse(data);
-  if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message ?? "Données invalides." };
+  if (!parsed.success)
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? "Données invalides.",
+    };
 
   try {
-    await prisma.user.update({
-      where: { id: parsed.data.userId },
+    const result = await prisma.user.updateMany({
+      where: {
+        id: parsed.data.userId,
+        role: "USER",
+        certificatStatut: "EN_ATTENTE",
+        deletedAt: null,
+      },
       data: {
         certificatStatut: "REJETE",
-        // motif non stocké en DB pour l'instant, mais l'action le reçoit
+        certificatMotifRejet: parsed.data.motif.trim(),
       },
     });
+
+    if (result.count !== 1) {
+      return {
+        success: false,
+        error: "Aucun certificat en attente à rejeter.",
+      };
+    }
 
     revalidatePath("/admin/users");
     revalidatePath(`/admin/users/${parsed.data.userId}`);
@@ -327,15 +452,22 @@ export async function deleteUserAction(userId: number) {
   if ("error" in auth) return { success: false, error: auth.error };
 
   try {
-    await prisma.user.update({
-      where: { id: userId },
+    const updated = await prisma.user.updateMany({
+      where: { id: userId, role: "USER", deletedAt: null },
       data: { statut: "INACTIF", deletedAt: new Date() },
     });
+
+    if (updated.count !== 1) {
+      return { success: false, error: "Utilisateur USER introuvable." };
+    }
 
     revalidatePath("/admin/users");
     return { success: true };
   } catch {
-    return { success: false, error: "Erreur lors de la désactivation de l'utilisateur." };
+    return {
+      success: false,
+      error: "Erreur lors de la désactivation de l'utilisateur.",
+    };
   }
 }
 
@@ -343,21 +475,16 @@ export async function deleteUserAction(userId: number) {
 // updateUserRoleAction (conservé pour compatibilité)
 // ---------------------------------------------------------------------------
 
-export async function updateUserRoleAction(data: { userId: number; role: string }) {
+export async function updateUserRoleAction(data: unknown) {
   const auth = await requireAdminSession();
   if ("error" in auth) return { success: false, error: auth.error };
-
-  try {
-    const updated = await prisma.user.update({
-      where: { id: data.userId },
-      data: { role: data.role as "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER" },
-    });
-
-    revalidatePath("/admin/users");
-    return { success: true, data: updated };
-  } catch {
-    return { success: false, error: "Erreur lors de la mise à jour du rôle." };
+  if (!updateRoleSchema.safeParse(data).success) {
+    return { success: false, error: "Identifiant utilisateur invalide." };
   }
+  return {
+    success: false,
+    error: "Le rôle se gère dans Volunteer Management.",
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -368,8 +495,9 @@ export async function getProfileAction(userId: number) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { success: false, error: "Non authentifié." };
 
-  const currentUserId = parseInt(session.user.id, 10);
-  const isAdmin = isAdminOrAbove(session.user.role as "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER");
+  const currentUserId = Number.parseInt(session.user.id, 10);
+  const isAdmin =
+    session.user.role === "SUPER_ADMIN" || session.user.role === "ADMIN";
 
   if (!isAdmin && currentUserId !== userId) {
     return { success: false, error: "Accès non autorisé." };
@@ -379,10 +507,19 @@ export async function getProfileAction(userId: number) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
-        id: true, nom: true, prenom: true, email: true,
-        role: true, statut: true, photo: true,
-        sexe: true, age: true, contact: true,
-        categorie: true, etablissement: true, facebook: true,
+        id: true,
+        nom: true,
+        prenom: true,
+        email: true,
+        role: true,
+        statut: true,
+        photo: true,
+        sexe: true,
+        age: true,
+        contact: true,
+        categorie: true,
+        etablissement: true,
+        facebook: true,
         date_entree: true,
       },
     });
@@ -390,7 +527,10 @@ export async function getProfileAction(userId: number) {
     if (!user) return { success: false, error: "Utilisateur non trouvé." };
     return { success: true, data: user };
   } catch {
-    return { success: false, error: "Erreur lors de la récupération du profil." };
+    return {
+      success: false,
+      error: "Erreur lors de la récupération du profil.",
+    };
   }
 }
 
@@ -405,10 +545,9 @@ export async function updateProfileAction(
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { success: false, error: "Non authentifié." };
 
-  const currentUserId = parseInt(session.user.id, 10);
-  const isAdmin = isAdminOrAbove(
-    session.user.role as "SUPER_ADMIN" | "ADMIN" | "VOLUNTEER" | "USER"
-  );
+  const currentUserId = Number.parseInt(session.user.id, 10);
+  const isAdmin =
+    session.user.role === "SUPER_ADMIN" || session.user.role === "ADMIN";
 
   if (!isAdmin && currentUserId !== userId) {
     return { success: false, error: "Accès non autorisé." };
@@ -443,6 +582,9 @@ export async function updateProfileAction(
     revalidatePath("/admin/profil");
     return { success: true, data: { id: updated.id } };
   } catch {
-    return { success: false, error: "Erreur lors de la mise à jour du profil." };
+    return {
+      success: false,
+      error: "Erreur lors de la mise à jour du profil.",
+    };
   }
 }

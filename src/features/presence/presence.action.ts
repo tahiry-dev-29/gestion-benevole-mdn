@@ -9,17 +9,26 @@ import { prisma } from "@/lib/prisma";
 import { pointSchema, presenceFilterSchema } from "./presence.schema";
 import { computeHeures } from "./presence.utils";
 
-const heuresSchema = z.object({
-  id: z.coerce.number().int().positive(),
-  arrivee: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
-    .nullable(),
-  depart: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
-    .nullable(),
-});
+const heuresSchema = z
+  .object({
+    id: z.coerce.number().int().positive(),
+    arrivee: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+      .nullable(),
+    depart: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+      .nullable(),
+  })
+  .refine(
+    (heures) =>
+      !heures.arrivee || !heures.depart || heures.depart >= heures.arrivee,
+    {
+      message: "L’heure de départ doit être après l’heure d’arrivée.",
+      path: ["depart"],
+    }
+  );
 
 async function hasAdminSession() {
   const session = await auth();
@@ -71,6 +80,7 @@ export async function pointAction(input: unknown) {
         heure_depart: data.depart ?? null,
       },
     });
+    revalidatePath("/admin/presences");
     revalidatePath("/admin/users/presence");
     return { success: true, data: attendance };
   } catch (error) {
@@ -152,6 +162,7 @@ export async function updateHeuresAction(input: unknown) {
         heure_depart: parsed.data.depart,
       },
     });
+    revalidatePath("/admin/presences");
     revalidatePath("/admin/users/presence");
     return { success: true, data };
   } catch {

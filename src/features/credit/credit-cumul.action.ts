@@ -5,6 +5,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth-options";
 import { prisma } from "@/lib/prisma";
 
+import { creditPeriodFilterSchema } from "./credit.schema";
+import { calculateCreditTotals, creditPeriod } from "./credit.utils";
+
 export interface CumulEntry {
   userId: number;
   benevole: string;
@@ -20,19 +23,23 @@ export async function getCumulCreditsAction(params?: {
   if (!session?.user?.id) {
     return { success: false, error: "Non authentifié." };
   }
+  if (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN") {
+    return { success: false, error: "Accès interdit (403)." };
+  }
+
+  const parsed = creditPeriodFilterSchema.safeParse(params ?? {});
+  if (!parsed.success) {
+    return { success: false, error: "Paramètres de période invalides." };
+  }
 
   const where: Record<string, unknown> = {};
 
-  if (params?.mois && params?.annee) {
-    where.date = {
-      gte: new Date(params.annee, params.mois - 1, 1),
-      lt: new Date(params.annee, params.mois, 1),
-    };
-  } else if (params?.annee) {
-    where.date = {
-      gte: new Date(params.annee, 0, 1),
-      lt: new Date(params.annee + 1, 0, 1),
-    };
+  if (parsed.data.mois && parsed.data.annee) {
+    const range = creditPeriod(parsed.data.annee, parsed.data.mois);
+    where.date = { gte: range.from, lt: range.to };
+  } else if (parsed.data.annee) {
+    const range = creditPeriod(parsed.data.annee);
+    where.date = { gte: range.from, lt: range.to };
   }
 
   try {
@@ -43,29 +50,7 @@ export async function getCumulCreditsAction(params?: {
       },
     });
 
-    const byUser = new Map<number, CumulEntry>();
-
-    for (const c of credits) {
-      const key = c.user_id;
-      const existing = byUser.get(key);
-      if (existing) {
-        existing.total = Math.round((existing.total + c.montant) * 100) / 100;
-      } else {
-        byUser.set(key, {
-          userId: c.user_id,
-          benevole: `${c.user.prenom} ${c.user.nom}`,
-          total: Math.round(c.montant * 100) / 100,
-        });
-      }
-    }
-
-    const parBenevole = Array.from(byUser.values()).sort(
-      (a, b) => b.total - a.total
-    );
-    const totalGlobal =
-      Math.round(parBenevole.reduce((s, b) => s + b.total, 0) * 100) / 100;
-
-    return { success: true, data: { parBenevole, totalGlobal } };
+    return { success: true, data: calculateCreditTotals(credits) };
   } catch {
     return { success: false, error: "Erreur lors du calcul du cumul." };
   }

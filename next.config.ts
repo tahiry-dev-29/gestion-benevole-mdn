@@ -3,12 +3,14 @@ import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
   dest: "public",
+  // PWA plugin intentionally skips the dev server; test registration with `build` + `start`.
   disable: process.env.NODE_ENV === "development",
   fallbacks: { document: "/~offline" },
   workboxOptions: {
     runtimeCaching: [
       {
-        urlPattern: /^https?.*\/(activites|partages|temoignages)(\/)?$/,
+        urlPattern:
+          /^https?.*\/(activites|partages|temoignages)(?:\/[^/?#]+)?\/?(?:\?.*)?$/,
         handler: "NetworkFirst",
         options: {
           cacheName: "public-pages",
@@ -25,6 +27,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // Images de profil stockées sur Vercel Blob en production
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+      {
+        protocol: "https",
+        hostname: "www.gravatar.com",
+        pathname: "/avatar/**",
+      },
     ],
   },
   turbopack: {

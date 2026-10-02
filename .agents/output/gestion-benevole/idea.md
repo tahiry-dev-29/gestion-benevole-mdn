@@ -25,3 +25,12 @@ PWA interne de gestion des bénévoles de la Maison du Numérique : comptes à r
 - **Interne (quotidien)** : équipe de la Maison du Numérique — SUPER_ADMIN, ADMIN, VOLUNTEER — depuis `/admin/*` (dashboard, volunteer-management, users, présences, crédits, observations).
 - **Comptes USER** : étudiants / participants gérés par les admins — ils n'utilisent jamais `/login` ; ils sont convertis en VOLUNTEER après validation de leur certificat.
 - **Public** : visiteurs des pages vitrines (activités, partages, témoignages) soumises à modération.
+
+
+## My Idee to tasks
+
+- Je veux des UI UX pret a la production comme dans les gros application comme youtube ou facebook, pas du squelete. tu dois utilise mes libraire shadcn-ui et tanstack (query, table) car je veux que toutes les appel api dans cette application utilise tanstack query, avec mon skill /thr-desing -all-steps, `stack.md`.
+- presque toutes les page du tasks n existe par dans l Application par exemple `admin/presences`.
+- dans la gestion des utilisateurs l ancienne bug est encore present la admin/users, j ai deja dit que la gestion user c et pour les USER n est pas les ADMIN est les propriete tous n est pas correcte.
+- Les UI UX son tres classique et il je veux partout des composant avec du bon desing comme dans une application comme youtube ou facebook ou d autres.
+- d apres mon review la toutes les fonctionnalite de mon application est encore du bordel et pas encore termine, donc pour ca, il faux creer les plans $thr-up -plans[id_task] et -tasks[id_plan], pour mettre en place toutes les gestion dans cette sprints pour avoire une application equivalent a youtube ou facebook a la fin du tasks

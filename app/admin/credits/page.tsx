@@ -1,12 +1,16 @@
 import { PageHeader } from "@/features/admin/page-header";
 import { CreditsList } from "@/features/credit/credits-list";
-import { listUsersAction } from "@/features/user/user.action";
+import { listVolunteersAction } from "@/features/volunteers/volunteer.action";
 
 export default async function CreditsPage() {
-  const usersRes = await listUsersAction();
+  const usersRes = await listVolunteersAction({
+    role: "VOLUNTEER",
+    statut: "ACTIF",
+    pageSize: 1000,
+  });
   const benevoles =
     usersRes.success && usersRes.data
-      ? usersRes.data.map((u) => ({
+      ? usersRes.data.data.map((u) => ({
           id: u.id,
           nom: u.nom,
           prenom: u.prenom,

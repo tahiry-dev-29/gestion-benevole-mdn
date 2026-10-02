@@ -55,7 +55,9 @@ export function CreditTable({ credits, onDeleteClick }: CreditTableProps) {
             credits.map((c) => (
               <TableRow key={c.id}>
                 <TableCell className="font-medium">{c.benevole}</TableCell>
-                <TableCell className="text-muted-foreground">{c.motif}</TableCell>
+                <TableCell className="text-muted-foreground">
+                  {c.motif}
+                </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {c.date}
                 </TableCell>

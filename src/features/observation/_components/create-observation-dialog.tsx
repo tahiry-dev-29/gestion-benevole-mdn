@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Loader2, PenLine } from "lucide-react";
 import { toast } from "sonner";
 
@@ -50,7 +51,13 @@ export function CreateObservationDialog({
   onCreated,
 }: CreateObservationDialogProps) {
   const [open, setOpen] = React.useState(false);
-  const [isPending, setIsPending] = React.useState(false);
+  const createObservation = useMutation({
+    mutationFn: async (values: CreateObservationInput) => {
+      const result = await createObservationAction(values);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+  });
 
   const [charCount, setCharCount] = React.useState(0);
 
@@ -70,21 +77,17 @@ export function CreateObservationDialog({
   });
 
   async function onSubmit(values: CreateObservationInput) {
-    setIsPending(true);
     try {
-      const result = await createObservationAction(values);
-      if (!result.success) {
-        toast.error(result.error ?? "Erreur lors de la création");
-        return;
-      }
-
+      await createObservation.mutateAsync(values);
       toast.success("Observation enregistrée");
       reset();
       setCharCount(0);
       setOpen(false);
       onCreated();
-    } finally {
-      setIsPending(false);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erreur lors de la création"
+      );
     }
   }
 
@@ -179,10 +182,12 @@ export function CreateObservationDialog({
               </Button>
               <Button
                 type="submit"
-                disabled={isPending}
-                className={isPending ? "gap-2" : undefined}
+                disabled={createObservation.isPending}
+                className={createObservation.isPending ? "gap-2" : undefined}
               >
-                {isPending && <Loader2 className="size-4 animate-spin" />}
+                {createObservation.isPending && (
+                  <Loader2 className="size-4 animate-spin" />
+                )}
                 Enregistrer
               </Button>
             </DialogFooter>

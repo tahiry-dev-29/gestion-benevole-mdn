@@ -38,44 +38,57 @@ export const CREATE_MATRIX: Record<Role, readonly Role[]> = {
 
 /**
  * Matrice routes × rôles : les préfixes listés sont réservés à `ADMIN` et
- * `SUPER_ADMIN`. Toute autre route `/admin/**` est ouverte aux 3 rôles
- * connectés (jamais `USER`).
+ * `SUPER_ADMIN`. Les routes /admin sont autorisées seulement si elles figurent
+ * explicitement dans cette matrice; `USER` n'y accède jamais.
  */
-export const ROUTE_MATRIX: readonly { pattern: RegExp; roles: readonly Role[] }[] =
-  [
-    {
-      pattern: /^\/admin\/volunteer-management\/roles(?:\/|$)/,
-      roles: ["SUPER_ADMIN", "ADMIN"],
-    },
-    { pattern: /^\/admin\/users(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-    { pattern: /^\/admin\/places(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-    { pattern: /^\/admin\/credits(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-    {
-      pattern: /^\/admin\/observations(?:\/|$)/,
-      roles: ["SUPER_ADMIN", "ADMIN"],
-    },
-    {
-      pattern: /^\/admin\/statistiques(?:\/|$)/,
-      roles: ["SUPER_ADMIN", "ADMIN"],
-    },
-    {
-      pattern: /^\/admin\/parametres(?:\/|$)/,
-      roles: ["SUPER_ADMIN", "ADMIN"],
-    },
-    { pattern: /^\/admin\/activites(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-    {
-      pattern: /^\/admin\/activities(?:\/|$)/,
-      roles: ["SUPER_ADMIN", "ADMIN"],
-    },
-    { pattern: /^\/admin\/presences(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-    { pattern: /^\/admin\/presence(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-    { pattern: /^\/admin\/partages(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-    {
-      pattern: /^\/admin\/temoignages(?:\/|$)/,
-      roles: ["SUPER_ADMIN", "ADMIN"],
-    },
-    { pattern: /^\/admin\/sprints(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
-  ];
+export const ROUTE_MATRIX: readonly {
+  pattern: RegExp;
+  roles: readonly Role[];
+}[] = [
+  { pattern: /^\/admin\/?$/, roles: LOGIN_ROLES },
+  { pattern: /^\/admin\/dashboard(?:\/|$)/, roles: LOGIN_ROLES },
+  { pattern: /^\/admin\/profil(?:\/|$)/, roles: LOGIN_ROLES },
+  {
+    pattern: /^\/admin\/volunteer-management\/roles(?:\/|$)/,
+    roles: ["SUPER_ADMIN", "ADMIN"],
+  },
+  {
+    pattern: /^\/admin\/volunteer-management(?:\/(?:add|\d+))?\/?$/,
+    roles: MANAGED_ROLES,
+  },
+  { pattern: /^\/admin\/volunteers\/?$/, roles: MANAGED_ROLES },
+  { pattern: /^\/admin\/users(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
+  { pattern: /^\/admin\/places(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
+  { pattern: /^\/admin\/credits(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
+  {
+    pattern: /^\/admin\/observations(?:\/|$)/,
+    roles: ["SUPER_ADMIN", "ADMIN"],
+  },
+  {
+    pattern: /^\/admin\/statistiques(?:\/|$)/,
+    roles: ["SUPER_ADMIN", "ADMIN"],
+  },
+  {
+    pattern: /^\/admin\/parametres(?:\/|$)/,
+    roles: ["SUPER_ADMIN", "ADMIN"],
+  },
+  { pattern: /^\/admin\/activites(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
+  {
+    pattern: /^\/admin\/activities(?:\/|$)/,
+    roles: ["SUPER_ADMIN", "ADMIN"],
+  },
+  { pattern: /^\/admin\/presences(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
+  {
+    pattern: /^\/admin\/users\/presence(?:\/|$)/,
+    roles: ["SUPER_ADMIN", "ADMIN"],
+  },
+  { pattern: /^\/admin\/partages(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
+  {
+    pattern: /^\/admin\/temoignages(?:\/|$)/,
+    roles: ["SUPER_ADMIN", "ADMIN"],
+  },
+  { pattern: /^\/admin\/sprints(?:\/|$)/, roles: ["SUPER_ADMIN", "ADMIN"] },
+];
 
 const LOGIN_ROLES_SET = new Set<string>(LOGIN_ROLES);
 const ROLES_SET = new Set<string>(ROLES);
@@ -118,9 +131,9 @@ export function canManageRole(actor: Role, target: Role): boolean {
 
 export function canAccessRoute(pathname: string, role: Role): boolean {
   if (!isLoginRole(role)) return false;
+  if (!pathname.startsWith("/admin")) return true;
   const rule = ROUTE_MATRIX.find((entry) => entry.pattern.test(pathname));
-  if (rule) return rule.roles.includes(role);
-  return true;
+  return rule?.roles.includes(role) ?? false;
 }
 
 export function isAdminOrAbove(role: Role): boolean {

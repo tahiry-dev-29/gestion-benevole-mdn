@@ -59,7 +59,7 @@ export function CreditFilters({
   onRefresh,
 }: CreditFiltersProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-2">
       <Select
         value={filterUserId ? String(filterUserId) : "all"}
         onValueChange={(v) => {
@@ -68,7 +68,7 @@ export function CreditFilters({
           );
         }}
       >
-        <SelectTrigger className="w-52">
+        <SelectTrigger className="h-9 w-[190px]">
           <SelectValue placeholder="Tous les bénévoles" />
         </SelectTrigger>
         <SelectContent>
@@ -89,7 +89,7 @@ export function CreditFilters({
           );
         }}
       >
-        <SelectTrigger className="w-40">
+        <SelectTrigger className="h-9 w-[150px]">
           <SelectValue placeholder="Tous les mois" />
         </SelectTrigger>
         <SelectContent>
@@ -110,7 +110,7 @@ export function CreditFilters({
           );
         }}
       >
-        <SelectTrigger className="w-36">
+        <SelectTrigger className="h-9 w-[105px]">
           <SelectValue placeholder="Année" />
         </SelectTrigger>
         <SelectContent>

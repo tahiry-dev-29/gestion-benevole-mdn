@@ -1,24 +1,13 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { ImportExportButtons } from "@/features/excel/import-export-buttons";
 import type { SeatGrid } from "@/features/places/places.schema";
 
-import { listAttendanceAction, pointAction } from "../presence.action";
 import type { PresenceRecord } from "../presence.schema";
-import {
-  type CalendarMode,
-  computeRange,
-  type DateRange,
-  toIsoDate,
-} from "../presence.utils";
+import { type CalendarMode, computeRange, toIsoDate } from "../presence.utils";
 
 import { AttendanceCalendar } from "./_components/attendance-calendar";
 import {
@@ -26,6 +15,7 @@ import {
   type PointageFormState,
 } from "./_components/attendance-form";
 import { AttendanceTable } from "./_components/attendance-table";
+import { useAttendance, usePointAttendance } from "./use-attendance";
 
 const INITIAL_FORM: PointageFormState = {
   userId: "",
@@ -61,26 +51,18 @@ export function AttendanceManager({
 }) {
   const [mode, setMode] = useState<CalendarMode>("day");
   const [selectedDate, setSelectedDate] = useState(() => toIsoDate(new Date()));
-  const [rows, setRows] = useState<PresenceRecord[]>([]);
   const [form, setForm] = useState<PointageFormState>(INITIAL_FORM);
-  const [pending, startTransition] = useTransition();
 
   const range = useMemo(
     () => computeRange(mode, selectedDate),
     [mode, selectedDate]
   );
-
-  const refresh = useCallback(async (nextRange: DateRange) => {
-    const result = await listAttendanceAction(nextRange);
-    if (result.success) setRows(result.data);
-    else toast.error(result.error);
-  }, []);
-
-  useEffect(() => {
-    startTransition(() => {
-      void refresh(range);
-    });
-  }, [range, refresh]);
+  const attendanceQuery = useAttendance(range);
+  const pointMutation = usePointAttendance();
+  const rows: PresenceRecord[] = useMemo(
+    () => attendanceQuery.data ?? [],
+    [attendanceQuery.data]
+  );
 
   const busySeatIds = useMemo(
     () => collectBusySeats(rows, selectedDate, form.userId),
@@ -89,25 +71,27 @@ export function AttendanceManager({
 
   function submit() {
     if (!form.userId) return toast.error("Choisissez un bénévole.");
-    startTransition(() => {
-      void (async () => {
-        const result = await pointAction({
-          userId: form.userId,
-          date: selectedDate,
-          seatId: form.seatId || null,
-          statut: form.status,
-          arrivee: form.arrivee || null,
-          depart: form.depart || null,
-        });
-        if (!result.success) return toast.error(result.error);
-        toast.success("Pointage enregistré.");
-        await refresh(range);
-      })();
-    });
+    pointMutation.mutate(
+      {
+        userId: form.userId,
+        date: selectedDate,
+        seatId: form.seatId || null,
+        statut: form.status,
+        arrivee: form.arrivee || null,
+        depart: form.depart || null,
+      },
+      {
+        onSuccess: () => toast.success("Pointage enregistré."),
+        onError: (error) => toast.error(error.message),
+      }
+    );
   }
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end">
+        <ImportExportButtons dataset="presences" exportRange={range} />
+      </div>
       <AttendanceCalendar
         mode={mode}
         selectedDate={selectedDate}
@@ -120,11 +104,16 @@ export function AttendanceManager({
         tables={tables}
         busySeatIds={busySeatIds}
         value={form}
-        isPending={pending}
+        isPending={pointMutation.isPending}
         onChange={(patch) => setForm((current) => ({ ...current, ...patch }))}
         onSubmit={submit}
       />
-      <AttendanceTable rows={rows} isPending={pending} />
+      <AttendanceTable rows={rows} isPending={attendanceQuery.isPending} />
+      {attendanceQuery.isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          {attendanceQuery.error.message}
+        </p>
+      ) : null}
     </div>
   );
 }

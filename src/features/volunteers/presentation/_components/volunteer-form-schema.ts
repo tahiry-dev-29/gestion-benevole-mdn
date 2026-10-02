@@ -54,4 +54,3 @@ export function buildVolunteerDefaults(
     statut: initialData?.statut ?? "ACTIF",
   };
 }
-

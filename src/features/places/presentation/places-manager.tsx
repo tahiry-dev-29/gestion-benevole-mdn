@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -9,48 +9,57 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import {
-  createSeatAction,
-  createTableAction,
-  deleteSeatAction,
-  renameTableAction,
-} from "../places.action";
 import type { SeatGrid } from "../places.schema";
+
+import { usePlaces } from "./use-places";
 
 export function PlacesManager({
   initialTables,
 }: {
   initialTables: SeatGrid[];
 }) {
-  const [tables] = useState(initialTables);
   const [seatCount, setSeatCount] = useState("6");
-  const [pending, startTransition] = useTransition();
   const [deleting, setDeleting] = useState<number | null>(null);
+  const places = usePlaces(initialTables);
+  const tables = places.query.data ?? initialTables;
+  const pending =
+    places.createTable.isPending ||
+    places.renameTable.isPending ||
+    places.createSeat.isPending ||
+    places.deleteSeat.isPending;
 
-  function run(
-    action: () => Promise<{ success: boolean; error?: string }>,
+  async function run(
+    action: () => Promise<unknown>,
     done: string
-  ) {
-    startTransition(() => {
-      void (async () => {
-        const result = await action();
-        if (!result.success)
-          return toast.error(result.error ?? "Une erreur est survenue.");
-        toast.success(done);
-        window.location.reload();
-      })();
-    });
+  ): Promise<boolean> {
+    try {
+      await action();
+      toast.success(done);
+      return true;
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Une erreur est survenue."
+      );
+      return false;
+    }
   }
 
   function addTable() {
-    run(() => createTableAction({ seatCount }), "Table ajoutée.");
+    void run(
+      () => places.createTable.mutateAsync({ seatCount }),
+      "Table ajoutée."
+    );
   }
 
   function renameTable(tableNumber: number) {
     const value = window.prompt("Nouveau numéro de table", String(tableNumber));
     if (value)
       run(
-        () => renameTableAction({ oldNumber: tableNumber, newNumber: value }),
+        () =>
+          places.renameTable.mutateAsync({
+            oldNumber: tableNumber,
+            newNumber: value,
+          }),
         "Table renommée."
       );
   }
@@ -63,15 +72,18 @@ export function PlacesManager({
         ?.seats.map((seat) => seat.seatNumber) ?? [])
     );
     run(
-      () => createSeatAction({ tableNumber, seatNumber: highest + 1 }),
+      () =>
+        places.createSeat.mutateAsync({ tableNumber, seatNumber: highest + 1 }),
       "Siège ajouté."
     );
   }
 
   function deleteSeat() {
     if (deleting === null) return;
-    run(() => deleteSeatAction({ seatId: deleting }), "Siège supprimé.");
-    setDeleting(null);
+    void run(
+      () => places.deleteSeat.mutateAsync({ seatId: deleting }),
+      "Siège supprimé."
+    ).then((success) => success && setDeleting(null));
   }
 
   return (
@@ -92,6 +104,11 @@ export function PlacesManager({
           <Plus className="size-4" /> Ajouter une table
         </Button>
       </div>
+      {places.query.isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          {places.query.error.message}
+        </p>
+      ) : null}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {tables.map((table) => (
           <Card key={table.tableNumber}>

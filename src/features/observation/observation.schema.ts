@@ -30,13 +30,24 @@ export const deleteObservationSchema = z.object({
   observationId: z.number().int().positive(),
 });
 
-export const listObservationsSchema = z.object({
+const observationPeriodFields = z.object({
   userId: z.coerce.number().int().positive().optional(),
   mois: z.coerce.number().int().min(1).max(12).optional(),
   annee: z.coerce.number().int().min(2000).max(2100).optional(),
-  page: z.coerce.number().int().positive().default(1),
-  pageSize: z.coerce.number().int().positive().max(100).default(20),
 });
+
+const hasRequiredYearForMonth = (filters: { mois?: number; annee?: number }) =>
+  filters.mois === undefined || filters.annee !== undefined;
+
+export const listObservationsSchema = observationPeriodFields
+  .extend({
+    page: z.coerce.number().int().positive().default(1),
+    pageSize: z.coerce.number().int().positive().max(100).default(20),
+  })
+  .refine(hasRequiredYearForMonth, {
+    message: "Une année est requise pour filtrer par mois.",
+    path: ["annee"],
+  });
 
 export type CreateObservationInput = z.infer<typeof createObservationSchema>;
 export type UpdateObservationInput = z.infer<typeof updateObservationSchema>;

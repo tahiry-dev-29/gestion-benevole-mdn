@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import { isRole } from "@/lib/rbac";
 
-import { adminNavGroups, adminUser } from "./admin.data";
+import { adminNavGroups } from "./admin.data";
 import { GestionGroup } from "./gestion-group";
 
 function isActive(pathname: string, url: string) {
@@ -33,15 +33,25 @@ export function AdminSidebar() {
   const { data: session } = useSession();
   const sessionRole = session?.user?.role;
   const role: Role | undefined = isRole(sessionRole) ? sessionRole : undefined;
+  const email = session?.user?.email ?? "";
+  const currentUser = {
+    name: session?.user?.name || email || "Utilisateur",
+    email,
+    avatar: session?.user?.image ?? "",
+  };
 
   const groups = adminNavGroups
     .map((group) => ({
       label: group.label,
       items: group.items
-        .filter((item) => !role || !item.roles || item.roles.includes(role))
+        .filter(
+          (item) =>
+            !item.roles || (role !== undefined && item.roles.includes(role))
+        )
         .map((item) => {
           const children = item.items?.filter(
-            (child) => !role || !child.roles || child.roles.includes(role)
+            (child) =>
+              !child.roles || (role !== undefined && child.roles.includes(role))
           );
           const activeChildUrl = children?.find((child) =>
             isActive(pathname, child.url)
@@ -87,7 +97,7 @@ export function AdminSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={adminUser} />
+        <NavUser user={currentUser} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

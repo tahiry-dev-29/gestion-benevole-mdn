@@ -29,6 +29,9 @@ export async function listObservationsAction(params?: ListObservationsInput) {
   if (!session?.user?.id) {
     return { success: false, error: "Non authentifié." };
   }
+  if (session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN") {
+    return { success: false, error: "Accès interdit (403)." };
+  }
 
   const parsed = listObservationsSchema.safeParse(params ?? {});
   if (!parsed.success) {

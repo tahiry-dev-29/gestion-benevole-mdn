@@ -1,13 +1,20 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { updateProfileAction } from "@/features/user/user.action";
-import type { Category, Sexe } from "@/features/user/user.schema";
+import {
+  CategoryEnum,
+  SexeEnum,
+  type UpdateProfileInput,
+  updateProfileSchema,
+} from "@/features/user/user.schema";
 
 import {
   ProfileFields,
@@ -31,22 +38,80 @@ interface ProfileFormProps {
   };
 }
 
+const uploadResponseSchema = z.discriminatedUnion("success", [
+  z.object({ success: z.literal(true), url: z.string().min(1) }),
+  z.object({ success: z.literal(false), error: z.string() }),
+]);
+
+function initialSexe(value: string | null | undefined) {
+  const parsed = SexeEnum.safeParse(value);
+  return parsed.success ? parsed.data : "Non précisé";
+}
+
+function initialCategory(value: string | null | undefined) {
+  const parsed = CategoryEnum.safeParse(value);
+  return parsed.success ? parsed.data : "UNIVERSITAIRE";
+}
+
 export function ProfileForm({ user }: ProfileFormProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [uploading, setUploading] = useState(false);
-
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState<ProfileFormData>({
     nom: user.nom || "",
     prenom: user.prenom || "",
     email: user.email || "",
     photo: user.photo || "",
-    sexe: user.sexe || "Masculin",
+    sexe: initialSexe(user.sexe),
     age: user.age ?? "",
     contact: user.contact || "",
-    categorie: user.categorie || "UNIVERSITAIRE",
+    categorie: initialCategory(user.categorie),
     etablissement: user.etablissement || "",
     facebook: user.facebook || "",
+  });
+
+  const imageUpload = useMutation({
+    mutationFn: async (file: File) => {
+      const data = new FormData();
+      data.set("file", file);
+      data.set("type", "image");
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: data,
+      });
+      const parsed = uploadResponseSchema.safeParse(await response.json());
+      if (!parsed.success) throw new Error("Réponse d’upload invalide.");
+      if (!response.ok || !parsed.data.success) {
+        throw new Error(
+          parsed.data.success
+            ? "Impossible d’envoyer l’image."
+            : parsed.data.error
+        );
+      }
+      return parsed.data.url;
+    },
+    onSuccess: (photo) => {
+      setFormData((previous) => ({ ...previous, photo }));
+      toast.success("Photo envoyée.");
+    },
+    onError: (error) =>
+      toast.error(
+        error instanceof Error ? error.message : "Erreur d’upload de l’image."
+      ),
+  });
+
+  const profileUpdate = useMutation({
+    mutationFn: (payload: UpdateProfileInput) =>
+      updateProfileAction(user.id, payload),
+    onSuccess: (result) => {
+      if (!result.success) {
+        toast.error(result.error || "Une erreur est survenue.");
+        return;
+      }
+      toast.success("Profil mis à jour avec succès !");
+      void queryClient.invalidateQueries({ queryKey: ["users"] });
+      router.refresh();
+    },
+    onError: () => toast.error("Une erreur est survenue."),
   });
 
   const handleFieldChange = (
@@ -56,56 +121,34 @@ export function ProfileForm({ user }: ProfileFormProps) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    const data = new FormData();
-    data.append("file", file);
-
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: data,
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Erreur upload");
-      setFormData((prev) => ({ ...prev, photo: json.url }));
-    } catch (err: unknown) {
-      toast.error(
-        err instanceof Error ? err.message : "Erreur d'upload de l'image"
-      );
-    } finally {
-      setUploading(false);
-    }
+    if (file) imageUpload.mutate(file);
+    e.currentTarget.value = "";
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    startTransition(async () => {
-      const payload = {
-        nom: formData.nom,
-        prenom: formData.prenom,
-        email: formData.email,
-        photo: formData.photo || null,
-        sexe: (formData.sexe as Sexe) || undefined,
-        age: formData.age !== "" ? Number(formData.age) : undefined,
-        contact: formData.contact || undefined,
-        categorie: (formData.categorie as Category) || undefined,
-        etablissement: formData.etablissement || undefined,
-        facebook: formData.facebook || undefined,
-      };
-
-      const res = await updateProfileAction(user.id, payload);
-      if (res.success) {
-        toast.success("Profil mis à jour avec succès !");
-        router.refresh();
-      } else {
-        toast.error(res.error || "Une erreur est survenue.");
-      }
+    const parsed = updateProfileSchema.safeParse({
+      nom: formData.nom,
+      prenom: formData.prenom,
+      email: formData.email,
+      photo: formData.photo || null,
+      sexe: formData.sexe || undefined,
+      age: formData.age !== "" ? Number(formData.age) : undefined,
+      contact: formData.contact || undefined,
+      categorie: formData.categorie || undefined,
+      etablissement: formData.etablissement || undefined,
+      facebook: formData.facebook || undefined,
     });
+    if (!parsed.success) {
+      toast.error(
+        parsed.error.issues[0]?.message ?? "Vérifiez les champs du profil."
+      );
+      return;
+    }
+    profileUpdate.mutate(parsed.data);
   };
 
   return (
@@ -118,7 +161,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           type="button"
           variant="ghost"
           size="icon"
-          onClick={() => router.push("/admin/users")}
+          onClick={() => router.push("/admin/dashboard")}
           className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
           title="Fermer"
         >
@@ -129,7 +172,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           photo={formData.photo}
           nom={formData.nom}
           prenom={formData.prenom}
-          uploading={uploading}
+          uploading={imageUpload.isPending}
           onFileChange={handleImageUpload}
           onRemovePhoto={() => setFormData((p) => ({ ...p, photo: "" }))}
         />
@@ -140,13 +183,18 @@ export function ProfileForm({ user }: ProfileFormProps) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.push("/admin/users")}
-            disabled={isPending || uploading}
+            onClick={() => router.push("/admin/dashboard")}
+            disabled={profileUpdate.isPending || imageUpload.isPending}
           >
             Annuler
           </Button>
-          <Button type="submit" disabled={isPending || uploading}>
-            {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+          <Button
+            type="submit"
+            disabled={profileUpdate.isPending || imageUpload.isPending}
+          >
+            {profileUpdate.isPending && (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            )}
             Enregistrer les modifications
           </Button>
         </div>

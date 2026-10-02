@@ -25,17 +25,13 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
+import {
+  type CreateActiviteDto,
+  createActiviteSchema,
+} from "../application/activite.schema";
 import type { Activite } from "../domain/activite.entity";
 
-const formSchema = z.object({
-  titre: z.string().min(1, "Le titre est requis").max(150),
-  description: z.string().min(1, "La description est requise"),
-  date: z.string().min(1, "La date est requise"),
-  image: z.union([z.string().url(), z.literal("")]),
-  statut: z.enum(["BROUILLON", "PUBLIE"]),
-});
-
-export type ActiviteFormValues = z.infer<typeof formSchema>;
+export type ActiviteFormValues = CreateActiviteDto;
 
 interface ActiviteFormProps {
   open: boolean;
@@ -61,8 +57,12 @@ export function ActiviteForm({
     setValue,
     control,
     formState: { errors },
-  } = useForm<ActiviteFormValues>({
-    resolver: zodResolver(formSchema),
+  } = useForm<
+    z.input<typeof createActiviteSchema>,
+    unknown,
+    ActiviteFormValues
+  >({
+    resolver: zodResolver(createActiviteSchema),
     defaultValues: {
       titre: initialData?.titre ?? "",
       description: initialData?.description ?? "",
@@ -120,40 +120,14 @@ export function ActiviteForm({
             <Label htmlFor="image">Image (URL)</Label>
             <Input
               id="image"
-              type="url"
-              placeholder="https://…"
+              type="text"
+              placeholder="https://… ou /uploads/…"
               {...register("image")}
+              aria-invalid={!!errors.image}
             />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="statut">Publication</Label>
-            <Select
-              value={statut}
-              onValueChange={(value) =>
-                value === "BROUILLON" || value === "PUBLIE"
-                  ? setValue("statut", value)
-                  : undefined
-              }
-            >
-              <SelectTrigger id="statut">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="BROUILLON">Brouillon</SelectItem>
-                <SelectItem value="PUBLIE">Publié</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="image">Image (URL)</Label>
-            <Input
-              id="image"
-              type="url"
-              placeholder="https://…"
-              {...register("image")}
-            />
+            {errors.image ? (
+              <p className="text-xs text-destructive">{errors.image.message}</p>
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-2">

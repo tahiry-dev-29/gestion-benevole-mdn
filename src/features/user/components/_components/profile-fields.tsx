@@ -72,7 +72,7 @@ export function ProfileFields({ formData, onChange }: ProfileFieldsProps) {
         >
           <option value="Masculin">Masculin</option>
           <option value="Féminin">Féminin</option>
-          <option value="Autre">Autre</option>
+          <option value="Non précisé">Non précisé</option>
         </select>
       </div>
 

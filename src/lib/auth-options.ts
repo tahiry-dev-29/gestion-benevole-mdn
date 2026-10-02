@@ -44,7 +44,7 @@ export const authOptions: AuthOptions = {
         const user = await prisma.user.findUnique({
           where: { email: parsed.data.email.toLowerCase() },
         });
-        if (!user || user.deletedAt) return null;
+        if (!user || user.deletedAt || user.statut !== "ACTIF") return null;
 
         // App fermée : le rôle `USER` (pré-conversion) ne peut pas ouvrir de session.
         if (user.role === "USER") {

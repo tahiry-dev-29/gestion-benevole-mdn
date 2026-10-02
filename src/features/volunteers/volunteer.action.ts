@@ -28,8 +28,7 @@ import {
 } from "./volunteer.schema";
 
 export type ActionResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
+  { success: true; data: T } | { success: false; error: string };
 
 type Actor = { id: number; role: Role };
 
@@ -99,7 +98,8 @@ export async function createVolunteerAction(
     };
   }
 
-  const { nom, prenom, email, password, role, statut, dateEntree } = parsed.data;
+  const { nom, prenom, email, password, role, statut, dateEntree } =
+    parsed.data;
 
   // Matrice de création appliquée CÔTÉ SERVEUR, AVANT toute écriture en base.
   if (!canCreate(actor.role, role)) {
@@ -151,7 +151,8 @@ export async function updateVolunteerAction(
   if (!canManageRole(actor.role, target.role)) {
     return {
       success: false,
-      error: "Vous ne pouvez pas modifier un compte de rang supérieur au vôtre.",
+      error:
+        "Vous ne pouvez pas modifier un compte de rang supérieur au vôtre.",
     };
   }
 
@@ -245,7 +246,8 @@ export async function setStatutAction(
   if (!canManageRole(actor.role, target.role)) {
     return {
       success: false,
-      error: "Vous ne pouvez pas modifier un compte de rang supérieur au vôtre.",
+      error:
+        "Vous ne pouvez pas modifier un compte de rang supérieur au vôtre.",
     };
   }
 
@@ -258,4 +260,3 @@ export async function setStatutAction(
   revalidatePath("/admin/volunteer-management/roles");
   return { success: true, data: updated };
 }
-

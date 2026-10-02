@@ -14,6 +14,7 @@ import {
   type ListCreditsInput,
   listCreditsSchema,
 } from "./credit.schema";
+import { creditPeriod } from "./credit.utils";
 
 function isAdminRole(role: string) {
   return role === "ADMIN" || role === "SUPER_ADMIN";
@@ -65,6 +66,9 @@ export async function listCreditsAction(params?: ListCreditsInput) {
   if (!session?.user?.id) {
     return { success: false, error: "Non authentifié." };
   }
+  if (!isAdminRole(session.user.role ?? "")) {
+    return { success: false, error: "Accès interdit (403)." };
+  }
 
   const parsed = listCreditsSchema.safeParse(params ?? {});
   if (!parsed.success) {
@@ -82,11 +86,13 @@ export async function listCreditsAction(params?: ListCreditsInput) {
   if (mois || annee) {
     const dateFilter: Record<string, Date> = {};
     if (annee && mois) {
-      dateFilter.gte = new Date(annee, mois - 1, 1);
-      dateFilter.lt = new Date(annee, mois, 1);
+      const range = creditPeriod(annee, mois);
+      dateFilter.gte = range.from;
+      dateFilter.lt = range.to;
     } else if (annee) {
-      dateFilter.gte = new Date(annee, 0, 1);
-      dateFilter.lt = new Date(annee + 1, 0, 1);
+      const range = creditPeriod(annee);
+      dateFilter.gte = range.from;
+      dateFilter.lt = range.to;
     }
     where.date = dateFilter;
   }
@@ -143,6 +149,9 @@ export async function deleteCreditAction(data: DeleteCreditInput) {
     revalidatePath("/admin/credits");
     return { success: true };
   } catch {
-    return { success: false, error: "Erreur lors de la suppression du crédit." };
+    return {
+      success: false,
+      error: "Erreur lors de la suppression du crédit.",
+    };
   }
 }

@@ -17,17 +17,31 @@ export interface UserItem {
   facebook?: string | null;
   date_entree: Date;
   createdAt: Date;
+  matricule: string | null;
+  certificatStatut?: "NON_DEMANDE" | "EN_ATTENTE" | "APPROUVE" | "REJETE";
+  certificatUrl?: string | null;
+  telephone: string | null;
+  societe?: string | null;
+  materielPC?: boolean;
+  accepteRegles?: boolean;
+  spinneret: string | null;
 }
 
 export interface UserFormData {
   prenom: string;
   nom: string;
   email: string;
-  role: "ADMIN" | "VOLUNTEER";
+  role: "USER";
   sexe: string;
   age: string;
   contact: string;
   categorie: CategoryType | "";
   etablissement: string;
   facebook: string;
+  matricule: string;
+  telephone: string;
+  materielPC: boolean;
+  accepteRegles: boolean;
+  spinneret: string;
+  societe: string;
 }

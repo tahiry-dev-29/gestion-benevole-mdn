@@ -1,28 +1,44 @@
 import { z } from "zod";
 
-export const presenceFilterSchema = z.object({
-  du: z.string().date().optional(),
-  au: z.string().date().optional(),
-  table: z.coerce.number().int().positive().optional(),
-  statut: z.enum(["PRESENT", "ABSENT", "RETARD"]).optional(),
-});
+export const presenceFilterSchema = z
+  .object({
+    du: z.string().date().optional(),
+    au: z.string().date().optional(),
+    table: z.coerce.number().int().positive().optional(),
+    statut: z.enum(["PRESENT", "ABSENT", "RETARD"]).optional(),
+  })
+  .refine((filters) => !filters.du || !filters.au || filters.du <= filters.au, {
+    message: "La date de début doit précéder la date de fin.",
+    path: ["au"],
+  });
 
-export const pointSchema = z.object({
-  userId: z.coerce.number().int().positive(),
-  date: z.string().date(),
-  seatId: z.coerce.number().int().positive().nullable().optional(),
-  statut: z.enum(["PRESENT", "ABSENT", "RETARD"]).default("PRESENT"),
-  arrivee: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
-    .nullable()
-    .optional(),
-  depart: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
-    .nullable()
-    .optional(),
-});
+export const pointSchema = z
+  .object({
+    userId: z.coerce.number().int().positive(),
+    date: z.string().date(),
+    seatId: z.coerce.number().int().positive().nullable().optional(),
+    statut: z.enum(["PRESENT", "ABSENT", "RETARD"]).default("PRESENT"),
+    arrivee: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+      .nullable()
+      .optional(),
+    depart: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+      .nullable()
+      .optional(),
+  })
+  .refine(
+    (pointage) =>
+      !pointage.arrivee ||
+      !pointage.depart ||
+      pointage.depart >= pointage.arrivee,
+    {
+      message: "L’heure de départ doit être après l’heure d’arrivée.",
+      path: ["depart"],
+    }
+  );
 
 export type PresenceRecord = {
   id: number;

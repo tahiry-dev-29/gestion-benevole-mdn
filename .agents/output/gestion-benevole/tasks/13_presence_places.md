@@ -1,4 +1,4 @@
-Status: TODO
+Status: IN_PROGRESS
 
 # Feature tasks: Pointage des présences et gestion des places (S4)
 

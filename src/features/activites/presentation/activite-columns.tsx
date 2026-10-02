@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Column, ColumnDef } from "@tanstack/react-table";
 import {
   ArrowDown,
@@ -13,6 +14,7 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,7 +28,6 @@ import {
 import type { Activite } from "../domain/activite.entity";
 
 interface ColumnActions {
-  onView: (a: Activite) => void;
   onEdit: (a: Activite) => void;
   onDelete: (a: Activite) => void;
   onTogglePublish: (a: Activite) => void;
@@ -63,7 +64,6 @@ function SortHeader({
 }
 
 export function getActiviteColumns({
-  onView,
   onEdit,
   onDelete,
   onTogglePublish,
@@ -90,21 +90,31 @@ export function getActiviteColumns({
     {
       accessorKey: "statut",
       header: "Publication",
-      cell: ({ row }) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onTogglePublish(row.original)}
-          className="gap-2"
-        >
-          {row.original.statut === "PUBLIE" ? (
-            <Globe className="size-4 text-emerald-600" />
-          ) : (
-            <GlobeLock className="size-4 text-muted-foreground" />
-          )}
-          {row.original.statut === "PUBLIE" ? "Publié" : "Brouillon"}
-        </Button>
-      ),
+      cell: ({ row }) => {
+        const published = row.original.statut === "PUBLIE";
+        return (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onTogglePublish(row.original)}
+            className="h-8 gap-2 px-2"
+            aria-label={`${published ? "Dépublier" : "Publier"} ${row.original.titre}`}
+            title={`${published ? "Dépublier" : "Publier"} cette activité`}
+          >
+            <Badge
+              variant={published ? "default" : "secondary"}
+              className="gap-1.5 font-medium"
+            >
+              {published ? (
+                <Globe className="size-3.5" aria-hidden="true" />
+              ) : (
+                <GlobeLock className="size-3.5" aria-hidden="true" />
+              )}
+              {published ? "Publié" : "Brouillon"}
+            </Badge>
+          </Button>
+        );
+      },
     },
     {
       id: "actions",
@@ -114,15 +124,24 @@ export function getActiviteColumns({
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Actions">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={`Actions pour ${a.titre}`}
+                title="Actions"
+              >
                 <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => onView(a)}>
-                <Eye className="size-4" /> Voir
-              </DropdownMenuItem>
+              {a.statut === "PUBLIE" ? (
+                <DropdownMenuItem asChild>
+                  <Link href={`/activites/${a.id}`}>
+                    <Eye className="size-4" /> Voir en ligne
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuItem onClick={() => onEdit(a)}>
                 <Pencil className="size-4" /> Modifier
               </DropdownMenuItem>

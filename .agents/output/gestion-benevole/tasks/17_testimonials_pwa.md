@@ -1,4 +1,6 @@
-Status: TODO
+Status: IN_PROGRESS
+
+> **Reprise au 2026-10-02 :** le parcours navigateur est vérifié : soumission anonyme en attente, invisible avant publication, visible après publication, puis masquée après rejet; honeypot accepté sans création de ligne et fixture supprimée. Le service worker n'a pas fourni de contrôleur pendant le contrôle offline; fallback/rechargement hors ligne restent à prouver. Voir [`STATUS-01-17.md`](./STATUS-01-17.md).
 
 # Feature tasks: Témoignages et parcours hors ligne PWA (S8)
 
@@ -14,7 +16,7 @@ Un visiteur soumet un témoignage non publié par défaut, l'équipe le modère,
 
 ## Parent task: Soumission, modération et offline fonctionnels
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Depends on:** Task 10.1 — accès admin; Task 16.1 — conventions de publication.
 
 Goal: terminer un parcours runtime de bout en bout sans Lighthouse ni validation de production.
@@ -38,7 +40,7 @@ Acceptance criteria:
 
 ### Task 17.1: Soumission anonyme sécurisée
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Parent:** Soumission, modération et offline fonctionnels
 **Depends on:** None
 
@@ -56,7 +58,7 @@ Acceptance criteria:
 
 ### Task 17.2: Modération, vitrine et service worker
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Parent:** Soumission, modération et offline fonctionnels
 **Depends on:** Task 17.1
 

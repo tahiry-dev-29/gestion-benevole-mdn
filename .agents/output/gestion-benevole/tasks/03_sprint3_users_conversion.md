@@ -1,4 +1,6 @@
-Status: DONE
+Status: IN_PROGRESS
+
+> Parcours USER → certificat → approbation → connexion vérifié le 2026-10-02. Voir [`STATUS-01-17.md`](./STATUS-01-17.md); les critères historiques non prouvés restent ouverts.
 
 > **Suivi de remise en état:** l'audit correctif des comptes USER et de la conversion est suivi dans [`12_user_management.md`](12_user_management.md), Plan `plan-001`.
 
@@ -52,12 +54,24 @@ Comptes `USER` complets (propriétés du PRD), pages `/admin/users`, `/admin/use
 
 ## Critères d'acceptation
 
-- [ ] `pnpm typecheck` · `pnpm lint` · `pnpm build` · `pnpm prisma migrate dev` — 0 erreur
-- [ ] `createUserAction` crée toujours un `role: "USER"` même si le payload contient `role: "ADMIN"`
-- [ ] Double `matricule` → `{ success: false, error: ... }` (pas d'erreur brute)
+- [x] `pnpm typecheck`, `pnpm lint` et `pnpm build` réussissent (lint : 0 erreur, 2 avertissements existants).
+- [ ] `pnpm prisma migrate dev` réussi sur une base locale isolée; non exécuté pendant cette reprise car l'isolation de la cible configurée n'est pas confirmée.
+- [x] `createUserAction` impose `role: "USER"` même si le payload contient `role: "ADMIN"` (test unitaire).
+- [x] Double `matricule` → `{ success: false, error: ... }` sans erreur brute (gestion Prisma `P2002` + test).
 - [ ] `/admin/users/[id]` affiche toutes les propriétés + Gravatar
-- [ ] Upload d'un `.exe` en CV → refus ; PDF > 5 Mo → refus
-- [ ] Bouton **Approuver** (ADMIN) : le compte passe `USER` → `VOLUNTEER`, `certificatStatut = APPROUVE`, et **ce compte peut alors se connecter sur `/login`**
-- [ ] Un `VOLUNTEER` ne voit pas `/admin/users` (403 via proxy)
-- [ ] Filtres de la liste : certificat / statut / recherche — résultats corrects
-- [ ] Tests : `approveCertificateAction` (ADMIN ok, VOLUNTEER refusé), `createUserAction` (rôles forcés)
+- [x] Upload exécutable en CV refusé, PDF de plus de 5 Mo refusé (tests unitaires); le helper vérifie également la signature PDF.
+- [x] **Approuver** (ADMIN) fait passer `USER` → `VOLUNTEER` avec certificat approuvé (test d'action); la connexion après conversion a été vérifiée dans le parcours navigateur du 2026-10-02.
+- [x] Un `VOLUNTEER` ne voit pas `/admin/users` (test proxy, réécriture vers `/forbidden`).
+- [x] Filtres de liste certificat / statut / recherche, dont matricule, testés (unitaire + composition serveur).
+- [x] Tests : `approveCertificateAction` (ADMIN ok, VOLUNTEER refusé), création à rôle forcé, erreur de doublon, et filtres.
+
+## Vérifications de reprise — 2026-10-02
+
+- `pnpm test` : 19 fichiers, 121 tests réussis.
+- `pnpm typecheck` : réussi.
+- `pnpm lint` : 0 erreur; 2 avertissements hors périmètre USER (`excel.import-users.ts` complexité, `user.action.ts` longueur).
+- `pnpm build` : réussi, Next.js 16.3.4, routes USER compilées.
+- `git diff --check` : réussi.
+- Liste USER enrichie avec organisation, genre et badges certificat/statut; filtres extraits en fonction testée.
+- Fiche USER inclut les champs contact et disponibilités horaires en plus de Gravatar et des champs déjà affichés.
+- Statut reste `IN_PROGRESS` : migration non vérifiée sur DB isolée et affichage détaillé non rejoué au navigateur dans cette reprise.

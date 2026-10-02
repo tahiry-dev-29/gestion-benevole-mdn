@@ -7,7 +7,9 @@ import { getApiToken, requireAdmin } from "@/lib/api-auth";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const token = await getApiToken(request);
-  const canModerate = token?.role === "ADMIN" && token.statut !== "INACTIF";
+  const canModerate =
+    (token?.role === "ADMIN" || token?.role === "SUPER_ADMIN") &&
+    token.statut !== "INACTIF";
   const page = Math.min(
     1_000_000,
     Math.max(1, Number(searchParams.get("page")) || 1)

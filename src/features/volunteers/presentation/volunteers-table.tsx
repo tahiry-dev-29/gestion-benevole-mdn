@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { type SortingState } from "@tanstack/react-table";
-import { Plus, Search } from "lucide-react";
+import { Plus, RefreshCw, RotateCcw, Search } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
@@ -52,7 +52,9 @@ export function VolunteersTable() {
   const [statutFilter, setStatutFilter] = React.useState<string>(ALL);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pageIndex, setPageIndex] = React.useState(0);
-  const [deleteTarget, setDeleteTarget] = React.useState<Volunteer | null>(null);
+  const [deleteTarget, setDeleteTarget] = React.useState<Volunteer | null>(
+    null
+  );
 
   React.useEffect(() => {
     const timer = setTimeout(() => setDebouncedQ(search), 300);
@@ -74,7 +76,8 @@ export function VolunteersTable() {
     sortDir: sort?.desc ? "desc" : "asc",
   };
 
-  const { data, isLoading, isError, error } = useVolunteers(params);
+  const { data, isLoading, isError, error, refetch, isFetching } =
+    useVolunteers(params);
   const rows = data?.data ?? [];
   const total = data?.total ?? 0;
   const deleteMutation = useDeleteVolunteer();
@@ -133,8 +136,8 @@ export function VolunteersTable() {
         isLoading={isLoading}
         emptyMessage="Aucun bénévole trouvé."
         toolbar={
-          <>
-            <div className="relative max-w-sm flex-1">
+          <div className="flex w-full flex-wrap items-center gap-2 rounded-xl border bg-card p-2">
+            <div className="relative min-w-48 max-w-sm flex-1">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={search}
@@ -143,7 +146,7 @@ export function VolunteersTable() {
                   setPageIndex(0);
                 }}
                 placeholder="Rechercher un bénévole..."
-                className="pl-8"
+                className="h-9 pl-8"
               />
             </div>
             <Select
@@ -153,7 +156,10 @@ export function VolunteersTable() {
                 setPageIndex(0);
               }}
             >
-              <SelectTrigger className="w-40" aria-label="Filtrer par rôle">
+              <SelectTrigger
+                className="h-9 w-[160px]"
+                aria-label="Filtrer par rôle"
+              >
                 <SelectValue placeholder="Rôle" />
               </SelectTrigger>
               <SelectContent>
@@ -172,7 +178,10 @@ export function VolunteersTable() {
                 setPageIndex(0);
               }}
             >
-              <SelectTrigger className="w-36" aria-label="Filtrer par statut">
+              <SelectTrigger
+                className="h-9 w-[145px]"
+                aria-label="Filtrer par statut du compte"
+              >
                 <SelectValue placeholder="Statut" />
               </SelectTrigger>
               <SelectContent>
@@ -181,7 +190,42 @@ export function VolunteersTable() {
                 <SelectItem value="INACTIF">Inactif</SelectItem>
               </SelectContent>
             </Select>
-          </>
+            {(search || roleFilter !== ALL || statutFilter !== ALL) && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-9"
+                onClick={() => {
+                  setSearch("");
+                  setDebouncedQ("");
+                  setRoleFilter(ALL);
+                  setStatutFilter(ALL);
+                  setPageIndex(0);
+                }}
+                aria-label="Effacer les filtres"
+                title="Effacer les filtres"
+              >
+                <RotateCcw className="size-4" />
+              </Button>
+            )}
+            <span className="ml-auto whitespace-nowrap px-2 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">{total}</span>{" "}
+              bénévoles
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9"
+              onClick={() => void refetch()}
+              disabled={isFetching}
+              aria-label="Actualiser la liste des bénévoles"
+              title="Actualiser"
+            >
+              <RefreshCw
+                className={isFetching ? "size-4 animate-spin" : "size-4"}
+              />
+            </Button>
+          </div>
         }
       />
 

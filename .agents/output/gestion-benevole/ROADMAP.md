@@ -17,15 +17,15 @@
 | Sprint | Périmètre | Durée | Statut | Backlog |
 | ------ | --------- | ----- | ------ | ------- |
 | 0 | Initialisation & Setup | 1 semaine | ✅ Terminé | [`tasks/00_sprint0_init.md`](./tasks/00_sprint0_init.md) |
-| 1 | **Auth & RBAC** — app fermée, 4 rôles, `/login` unique | 2 semaines | ⚪ À venir | [`tasks/01_sprint1_auth_rbac.md`](./tasks/01_sprint1_auth_rbac.md) |
-| 2 | **Volunteer Management** — sous-liste, roles management, CRUD sécurisé | 2 semaines | ⚪ À venir | [`tasks/02_sprint2_volunteer_management.md`](./tasks/02_sprint2_volunteer_management.md) |
-| 3 | **Users & conversion** — propriétés USER, certificat → VOLUNTEER | 2 semaines | ⚪ À venir | [`tasks/03_sprint3_users_conversion.md`](./tasks/03_sprint3_users_conversion.md) |
-| 4 | **Présence & Places** — CRUD tables/sièges, pointage avec place | 2 semaines | ⚪ À venir | [`tasks/04_sprint4_presence_places.md`](./tasks/04_sprint4_presence_places.md) |
-| 5 | **Import / Export Excel** (users + présences) | 1 semaine | ⚪ À venir | [`tasks/05_sprint5_excel_import_export.md`](./tasks/05_sprint5_excel_import_export.md) |
-| 6 | Observations mensuelles & Liste Crédit | 2 semaines | ⚪ À venir | [`tasks/06_sprint6_obs_credit.md`](./tasks/06_sprint6_obs_credit.md) |
-| 7 | Public : Activité & Partage | 2 semaines | ⚪ À venir | [`tasks/07_sprint7_activite_partage.md`](./tasks/07_sprint7_activite_partage.md) |
-| 8 | Public : Témoignage & Finalisation PWA | 2 semaines | 🟡 En cours — Lighthouse et validations runtime restantes | [`tasks/08_sprint8_temoignage_pwa.md`](./tasks/08_sprint8_temoignage_pwa.md) |
-| 9 | Mise en production | 1 semaine | ⚪ À venir | [`tasks/09_sprint9_production.md`](./tasks/09_sprint9_production.md) |
+| 1 | **Auth & RBAC** — app fermée, 4 rôles, `/login` unique | 2 semaines | ✅ Terminé | [`tasks/01_sprint1_auth_rbac.md`](./tasks/01_sprint1_auth_rbac.md) |
+| 2 | **Volunteer Management** — sous-liste, roles management, CRUD sécurisé | 2 semaines | ✅ Terminé | [`tasks/02_sprint2_volunteer_management.md`](./tasks/02_sprint2_volunteer_management.md) |
+| 3 | **Users & conversion** — propriétés USER, certificat → VOLUNTEER | 2 semaines | 🟡 En cours — critères historiques à finir | [`tasks/03_sprint3_users_conversion.md`](./tasks/03_sprint3_users_conversion.md) |
+| 4 | **Présence & Places** — CRUD tables/sièges, pointage avec place | 2 semaines | ✅ Terminé; suivi complémentaire tâche 13 | [`tasks/04_sprint4_presence_places.md`](./tasks/04_sprint4_presence_places.md) |
+| 5 | **Import / Export Excel** (users + présences) | 1 semaine | 🟡 En cours — round-trip et UI | [`tasks/05_sprint5_excel_import_export.md`](./tasks/05_sprint5_excel_import_export.md) |
+| 6 | Observations mensuelles & Liste Crédit | 2 semaines | ✅ Terminé; suivi complémentaire tâche 15 | [`tasks/06_sprint6_obs_credit.md`](./tasks/06_sprint6_obs_credit.md) |
+| 7 | Public : Activité & Partage | 2 semaines | 🟡 En cours — parcours admin UI à compléter | [`tasks/07_sprint7_activite_partage.md`](./tasks/07_sprint7_activite_partage.md) |
+| 8 | Public : Témoignage & Finalisation PWA | 2 semaines | 🟡 En cours — runtime SW/appareils à vérifier | [`tasks/08_sprint8_temoignage_pwa.md`](./tasks/08_sprint8_temoignage_pwa.md) |
+| 9 | Mise en production | 1 semaine | 🟡 Dépend d'accès externes de production | [`tasks/09_sprint9_production.md`](./tasks/09_sprint9_production.md) |
 
 > Sprints 6 à 9 issus de l'ancienne roadmap `todos/` (anciens sprints 4 à 7), renumérotés et alignés sur le vocabulaire `VOLUNTEER`.
 

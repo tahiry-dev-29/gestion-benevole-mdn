@@ -5,6 +5,7 @@ import { type SortingState } from "@tanstack/react-table";
 import { toast } from "sonner";
 
 import { DataTable } from "@/components/shared/data-table";
+import { QueryError } from "@/components/shared/query-error";
 
 import type { Activite } from "../domain/activite.entity";
 
@@ -52,7 +53,7 @@ export function ActivitesTable() {
         : undefined,
   };
 
-  const { data, isLoading } = useActivites(params);
+  const { data, isLoading, isError, refetch } = useActivites(params);
   const rows = data?.data ?? [];
   const total = data?.total ?? 0;
 
@@ -68,10 +69,6 @@ export function ActivitesTable() {
   const columns = React.useMemo(
     () =>
       getActiviteColumns({
-        onView: (a) => {
-          setEditing(a);
-          setFormOpen(true);
-        },
         onEdit: (a) => {
           setEditing(a);
           setFormOpen(true);
@@ -141,6 +138,13 @@ export function ActivitesTable() {
           setFormOpen(true);
         }}
       />
+
+      {isError ? (
+        <QueryError
+          message="Impossible de charger les activités."
+          onRetry={() => void refetch()}
+        />
+      ) : null}
 
       <DataTable
         columns={columns}
