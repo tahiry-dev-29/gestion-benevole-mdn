@@ -1,5 +1,12 @@
+import "dotenv/config";
+
 import { PrismaPg } from "@prisma/adapter-pg";
-import { CertificatStatut, PrismaClient, Role, UserStatut } from "@prisma/client";
+import {
+  CertificatStatut,
+  PrismaClient,
+  Role,
+  UserStatut,
+} from "@prisma/client";
 import bcryptjs from "bcryptjs";
 import { Pool } from "pg";
 
@@ -32,7 +39,11 @@ async function main() {
   // SUPER_ADMIN
   const superAdmin = await prisma.user.upsert({
     where: { email: "superadmin@mdn.com" },
-    update: { password: mdnAdminPassword, role: Role.SUPER_ADMIN, statut: UserStatut.ACTIF },
+    update: {
+      password: mdnAdminPassword,
+      role: Role.SUPER_ADMIN,
+      statut: UserStatut.ACTIF,
+    },
     create: {
       nom: "Super",
       prenom: "Admin",
@@ -51,7 +62,11 @@ async function main() {
   // ADMIN
   await prisma.user.upsert({
     where: { email: "admin@mdn.com" },
-    update: { password: mdnAdminPassword, role: Role.ADMIN, statut: UserStatut.ACTIF },
+    update: {
+      password: mdnAdminPassword,
+      role: Role.ADMIN,
+      statut: UserStatut.ACTIF,
+    },
     create: {
       nom: "Admin",
       prenom: "MDN",
@@ -70,7 +85,11 @@ async function main() {
   // VOLUNTEER (ex-bénévole)
   await prisma.user.upsert({
     where: { email: "volunteer@test.com" },
-    update: { password: volunteerPassword, role: Role.VOLUNTEER, statut: UserStatut.ACTIF },
+    update: {
+      password: volunteerPassword,
+      role: Role.VOLUNTEER,
+      statut: UserStatut.ACTIF,
+    },
     create: {
       nom: "Martin",
       prenom: "Marie",
@@ -193,7 +212,9 @@ async function main() {
     },
   });
 
-  console.log("Seeding completed successfully with test USERs and certificate states!");
+  console.log(
+    "Seeding completed successfully with test USERs and certificate states!"
+  );
 }
 
 main()
