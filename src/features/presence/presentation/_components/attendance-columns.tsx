@@ -70,6 +70,7 @@ export function createAttendanceColumns(
           type="button"
           variant="ghost"
           size="icon"
+          className="size-11"
           onClick={() => onEdit(row.original)}
           aria-label={`Modifier le pointage de ${row.original.benevole} du ${row.original.date}`}
           title="Modifier le pointage"

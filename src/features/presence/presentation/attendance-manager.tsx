@@ -166,8 +166,13 @@ export function AttendanceManager({
         tables={tables}
         filters={filters}
         onFiltersChange={setFilters}
-        isFetching={attendanceQuery.isFetching}
-        onRefresh={() => void attendanceQuery.refetch()}
+        isFetching={attendanceQuery.isFetching || occupancyQuery.isFetching}
+        onRefresh={() => {
+          void Promise.all([
+            attendanceQuery.refetch(),
+            occupancyQuery.refetch(),
+          ]);
+        }}
         onEdit={editRecord}
       />
       {attendanceQuery.isError || occupancyQuery.isError ? (

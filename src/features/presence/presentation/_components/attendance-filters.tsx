@@ -99,6 +99,7 @@ export function AttendanceFiltersBar({
         type="button"
         variant="outline"
         size="icon"
+        className="size-11"
         onClick={onRefresh}
         disabled={isFetching}
         aria-label="Actualiser les pointages"

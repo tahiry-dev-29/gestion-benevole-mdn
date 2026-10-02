@@ -144,8 +144,10 @@ export function PlacesManager({
                   {seat.label ?? `Siège ${seat.seatNumber}`}
                   {seat.occupiedToday ? " · occupé aujourd’hui" : ""}
                   <button
+                    type="button"
                     aria-label={`Supprimer siège ${seat.seatNumber}`}
-                    className="ml-1 text-muted-foreground hover:text-destructive"
+                    title={`Supprimer le siège ${seat.seatNumber}`}
+                    className="ml-1 inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setDeleting(seat.id)}
                   >
                     <Trash2 className="size-3.5" />

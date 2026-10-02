@@ -9,6 +9,7 @@ function withPWAForPhase(phase: string) {
   return withPWAInit({
     dest: "public",
     disable: phase === PHASE_DEVELOPMENT_SERVER,
+    extendDefaultRuntimeCaching: true,
     fallbacks: { document: "/~offline" },
     workboxOptions: {
       runtimeCaching: [
