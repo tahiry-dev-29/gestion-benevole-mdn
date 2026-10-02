@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 
 import type { SeatGrid } from "../places.schema";
 
+import { RenameTableDialog } from "./_components/rename-table-dialog";
 import { usePlaces } from "./use-places";
 
 export function PlacesManager({
@@ -20,6 +21,7 @@ export function PlacesManager({
 }) {
   const [seatCount, setSeatCount] = useState("6");
   const [deleting, setDeleting] = useState<number | null>(null);
+  const [renaming, setRenaming] = useState<number | null>(null);
   const places = usePlaces(initialTables);
   const tables = places.query.data ?? initialTables;
   const pending =
@@ -51,17 +53,17 @@ export function PlacesManager({
     );
   }
 
-  function renameTable(tableNumber: number) {
-    const value = window.prompt("Nouveau numéro de table", String(tableNumber));
-    if (value)
-      run(
-        () =>
-          places.renameTable.mutateAsync({
-            oldNumber: tableNumber,
-            newNumber: value,
-          }),
-        "Table renommée."
-      );
+  function renameTable(newNumber: number) {
+    const current = renaming;
+    if (current === null) return;
+    void run(
+      () =>
+        places.renameTable.mutateAsync({
+          oldNumber: current,
+          newNumber: String(newNumber),
+        }),
+      "Table renommée."
+    ).then((success) => success && setRenaming(null));
   }
 
   function addSeat(tableNumber: number) {
@@ -118,7 +120,7 @@ export function PlacesManager({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => renameTable(table.tableNumber)}
+                  onClick={() => setRenaming(table.tableNumber)}
                   disabled={pending}
                 >
                   <Pencil className="size-4" /> Renommer
@@ -166,6 +168,12 @@ export function PlacesManager({
         isPending={pending}
         title="Supprimer ce siège ?"
         description="Un siège utilisé dans un pointage ne peut pas être supprimé."
+      />
+      <RenameTableDialog
+        tableNumber={renaming}
+        onOpenChange={(open) => !open && setRenaming(null)}
+        onConfirm={renameTable}
+        isPending={places.renameTable.isPending}
       />
     </div>
   );

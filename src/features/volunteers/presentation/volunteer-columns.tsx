@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 import type { Volunteer } from "../volunteer.entity";
 
@@ -42,7 +44,7 @@ function SortHeader({
     <button
       type="button"
       onClick={() => column.toggleSorting(sorted === "asc")}
-      className="-mx-2 inline-flex items-center gap-1 rounded px-2 py-1 hover:text-foreground"
+      className="-mx-2 inline-flex items-center gap-1 rounded px-2 py-1 font-medium hover:text-foreground"
     >
       {label}
       {sorted === "asc" ? (
@@ -56,49 +58,119 @@ function SortHeader({
   );
 }
 
+function getInitials(prenom: string, nom: string): string {
+  const first = prenom?.trim().charAt(0) ?? "";
+  const last = nom?.trim().charAt(0) ?? "";
+  return `${first}${last}`.toUpperCase() || "U";
+}
+
+function RoleBadge({ role }: { role: Volunteer["role"] }) {
+  const label = roleLabel(role);
+  if (role === "SUPER_ADMIN") {
+    return (
+      <Badge
+        variant="outline"
+        className="border-purple-300 bg-purple-500/10 font-medium text-purple-700 dark:border-purple-800 dark:text-purple-300"
+      >
+        {label}
+      </Badge>
+    );
+  }
+  if (role === "ADMIN") {
+    return (
+      <Badge
+        variant="outline"
+        className="border-blue-300 bg-blue-500/10 font-medium text-blue-700 dark:border-blue-800 dark:text-blue-300"
+      >
+        {label}
+      </Badge>
+    );
+  }
+  return (
+    <Badge
+      variant="outline"
+      className="border-teal-300 bg-teal-500/10 font-medium text-teal-700 dark:border-teal-800 dark:text-teal-300"
+    >
+      {label}
+    </Badge>
+  );
+}
+
+function StatutBadge({ statut }: { statut: Volunteer["statut"] }) {
+  const isActif = statut === "ACTIF";
+  return (
+    <Badge
+      variant="outline"
+      className={cn(
+        "gap-1.5 font-medium",
+        isActif
+          ? "border-emerald-300 bg-emerald-500/10 text-emerald-700 dark:border-emerald-800 dark:text-emerald-400"
+          : "border-muted bg-muted/60 text-muted-foreground"
+      )}
+    >
+      <span
+        className={cn(
+          "size-1.5 rounded-full",
+          isActif ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground"
+        )}
+      />
+      {statutLabel(statut)}
+    </Badge>
+  );
+}
+
 export function getVolunteerColumns({
   onDelete,
 }: ColumnActions): ColumnDef<Volunteer>[] {
   return [
     {
       accessorKey: "nom",
-      header: ({ column }) => <SortHeader column={column} label="Nom" />,
-      cell: ({ row }) => (
-        <div className="font-medium">{formatFullName(row.original)}</div>
-      ),
-    },
-    {
-      accessorKey: "email",
-      header: ({ column }) => <SortHeader column={column} label="Email" />,
+      header: ({ column }) => <SortHeader column={column} label="Bénévole" />,
+      cell: ({ row }) => {
+        const initials = getInitials(row.original.prenom, row.original.nom);
+        const fullName = formatFullName(row.original);
+        return (
+          <div className="flex items-center gap-3">
+            <Avatar className="size-9 border shadow-2xs">
+              <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <Link
+                href={`/admin/volunteer-management/${row.original.id}`}
+                className="font-medium hover:underline focus:outline-none"
+              >
+                {fullName}
+              </Link>
+              <span className="text-xs text-muted-foreground">
+                {row.original.email}
+              </span>
+            </div>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "role",
       header: ({ column }) => <SortHeader column={column} label="Rôle" />,
-      cell: ({ row }) => (
-        <Badge
-          variant={row.original.role === "VOLUNTEER" ? "secondary" : "default"}
-        >
-          {roleLabel(row.original.role)}
-        </Badge>
-      ),
+      cell: ({ row }) => <RoleBadge role={row.original.role} />,
     },
     {
       accessorKey: "statut",
       header: ({ column }) => <SortHeader column={column} label="Statut" />,
-      cell: ({ row }) => (
-        <Badge
-          variant={row.original.statut === "ACTIF" ? "outline" : "secondary"}
-        >
-          {statutLabel(row.original.statut)}
-        </Badge>
-      ),
+      cell: ({ row }) => <StatutBadge statut={row.original.statut} />,
     },
     {
       accessorKey: "dateEntree",
       header: ({ column }) => (
         <SortHeader column={column} label="Date d'entrée" />
       ),
-      cell: ({ row }) => formatDate(row.original.dateEntree),
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">
+          {formatDate(row.original.dateEntree)}
+        </span>
+      ),
     },
     {
       id: "createdBy",
@@ -120,20 +192,30 @@ export function getVolunteerColumns({
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Actions">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              aria-label="Actions"
+            >
               <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
+              Actions
+            </DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <Link href={`/admin/volunteer-management/${row.original.id}`}>
-                <Eye className="size-4" /> Fiche détaillée
+              <Link
+                href={`/admin/volunteer-management/${row.original.id}`}
+                className="cursor-pointer gap-2"
+              >
+                <Eye className="size-4 text-muted-foreground" /> Fiche détaillée
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+              className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
               onClick={() => onDelete(row.original)}
             >
               <Trash2 className="size-4" /> Supprimer

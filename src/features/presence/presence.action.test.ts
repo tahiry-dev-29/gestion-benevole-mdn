@@ -7,6 +7,7 @@ const { auth, prisma, revalidatePath } = vi.hoisted(() => ({
     seat: { findUnique: vi.fn() },
     attendance: {
       findFirst: vi.fn(),
+      findMany: vi.fn(),
       upsert: vi.fn(),
       count: vi.fn(),
       delete: vi.fn(),
@@ -20,7 +21,10 @@ vi.mock("@/lib/prisma", () => ({ prisma }));
 vi.mock("next/cache", () => ({ revalidatePath }));
 
 import { deleteSeatAction } from "@/features/places/places.action";
-import { pointAction } from "@/features/presence/presence.action";
+import {
+  listAttendanceAction,
+  pointAction,
+} from "@/features/presence/presence.action";
 
 describe("attendance and seat actions", () => {
   beforeEach(() => {
@@ -131,5 +135,39 @@ describe("attendance and seat actions", () => {
       error: "Données de pointage invalides.",
     });
     expect(prisma.attendance.upsert).not.toHaveBeenCalled();
+  });
+
+  it("applies date, status, seat, and volunteer search filters on the server", async () => {
+    prisma.attendance.findMany.mockResolvedValue([]);
+
+    const result = await listAttendanceAction({
+      du: "2026-10-01",
+      au: "2026-10-07",
+      statut: "RETARD",
+      seatId: 8,
+      query: "Marie",
+    });
+
+    expect(result).toEqual({ success: true, data: [] });
+    expect(prisma.attendance.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          date: {
+            gte: new Date("2026-10-01T00:00:00.000Z"),
+            lte: new Date("2026-10-07T00:00:00.000Z"),
+          },
+          statut: "RETARD",
+          seat_id: 8,
+          user: {
+            OR: [
+              { nom: { contains: "Marie", mode: "insensitive" } },
+              { prenom: { contains: "Marie", mode: "insensitive" } },
+              { email: { contains: "Marie", mode: "insensitive" } },
+              { matricule: { contains: "Marie", mode: "insensitive" } },
+            ],
+          },
+        }),
+      })
+    );
   });
 });

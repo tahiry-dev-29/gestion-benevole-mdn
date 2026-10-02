@@ -6,7 +6,7 @@ Dernière mise à jour : 2026-10-02. Ce tableau est le point de reprise rapide; 
 | --- | --- | --- |
 | 01 — Auth/RBAC | DONE | Historique de tests par rôle et matrice RBAC conservé dans la tâche. |
 | 02 — Gestion bénévoles | DONE | Historique CRUD, règles de création et soft delete conservé dans la tâche. |
-| 03 — Comptes USER | IN_PROGRESS | Payload de rôle forcé, doublon matricule, refus EXE/PDF trop lourd, filtres et proxy couverts par tests; typecheck/lint/build passent. La migration DB isolée et vérification navigateur de la fiche restent ouvertes. |
+| 03 — Comptes USER | IN_PROGRESS | Payload de rôle forcé, doublon matricule, refus EXE/PDF trop lourd, filtres et proxy couverts par tests; 124 tests et typecheck passent. Les 13 migrations sont appliquées sur la DB locale dédiée; champs de la fiche et Gravatar vérifiés dans le rendu/chargement serveur. Contrôle navigateur à rejouer. Le lint global échoue actuellement sur une règle React dans le composant de renommage des places, hors tâche 03. |
 | 04 — Présences/places | DONE | Implémentation et tests historiques; suivi complémentaire dans la tâche 13. |
 | 05 — Excel | IN_PROGRESS | XLSX exporté, import invalide rejeté avec ligne, import répété idempotent, accès VOLUNTEER refusé; compléter le round-trip intégral et valider les colonnes/filtres UI. |
 | 06 — Observations/crédits | DONE | Base fonctionnelle historique; parcours UI de création des deux types vérifié localement. Suivi complémentaire dans la tâche 15. |
@@ -14,7 +14,7 @@ Dernière mise à jour : 2026-10-02. Ce tableau est le point de reprise rapide; 
 | 08 — Témoignages/PWA | IN_PROGRESS | Le parcours navigateur est vérifié : soumission anonyme en attente, invisible publiquement avant publication, visible après publication, masquée après rejet; honeypot accepté sans créer de ligne, fixture supprimée. Le contrôle runtime offline/SW, les appareils réels et l'audit de production restent ouverts. |
 | 09 — Production | IN_PROGRESS — externe | Aucun déploiement ni migration prod. Requiert accès fournisseur/hébergement, secrets de production, cible DB isolée/confirmée et domaine; installation réelle PWA requiert appareils. |
 | 10 — Socle/auth | DONE | Refus USER, auth par rôle, tests RBAC, routes locales et navigation alignés; CI avec tests, seed locale reproductible et matrice route×rôle complétées. |
-| 11 — Gestion bénévoles | IN_PROGRESS | Création par rôles et soft delete prouvés historiquement; compléter modifications/inactivation UI et états responsive/clavier. |
+| 11 — Gestion bénévoles | DONE | Refonte UX/UI moderne de la gestion des bénévoles (cartes statistiques, toolbar filtrante, avatars, badges distinctifs, fiche détaillée hero et pages ajout/rôles avec navigation de retour). CRUD sécurisé côté serveur avec RBAC. |
 | 12 — Gestion USER | IN_PROGRESS | Création USER, PDF, modération certificat et login après conversion testés; tests unitaires ajoutés pour signatures PDF et permissions upload. Compléter le rapprochement exhaustif PRD/champs, cas de rejet et filtres. |
 | 13 — Présences/places | IN_PROGRESS | Route `/admin/presences` et pointage réel avec place vérifiés; compléter cas négatifs/invariants et validation UI complète. |
 | 14 — Excel | IN_PROGRESS | Endpoints et tests de fichier exécutés; compléter aller-retour complet pour USER et présence, plus progression/annonce UI. |

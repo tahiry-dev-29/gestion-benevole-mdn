@@ -46,7 +46,9 @@ export function AttendanceCalendar({
         <Input
           type="date"
           value={selectedDate}
-          onChange={(event) => onDateChange(event.target.value)}
+          onChange={(event) => {
+            if (event.target.value) onDateChange(event.target.value);
+          }}
           className="w-44"
         />
         <Button

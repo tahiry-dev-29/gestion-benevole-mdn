@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import type { Role } from "@prisma/client";
-import { Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/shared/page-header";
@@ -29,6 +30,13 @@ import {
   useSetVolunteerStatut,
   useVolunteers,
 } from "./use-volunteers";
+
+const ROLE_COLORS: Record<Role, string> = {
+  SUPER_ADMIN: "bg-purple-500",
+  ADMIN: "bg-blue-500",
+  VOLUNTEER: "bg-teal-500",
+  USER: "bg-muted-foreground",
+};
 
 export function RolesManagement() {
   const router = useRouter();
@@ -63,19 +71,27 @@ export function RolesManagement() {
     <div className="space-y-6">
       <PageHeader
         title="Rôles & permissions"
-        description="Matrice des rôles, comptes par rôle et bascule ACTIF/INACTIF."
+        description="Matrice des rôles, comptes par rôle et bascule d'activation."
+        action={
+          <Button asChild variant="outline" size="sm" className="gap-2 shadow-xs">
+            <Link href="/admin/volunteer-management">
+              <ArrowLeft className="size-4" /> Retour aux bénévoles
+            </Link>
+          </Button>
+        }
       />
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {ROLES.map((role) => (
-          <Card key={role}>
+          <Card key={role} className="relative overflow-hidden border shadow-xs transition-shadow hover:shadow-md">
+            <div className={`absolute top-0 left-0 h-1 w-full ${ROLE_COLORS[role]}`} />
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {roleLabel(role)}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <span className="text-2xl font-semibold">
+              <span className="text-2xl font-bold tracking-tight">
                 {countsQuery.data ? countsQuery.data[role] : "—"}
               </span>
             </CardContent>

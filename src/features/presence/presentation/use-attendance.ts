@@ -7,11 +7,24 @@ import type { DateRange } from "../presence.utils";
 
 const ATTENDANCE_KEY = ["attendance"] as const;
 
-export function useAttendance(range: DateRange) {
+export type AttendanceFilters = {
+  query: string;
+  statut: string;
+  seatId: string;
+};
+
+export function useAttendance(range: DateRange, filters?: AttendanceFilters) {
   return useQuery({
-    queryKey: [...ATTENDANCE_KEY, range],
+    queryKey: [...ATTENDANCE_KEY, range, filters],
     queryFn: async () => {
-      const result = await listAttendanceAction(range);
+      const result = await listAttendanceAction({
+        ...range,
+        ...(filters?.query.trim() ? { query: filters.query.trim() } : {}),
+        ...(filters?.statut && filters.statut !== "ALL"
+          ? { statut: filters.statut }
+          : {}),
+        ...(filters?.seatId ? { seatId: Number(filters.seatId) } : {}),
+      });
       if (!result.success) throw new Error(result.error);
       return result.data;
     },

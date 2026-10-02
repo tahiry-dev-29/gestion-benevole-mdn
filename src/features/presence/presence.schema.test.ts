@@ -10,6 +10,31 @@ describe("presence validation", () => {
     ).toBe(false);
   });
 
+  it("accepts searchable status and place filters", () => {
+    expect(
+      presenceFilterSchema.safeParse({
+        du: "2026-10-01",
+        au: "2026-10-07",
+        statut: "RETARD",
+        seatId: "8",
+        query: " Marie ",
+      })
+    ).toMatchObject({
+      success: true,
+      data: {
+        statut: "RETARD",
+        seatId: 8,
+        query: "Marie",
+      },
+    });
+  });
+
+  it("rejects an overlong search filter", () => {
+    expect(
+      presenceFilterSchema.safeParse({ query: "x".repeat(121) }).success
+    ).toBe(false);
+  });
+
   it("rejects an arrival time after departure", () => {
     expect(
       pointSchema.safeParse({

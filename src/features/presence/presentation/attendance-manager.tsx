@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { ImportExportButtons } from "@/features/excel/import-export-buttons";
@@ -15,7 +15,11 @@ import {
   type PointageFormState,
 } from "./_components/attendance-form";
 import { AttendanceTable } from "./_components/attendance-table";
-import { useAttendance, usePointAttendance } from "./use-attendance";
+import {
+  type AttendanceFilters,
+  useAttendance,
+  usePointAttendance,
+} from "./use-attendance";
 
 const INITIAL_FORM: PointageFormState = {
   userId: "",
@@ -52,21 +56,46 @@ export function AttendanceManager({
   const [mode, setMode] = useState<CalendarMode>("day");
   const [selectedDate, setSelectedDate] = useState(() => toIsoDate(new Date()));
   const [form, setForm] = useState<PointageFormState>(INITIAL_FORM);
+  const [isEditing, setIsEditing] = useState(false);
+  const [filters, setFilters] = useState<AttendanceFilters>({
+    query: "",
+    statut: "ALL",
+    seatId: "",
+  });
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  useEffect(() => {
+    const timeout = window.setTimeout(
+      () => setDebouncedQuery(filters.query),
+      300
+    );
+    return () => window.clearTimeout(timeout);
+  }, [filters.query]);
 
   const range = useMemo(
     () => computeRange(mode, selectedDate),
     [mode, selectedDate]
   );
-  const attendanceQuery = useAttendance(range);
+  const attendanceFilters: AttendanceFilters = {
+    query: debouncedQuery,
+    statut: filters.statut,
+    seatId: filters.seatId,
+  };
+  const attendanceQuery = useAttendance(range, attendanceFilters);
+  const occupancyQuery = useAttendance({ du: selectedDate, au: selectedDate });
   const pointMutation = usePointAttendance();
   const rows: PresenceRecord[] = useMemo(
     () => attendanceQuery.data ?? [],
     [attendanceQuery.data]
   );
+  const occupancyRows = useMemo(
+    () => occupancyQuery.data ?? [],
+    [occupancyQuery.data]
+  );
 
   const busySeatIds = useMemo(
-    () => collectBusySeats(rows, selectedDate, form.userId),
-    [rows, selectedDate, form.userId]
+    () => collectBusySeats(occupancyRows, selectedDate, form.userId),
+    [occupancyRows, selectedDate, form.userId]
   );
 
   function submit() {
@@ -81,10 +110,28 @@ export function AttendanceManager({
         depart: form.depart || null,
       },
       {
-        onSuccess: () => toast.success("Pointage enregistré."),
+        onSuccess: () => {
+          toast.success("Pointage enregistré.");
+          setForm(INITIAL_FORM);
+          setIsEditing(false);
+        },
         onError: (error) => toast.error(error.message),
       }
     );
+  }
+
+  function editRecord(record: PresenceRecord) {
+    setIsEditing(true);
+    setMode("day");
+    setSelectedDate(record.date);
+    setForm({
+      userId: String(record.userId),
+      tableNumber: record.tableNumber ? String(record.tableNumber) : "",
+      seatId: record.seatId ? String(record.seatId) : "",
+      status: record.statut,
+      arrivee: record.heure_arrivee ?? "",
+      depart: record.heure_depart ?? "",
+    });
   }
 
   return (
@@ -105,13 +152,29 @@ export function AttendanceManager({
         busySeatIds={busySeatIds}
         value={form}
         isPending={pointMutation.isPending}
+        isEditing={isEditing}
         onChange={(patch) => setForm((current) => ({ ...current, ...patch }))}
+        onCancelEdit={() => {
+          setIsEditing(false);
+          setForm(INITIAL_FORM);
+        }}
         onSubmit={submit}
       />
-      <AttendanceTable rows={rows} isPending={attendanceQuery.isPending} />
-      {attendanceQuery.isError ? (
+      <AttendanceTable
+        rows={rows}
+        isPending={attendanceQuery.isPending}
+        tables={tables}
+        filters={filters}
+        onFiltersChange={setFilters}
+        isFetching={attendanceQuery.isFetching}
+        onRefresh={() => void attendanceQuery.refetch()}
+        onEdit={editRecord}
+      />
+      {attendanceQuery.isError || occupancyQuery.isError ? (
         <p role="alert" className="text-sm text-destructive">
-          {attendanceQuery.error.message}
+          {attendanceQuery.isError
+            ? attendanceQuery.error.message
+            : "Impossible de vérifier les sièges déjà occupés."}
         </p>
       ) : null}
     </div>

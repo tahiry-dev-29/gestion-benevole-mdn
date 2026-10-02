@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { auth } from "@/lib/auth";
@@ -55,8 +56,7 @@ export async function pointAction(input: unknown) {
       where: { id: data.userId, deletedAt: null },
       select: { id: true },
     });
-    if (!person)
-      return { success: false, error: "Ce bénévole n'existe pas." };
+    if (!person) return { success: false, error: "Ce bénévole n'existe pas." };
     if (data.seatId) {
       const seat = await prisma.seat.findUnique({ where: { id: data.seatId } });
       if (!seat) return { success: false, error: "Ce siège n'existe pas." };
@@ -110,7 +110,7 @@ export async function listAttendanceAction(input: unknown = {}) {
   if (!parsed.success)
     return { success: false as const, error: "Filtres invalides." };
   const filters = parsed.data;
-  const where = {
+  const where: Prisma.AttendanceWhereInput = {
     ...(filters.du || filters.au
       ? {
           date: {
@@ -121,6 +121,19 @@ export async function listAttendanceAction(input: unknown = {}) {
       : {}),
     ...(filters.statut ? { statut: filters.statut } : {}),
     ...(filters.table ? { seat: { tableNumber: filters.table } } : {}),
+    ...(filters.seatId ? { seat_id: filters.seatId } : {}),
+    ...(filters.query
+      ? {
+          user: {
+            OR: [
+              { nom: { contains: filters.query, mode: "insensitive" } },
+              { prenom: { contains: filters.query, mode: "insensitive" } },
+              { email: { contains: filters.query, mode: "insensitive" } },
+              { matricule: { contains: filters.query, mode: "insensitive" } },
+            ],
+          },
+        }
+      : {}),
   };
   try {
     const attendance = await prisma.attendance.findMany({

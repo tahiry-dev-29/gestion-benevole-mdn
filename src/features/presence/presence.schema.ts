@@ -5,7 +5,9 @@ export const presenceFilterSchema = z
     du: z.string().date().optional(),
     au: z.string().date().optional(),
     table: z.coerce.number().int().positive().optional(),
+    seatId: z.coerce.number().int().positive().optional(),
     statut: z.enum(["PRESENT", "ABSENT", "RETARD"]).optional(),
+    query: z.string().trim().max(120).optional(),
   })
   .refine((filters) => !filters.du || !filters.au || filters.du <= filters.au, {
     message: "La date de début doit précéder la date de fin.",

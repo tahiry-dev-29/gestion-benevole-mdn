@@ -4,31 +4,21 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import type { Role } from "@prisma/client";
-import { Loader2, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { canManageRole, isRole } from "@/lib/rbac";
 
 import type { Volunteer } from "../volunteer.entity";
 
-import { formatDate, formatFullName, roleLabel, statutLabel } from "./labels";
+import { VolunteerHeroCard } from "./_components/volunteer-hero-card";
+import { VolunteerMetadataCard } from "./_components/volunteer-metadata-card";
+import { formatFullName } from "./labels";
 import { useDeleteVolunteer, useSetVolunteerStatut } from "./use-volunteers";
 import { VolunteerForm } from "./volunteer-form";
-
-function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-0.5">
-      <span className="text-xs uppercase tracking-wide text-muted-foreground">
-        {label}
-      </span>
-      <span className="text-sm">{value}</span>
-    </div>
-  );
-}
 
 export function VolunteerDetail({ volunteer }: { volunteer: Volunteer }) {
   const router = useRouter();
@@ -50,11 +40,13 @@ export function VolunteerDetail({ volunteer }: { volunteer: Volunteer }) {
   const deleteMutation = useDeleteVolunteer();
   const statutMutation = useSetVolunteerStatut();
 
+  const isActif = volunteer.statut === "ACTIF";
+
   const toggleStatut = () => {
     statutMutation.mutate(
       {
         id: volunteer.id,
-        statut: volunteer.statut === "ACTIF" ? "INACTIF" : "ACTIF",
+        statut: isActif ? "INACTIF" : "ACTIF",
       },
       {
         onSuccess: () => {
@@ -79,86 +71,53 @@ export function VolunteerDetail({ volunteer }: { volunteer: Volunteer }) {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-lg">
-            Informations
-            <Badge
-              variant={volunteer.role === "VOLUNTEER" ? "secondary" : "default"}
-            >
-              {roleLabel(volunteer.role)}
-            </Badge>
-            <Badge
-              variant={volunteer.statut === "ACTIF" ? "outline" : "secondary"}
-            >
-              {statutLabel(volunteer.statut)}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <InfoRow label="Nom complet" value={formatFullName(volunteer)} />
-          <InfoRow label="Email" value={volunteer.email} />
-          <InfoRow
-            label="Date d'entrée"
-            value={formatDate(volunteer.dateEntree)}
-          />
-          <InfoRow label="Créé le" value={formatDate(volunteer.createdAt)} />
-          <InfoRow
-            label="Créé par"
-            value={
-              volunteer.createdBy ? formatFullName(volunteer.createdBy) : "—"
-            }
-          />
-          <InfoRow label="ID créateur" value={volunteer.createdById ?? "—"} />
-        </CardContent>
-      </Card>
+      <VolunteerHeroCard
+        volunteer={volunteer}
+        canManage={canManage}
+        isPending={statutMutation.isPending}
+        onToggleStatut={toggleStatut}
+      />
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0">
-          <CardTitle className="text-lg">Modifier</CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            disabled={!canManage || statutMutation.isPending}
-            onClick={toggleStatut}
-          >
-            {statutMutation.isPending ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : null}
-            {volunteer.statut === "ACTIF" ? "Désactiver" : "Activer"} le compte
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {canManage ? (
-            <VolunteerForm mode="edit" initialData={volunteer} />
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Vous ne pouvez pas modifier ce compte (compte de rang supérieur ou
-              votre propre compte).
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <VolunteerMetadataCard volunteer={volunteer} />
 
-      <Card className="border-destructive/40">
+        <Card className="shadow-xs lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-base font-semibold">
+              Modifier les informations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {canManage ? (
+              <VolunteerForm mode="edit" initialData={volunteer} />
+            ) : (
+              <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                {isSelf
+                  ? "Vous ne pouvez pas modifier votre propre rôle ou statut depuis cet écran."
+                  : "Vous ne possédez pas les permissions requises pour modifier un compte de ce rang."}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="border-destructive/30 shadow-xs">
         <CardHeader>
-          <CardTitle className="text-lg text-destructive">
+          <CardTitle className="text-base font-semibold text-destructive">
             Zone sensible
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center justify-between gap-4">
+        <CardContent className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <p className="text-sm text-muted-foreground">
-            La suppression est un archivage (soft delete) : le compte disparaît
-            de la liste mais l&apos;historique est conservé.
+            L&apos;archivage retire ce compte de la liste active des bénévoles tout en préservant l&apos;historique des activités et présences passées.
           </p>
           <Button
             variant="destructive"
-            className="gap-2"
+            className="gap-2 shrink-0 shadow-xs"
             disabled={!canManage}
             onClick={() => setDeleteOpen(true)}
           >
-            <Trash2 className="size-4" /> Supprimer
+            <Trash2 className="size-4" /> Supprimer ce compte
           </Button>
         </CardContent>
       </Card>
@@ -168,8 +127,8 @@ export function VolunteerDetail({ volunteer }: { volunteer: Volunteer }) {
         onOpenChange={setDeleteOpen}
         onConfirm={handleDelete}
         isPending={deleteMutation.isPending}
-        title={`Supprimer ${formatFullName(volunteer)} ?`}
-        description="Le compte sera archivé (soft delete) et disparaîtra de la liste."
+        title={`Archiver ${formatFullName(volunteer)} ?`}
+        description="Le compte sera désactivé et archivé (soft delete). Cette action est réversible par un administrateur."
       />
     </div>
   );

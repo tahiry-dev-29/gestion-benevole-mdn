@@ -1,26 +1,31 @@
 import type { NextConfig } from "next";
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 import withPWAInit from "@ducanh2912/next-pwa";
 
-const withPWA = withPWAInit({
-  dest: "public",
-  // PWA plugin intentionally skips the dev server; test registration with `build` + `start`.
-  disable: process.env.NODE_ENV === "development",
-  fallbacks: { document: "/~offline" },
-  workboxOptions: {
-    runtimeCaching: [
-      {
-        urlPattern:
-          /^https?.*\/(activites|partages|temoignages)(?:\/[^/?#]+)?\/?(?:\?.*)?$/,
-        handler: "NetworkFirst",
-        options: {
-          cacheName: "public-pages",
-          expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 7 },
-          networkTimeoutSeconds: 3,
+// PWA plugin intentionally skips the dev server; test registration with `build` + `start`.
+// `disable` uses the Next build phase (not NODE_ENV): a stray NODE_ENV (env shell, `.env`)
+// used to silently disable the service worker during `next build`.
+function withPWAForPhase(phase: string) {
+  return withPWAInit({
+    dest: "public",
+    disable: phase === PHASE_DEVELOPMENT_SERVER,
+    fallbacks: { document: "/~offline" },
+    workboxOptions: {
+      runtimeCaching: [
+        {
+          urlPattern:
+            /^https?.*\/(activites|partages|temoignages)(?:\/[^/?#]+)?\/?(?:\?.*)?$/,
+          handler: "NetworkFirst",
+          options: {
+            cacheName: "public-pages",
+            expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 7 },
+            networkTimeoutSeconds: 3,
+          },
         },
-      },
-    ],
-  },
-});
+      ],
+    },
+  });
+}
 
 const nextConfig: NextConfig = {
   images: {
@@ -62,4 +67,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default (phase: string): NextConfig =>
+  withPWAForPhase(phase)(nextConfig);

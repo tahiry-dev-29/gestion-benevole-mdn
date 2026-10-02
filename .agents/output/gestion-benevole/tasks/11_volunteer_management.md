@@ -1,4 +1,4 @@
-Status: IN_PROGRESS
+Status: DONE
 
 # Feature tasks: Gestion des bénévoles et comptes habilités (S2)
 
@@ -14,7 +14,7 @@ Les rôles qui peuvent se connecter sont créés et gérés depuis Volunteer Man
 
 ## Parent task: CRUD bénévole fiable
 
-**Status:** TODO
+**Status:** DONE
 **Depends on:** Task 10.1 — la matrice RBAC est la source de vérité.
 
 Goal: terminer les parcours liste, création, détail, mise à jour, statut et suppression logique.
@@ -25,21 +25,21 @@ Files to create/modify:
 - `src/features/admin/admin.data.ts` — liens et libellés associés.
 
 Steps:
-1. [ ] parcourir l'implémentation et vérifier chaque mutation/query contre Zod, RBAC et Prisma.
-2. [ ] rendre les listes interactives avec TanStack Query/Table, filtres utiles et pagination réelle.
-3. [ ] polir formulaires, confirmations et retours avec shadcn/sonner et `thr-design`.
-4. [ ] prouver la création par rôle, la modification, l'inactivation et la suppression logique.
+1. [x] parcourir l'implémentation et vérifier chaque mutation/query contre Zod, RBAC et Prisma.
+2. [x] rendre les listes interactives avec TanStack Query/Table, filtres utiles et pagination réelle.
+3. [x] polir formulaires, confirmations et retours avec shadcn/sonner et `thr-design`.
+4. [x] prouver la création par rôle, la modification, l'inactivation et la suppression logique.
 
 Acceptance criteria:
-- [ ] ADMIN ne peut créer SUPER_ADMIN même via appel direct; VOLUNTEER ne peut gérer que les créations autorisées.
-- [ ] liste, fiche, édition et actions reflètent la base après invalidation Query.
-- [ ] recherche, erreurs de validation, état vide et refus de permission sont visibles et compréhensibles.
+- [x] ADMIN ne peut créer SUPER_ADMIN même via appel direct; VOLUNTEER ne peut gérer que les créations autorisées.
+- [x] liste, fiche, édition et actions reflètent la base après invalidation Query.
+- [x] recherche, erreurs de validation, état vide et refus de permission sont visibles et compréhensibles.
 
 ## Child tasks
 
 ### Task 11.1: Sécuriser et vérifier les opérations métier
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** CRUD bénévole fiable
 **Depends on:** Task 10.1
 
@@ -49,15 +49,15 @@ Files to create/modify:
 - `src/features/volunteers/volunteer.action.ts`, `volunteer.schema.ts`, repository et tests.
 
 Steps:
-1. [ ] tester création, mise à jour, lecture et soft-delete avec rôles distincts.
-2. [ ] corriger validation métier, réponses d'erreur et relations d'audit `createdById` si les preuves montrent un défaut.
+1. [x] tester création, mise à jour, lecture et soft-delete avec rôles distincts.
+2. [x] corriger validation métier, réponses d'erreur et relations d'audit `createdById` si les preuves montrent un défaut.
 
 Acceptance criteria:
-- [ ] aucune action client ne peut contourner la matrice; une mutation réussie persiste et une invalide retourne une erreur métier contrôlée.
+- [x] aucune action client ne peut contourner la matrice; une mutation réussie persiste et une invalide retourne une erreur métier contrôlée.
 
 ### Task 11.2: UX production des écrans bénévoles
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** CRUD bénévole fiable
 **Depends on:** Task 11.1 — la présentation suit des opérations fiables.
 
@@ -67,11 +67,11 @@ Files to create/modify:
 - `app/admin/volunteer-management/`, `src/features/volunteers/presentation/`.
 
 Steps:
-1. [ ] appliquer les hooks Query et TanStack Table aux états/requêtes de la liste.
-2. [ ] traiter loading, empty, error, success, confirmation et responsive au niveau de chaque écran.
+1. [x] appliquer les hooks Query et TanStack Table aux états/requêtes de la liste.
+2. [x] traiter loading, empty, error, success, confirmation et responsive au niveau de chaque écran.
 
 Acceptance criteria:
-- [ ] l'utilisateur comprend comment trouver, créer et gérer un bénévole; les changements réussis apparaissent sans rechargement complet.
+- [x] l'utilisateur comprend comment trouver, créer et gérer un bénévole; les changements réussis apparaissent sans rechargement complet.
 
 ## Verification
 

@@ -56,7 +56,7 @@ Acceptance criteria:
 
 ### Task 13.2: Page admin, navigation et UX responsive
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Parent:** Workflow quotidien de présence
 **Depends on:** Task 13.1
 

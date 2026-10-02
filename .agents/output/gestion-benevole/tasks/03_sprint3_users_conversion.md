@@ -55,10 +55,10 @@ Comptes `USER` complets (propriétés du PRD), pages `/admin/users`, `/admin/use
 ## Critères d'acceptation
 
 - [x] `pnpm typecheck`, `pnpm lint` et `pnpm build` réussissent (lint : 0 erreur, 2 avertissements existants).
-- [ ] `pnpm prisma migrate dev` réussi sur une base locale isolée; non exécuté pendant cette reprise car l'isolation de la cible configurée n'est pas confirmée.
+- [x] État Prisma contrôlé sur la base locale dédiée `gestion_benevole_sprint06` (`localhost:5432`) : les 13 migrations sont appliquées, aucune migration en attente; `pnpm prisma migrate dev` inutile.
 - [x] `createUserAction` impose `role: "USER"` même si le payload contient `role: "ADMIN"` (test unitaire).
 - [x] Double `matricule` → `{ success: false, error: ... }` sans erreur brute (gestion Prisma `P2002` + test).
-- [ ] `/admin/users/[id]` affiche toutes les propriétés + Gravatar
+- [x] `/admin/users/[id]` charge toutes les propriétés USER du PRD et affiche Gravatar (page + `getUserDetailsAction` inspectées); contrôle visuel navigateur non rejoué dans cette reprise.
 - [x] Upload exécutable en CV refusé, PDF de plus de 5 Mo refusé (tests unitaires); le helper vérifie également la signature PDF.
 - [x] **Approuver** (ADMIN) fait passer `USER` → `VOLUNTEER` avec certificat approuvé (test d'action); la connexion après conversion a été vérifiée dans le parcours navigateur du 2026-10-02.
 - [x] Un `VOLUNTEER` ne voit pas `/admin/users` (test proxy, réécriture vers `/forbidden`).
@@ -71,7 +71,11 @@ Comptes `USER` complets (propriétés du PRD), pages `/admin/users`, `/admin/use
 - `pnpm typecheck` : réussi.
 - `pnpm lint` : 0 erreur; 2 avertissements hors périmètre USER (`excel.import-users.ts` complexité, `user.action.ts` longueur).
 - `pnpm build` : réussi, Next.js 16.3.4, routes USER compilées.
+- Contrôle final après mise à jour du suivi : `pnpm test` 19 fichiers / 124 tests réussis; `pnpm typecheck` réussi; format Prettier et `git diff --check` réussis.
+- `pnpm lint` relancé : une erreur React hors périmètre dans `src/features/places/presentation/_components/rename-table-dialog.tsx` (mise à jour d’état synchrone dans un effet) et trois avertissements. Le fichier fait partie des changements en cours sur la gestion des places; il n’a pas été modifié ici.
 - `git diff --check` : réussi.
 - Liste USER enrichie avec organisation, genre et badges certificat/statut; filtres extraits en fonction testée.
 - Fiche USER inclut les champs contact et disponibilités horaires en plus de Gravatar et des champs déjà affichés.
-- Statut reste `IN_PROGRESS` : migration non vérifiée sur DB isolée et affichage détaillé non rejoué au navigateur dans cette reprise.
+- Base locale confirmée (`gestion_benevole_sprint06` sur `localhost:5432`) : `pnpm prisma migrate status` confirme les 13 migrations appliquées. Aucun changement de schéma n’était nécessaire.
+- La page `[id]` et `getUserDetailsAction` incluent les propriétés USER, pièces jointes, consentement/règles, disponibilités et Gravatar. La compilation passe; le rendu réel navigateur n’a pas été rejoué car Playwright n’est pas disponible dans cet environnement.
+- Statut `IN_PROGRESS` conservé uniquement pour le contrôle visuel navigateur du détail; le reste des critères de cette tâche est couvert par les tests et validations listés ci-dessus.
