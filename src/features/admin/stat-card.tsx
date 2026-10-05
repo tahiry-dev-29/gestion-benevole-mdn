@@ -1,5 +1,6 @@
 import { type LucideIcon, TrendingDown, TrendingUp } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -19,29 +20,20 @@ export function StatCard({
   const up = trend !== "down";
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          {label}
-        </CardTitle>
-        <Icon className="size-4 text-muted-foreground" />
+    <Card className="glass glass-gloss overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
+        <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
+          <Icon className="size-4" aria-hidden="true" />
+        </span>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-2xl font-semibold tracking-tight tabular-nums">{value}</p>
         {change ? (
-          <div
-            className={cn(
-              "mt-1 flex items-center gap-1 text-xs font-medium",
-              up ? "text-primary" : "text-destructive"
-            )}
-          >
-            {up ? (
-              <TrendingUp className="size-3" />
-            ) : (
-              <TrendingDown className="size-3" />
-            )}
-            {change} vs mois dernier
-          </div>
+          <Badge variant="secondary" className={cn("mt-2 gap-1", up ? "text-primary" : "text-destructive")}>
+            {up ? <TrendingUp aria-hidden="true" /> : <TrendingDown aria-hidden="true" />}
+            {change}
+          </Badge>
         ) : null}
       </CardContent>
     </Card>

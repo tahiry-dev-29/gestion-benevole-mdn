@@ -44,6 +44,22 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   toolbar?: React.ReactNode;
   emptyMessage?: string;
+  compactColumns?: boolean;
+}
+
+function getResponsiveColumnClass(columnId: string, compactColumns: boolean) {
+  if (!compactColumns) return undefined;
+  if (
+    columnId === "organisation" ||
+    columnId === "statut" ||
+    columnId === "certificatStatut"
+  ) {
+    return "hidden xl:table-cell";
+  }
+  if (columnId === "personne") return "w-[45%] xl:w-auto";
+  if (columnId === "email") return "w-[40%] xl:w-auto";
+  if (columnId === "actions") return "w-14 xl:w-auto";
+  return undefined;
 }
 
 export function DataTable<TData, TValue>({
@@ -58,6 +74,7 @@ export function DataTable<TData, TValue>({
   isLoading,
   toolbar,
   emptyMessage = "Aucune donnée.",
+  compactColumns = false,
 }: DataTableProps<TData, TValue>) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -70,26 +87,33 @@ export function DataTable<TData, TValue>({
     onSortingChange,
     onPaginationChange,
     manualPagination: pageCount !== undefined,
-    pageCount: pageCount ?? -1,
+    pageCount:
+      pageCount ?? Math.ceil(data.length / (pagination?.pageSize ?? 10)),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-w-0 flex-col gap-4">
       {toolbar ? (
         <div className="flex flex-wrap items-center gap-2">{toolbar}</div>
       ) : null}
 
-      <div className="overflow-hidden rounded-xl border bg-card">
-        <div className="overflow-x-auto">
-          <Table>
+      <div className="glass-sm min-w-0 overflow-hidden rounded-xl">
+        <div className="min-w-0 overflow-x-auto">
+          <Table className="w-full table-fixed">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="whitespace-nowrap">
+                    <TableHead
+                      key={header.id}
+                      className={getResponsiveColumnClass(
+                        header.column.id,
+                        compactColumns
+                      )}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -115,7 +139,13 @@ export function DataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="whitespace-nowrap">
+                      <TableCell
+                        key={cell.id}
+                        className={getResponsiveColumnClass(
+                          cell.column.id,
+                          compactColumns
+                        )}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

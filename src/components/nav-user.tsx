@@ -39,8 +39,9 @@ export function NavUser({
     avatar?: string;
   };
 }) {
-  const { isMobile } = useSidebar();
+  const { isMobile, state } = useSidebar();
   const initials = getInitials(user.name);
+  const isCollapsed = state === "collapsed";
 
   return (
     <SidebarMenu>
@@ -49,61 +50,72 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="w-full rounded-xl p-2 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-8 w-8 rounded-lg shrink-0 border border-sidebar-border/50">
                 {user.avatar && (
                   <AvatarImage src={user.avatar} alt={user.name} />
                 )}
-                <AvatarFallback className="rounded-lg">
+                <AvatarFallback className="rounded-lg bg-primary/20 text-xs font-semibold text-primary">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+              <div className="grid flex-1 text-left text-sm leading-tight ml-1 group-data-[collapsible=icon]:hidden">
+                <span className="truncate font-semibold text-foreground">
+                  {user.name}
+                </span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {user.email}
+                </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
+              <ChevronsUpDown className="ml-auto size-3.5 opacity-60 shrink-0 group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-xl border border-sidebar-border/80 bg-popover/95 p-1.5 shadow-xl backdrop-blur-md"
             side={isMobile ? "bottom" : "right"}
             align="end"
-            sideOffset={4}
+            sideOffset={10}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+              <div className="flex items-center gap-2.5 px-2 py-2 text-left text-sm">
+                <Avatar className="h-9 w-9 rounded-lg border border-sidebar-border/60">
                   {user.avatar && (
                     <AvatarImage src={user.avatar} alt={user.name} />
                   )}
-                  <AvatarFallback className="rounded-lg">
+                  <AvatarFallback className="rounded-lg bg-primary/20 text-xs font-semibold text-primary">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold text-foreground">
+                    {user.name}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="my-1" />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/admin/profil">
-                  <User className="text-muted-foreground" />
-                  Profil
+              <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                <Link
+                  href="/admin/profil"
+                  className="flex items-center gap-2 px-2.5 py-1.5"
+                >
+                  <User className="size-4 text-muted-foreground" />
+                  <span>Profil</span>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem
               onSelect={() => void signOut({ callbackUrl: "/login" })}
-              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+              className="rounded-lg cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive flex items-center gap-2 px-2.5 py-1.5"
             >
-              <LogOut className="text-destructive" />
-              Se déconnecter
+              <LogOut className="size-4" />
+              <span>Se déconnecter</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

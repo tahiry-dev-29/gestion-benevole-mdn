@@ -37,6 +37,11 @@ function isActive(pathname: string, url: string) {
 
 function useCurrentTitle() {
   const pathname = usePathname();
+  if (pathname === "/admin/users/create") return "Créer un compte USER";
+  if (/^\/admin\/users\/\d+\/update$/.test(pathname)) {
+    return "Modifier un compte USER";
+  }
+  if (/^\/admin\/users\/\d+$/.test(pathname)) return "Fiche USER";
   if (pathname === "/admin/profil") return "Mon profil";
   const item = adminNavGroups
     .flatMap((group) => group.items)

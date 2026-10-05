@@ -70,33 +70,45 @@ export function AdminSidebar() {
     .filter((group) => group.items.length > 0);
 
   return (
-    <Sidebar collapsible="icon" className="bg-card border-r h-full">
-      <SidebarHeader>
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground h-full transition-colors"
+    >
+      <SidebarHeader className="border-b border-sidebar-border/40 pb-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" className="pointer-events-none">
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={32}
-                height={32}
-                className="rounded-lg"
-              />
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">Gestion Bénévole</span>
-                <span className="truncate text-xs">Espace administration</span>
+            <SidebarMenuButton
+              size="lg"
+              className="hover:bg-transparent cursor-default"
+            >
+              <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-card border border-border shadow-xs shrink-0 overflow-hidden">
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  width={28}
+                  height={28}
+                  className="rounded-lg object-contain"
+                />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight ml-1 group-data-[collapsible=icon]:hidden">
+                <span className="truncate font-semibold tracking-tight text-foreground text-sm">
+                  Gestion Bénévole
+                </span>
+                <span className="truncate text-xs text-muted-foreground font-normal">
+                  Espace administration
+                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className="overflow-y-auto overscroll-contain [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent">
+      <SidebarContent className="gap-1 px-2 py-2 overflow-y-auto overscroll-contain [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-sidebar-border [&::-webkit-scrollbar-track]:bg-transparent">
         <GestionGroup />
         {groups.map((group) => (
           <NavMain key={group.label} label={group.label} items={group.items} />
         ))}
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-sidebar-border/40 p-2">
         <NavUser user={currentUser} />
       </SidebarFooter>
       <SidebarRail />

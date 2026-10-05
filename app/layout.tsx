@@ -1,19 +1,44 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { IBM_Plex_Mono,Open_Sans, Source_Serif_4 } from "next/font/google";
+
+import { cn } from "@/lib/utils";
 
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  display: "swap",
+const openSans = Open_Sans({
+  subsets: [
+    "cyrillic",
+    "cyrillic-ext",
+    "greek",
+    "greek-ext",
+    "hebrew",
+    "latin",
+    "latin-ext",
+    "math",
+    "symbols",
+    "vietnamese",
+  ],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-open-sans",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
+const sourceSerif4 = Source_Serif_4({
+  subsets: [
+    "latin",
+    "latin-ext",
+    "cyrillic",
+    "cyrillic-ext",
+    "greek",
+    "vietnamese",
+  ],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-source-serif-4",
+});
+
+const iBMPlexMono = IBM_Plex_Mono({
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext", "vietnamese"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  variable: "--font-ibm-plex-mono",
 });
 
 export const metadata: Metadata = {
@@ -40,10 +65,31 @@ export default async function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
+      className={cn(
+        "h-full antialiased dark",
+        openSans.variable,
+        sourceSerif4.variable,
+        iBMPlexMono.variable
+      )}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('app-theme') || localStorage.getItem('admin-theme');
+                if (theme === 'light') {
+                  document.documentElement.classList.remove('dark');
+                } else {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

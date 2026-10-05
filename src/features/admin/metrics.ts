@@ -67,8 +67,20 @@ export async function getAdminDashboardMetrics() {
 
 export async function getAdminStatistics() {
   const { start, end } = localDayRange();
-  const [activeVolunteers, publishedActivities, credits, presentToday] =
-    await Promise.all([
+  const thirtyDaysAgo = new Date(start);
+  thirtyDaysAgo.setUTCDate(thirtyDaysAgo.getUTCDate() - 29);
+  const [
+    activeVolunteers,
+    publishedActivities,
+    credits,
+    presentToday,
+    volunteerStatuses,
+    volunteerCategories,
+    attendanceDays,
+    creditUsers,
+    creditUserNames,
+    activityStatuses,
+  ] = await Promise.all([
       prisma.user.count({
         where: { role: "VOLUNTEER", statut: "ACTIF", deletedAt: null },
       }),
@@ -77,6 +89,28 @@ export async function getAdminStatistics() {
       prisma.attendance.count({
         where: { date: { gte: start, lt: end }, statut: "PRESENT" },
       }),
+      prisma.user.groupBy({
+        by: ["statut"],
+        where: { role: "VOLUNTEER", deletedAt: null },
+        _count: { _all: true },
+      }),
+      prisma.user.groupBy({
+        by: ["categorie"],
+        where: { role: "VOLUNTEER", statut: "ACTIF", deletedAt: null },
+        _count: { _all: true },
+      }),
+      prisma.attendance.groupBy({
+        by: ["date"],
+        where: { date: { gte: thirtyDaysAgo, lt: end }, statut: "PRESENT" },
+        _count: { _all: true },
+        orderBy: { date: "asc" },
+      }),
+      prisma.credit.groupBy({ by: ["user_id"], _sum: { montant: true } }),
+      prisma.credit.findMany({
+        distinct: ["user_id"],
+        select: { user_id: true, user: { select: { nom: true, prenom: true } } },
+      }),
+      prisma.activite.groupBy({ by: ["statut"], _count: { _all: true } }),
     ]);
 
   return {
@@ -84,5 +118,28 @@ export async function getAdminStatistics() {
     publishedActivities,
     totalCredits: credits._sum.montant ?? 0,
     presentToday,
+    volunteerStatuses: volunteerStatuses.map((row) => ({
+      label: row.statut === "ACTIF" ? "Actifs" : "Inactifs",
+      value: row._count._all,
+    })),
+    volunteerCategories: volunteerCategories.map((row) => ({
+      label: row.categorie,
+      value: row._count._all,
+    })),
+    attendanceDays: attendanceDays.map((row) => ({
+      date: row.date.toISOString().slice(0, 10),
+      value: row._count._all,
+    })),
+    creditUsers: creditUsers.map((row) => ({
+      userId: row.user_id,
+      total: row._sum.montant ?? 0,
+      name: creditUserNames.find((user) => user.user_id === row.user_id)
+        ? `${creditUserNames.find((user) => user.user_id === row.user_id)?.user.prenom ?? ""} ${creditUserNames.find((user) => user.user_id === row.user_id)?.user.nom ?? ""}`.trim()
+        : "Bénévole",
+    })).sort((a, b) => b.total - a.total),
+    activityStatuses: activityStatuses.map((row) => ({
+      label: row.statut === "PUBLIE" ? "Publiées" : "Brouillons",
+      value: row._count._all,
+    })),
   };
 }
