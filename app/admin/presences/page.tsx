@@ -1,3 +1,11 @@
+import {
+  CalendarCheck,
+  ChartNoAxesColumnIncreasing,
+  ClipboardList,
+} from "lucide-react";
+
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/features/admin/page-header";
 import { AttendanceManager } from "@/features/presence/presentation/attendance-manager";
 import { prisma } from "@/lib/prisma";
@@ -38,12 +46,51 @@ export default async function PresencesPage() {
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-5">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Présences" },
+        ]}
+      />
       <PageHeader
         title="Présences"
         description="Pointage quotidien avec arrivée, départ, table et siège."
       />
-      <AttendanceManager volunteers={volunteers} tables={tables} />
+      <Tabs defaultValue="pointage" className="grid gap-5">
+        <TabsList className="glass-sm flex h-auto w-full justify-start gap-1 overflow-hidden p-1 sm:w-fit">
+          <TabsTrigger value="pointage" className="min-h-10 gap-2 px-3">
+            <CalendarCheck aria-hidden="true" /> Pointage
+          </TabsTrigger>
+          <TabsTrigger value="historique" className="min-h-10 gap-2 px-3">
+            <ClipboardList aria-hidden="true" /> Historique
+          </TabsTrigger>
+          <TabsTrigger value="statistiques" className="min-h-10 gap-2 px-3">
+            <ChartNoAxesColumnIncreasing aria-hidden="true" /> Statistiques
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="pointage">
+          <AttendanceManager
+            volunteers={volunteers}
+            tables={tables}
+            view="pointage"
+          />
+        </TabsContent>
+        <TabsContent value="historique">
+          <AttendanceManager
+            volunteers={volunteers}
+            tables={tables}
+            view="historique"
+          />
+        </TabsContent>
+        <TabsContent value="statistiques">
+          <AttendanceManager
+            volunteers={volunteers}
+            tables={tables}
+            view="statistiques"
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

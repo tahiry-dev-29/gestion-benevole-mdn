@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { CalendarCheck, Clock3, UsersRound } from "lucide-react";
 import { toast } from "sonner";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImportExportButtons } from "@/features/excel/import-export-buttons";
 import type { SeatGrid } from "@/features/places/places.schema";
 
@@ -49,11 +51,15 @@ function collectBusySeats(
 export function AttendanceManager({
   volunteers,
   tables,
+  view = "pointage",
 }: {
   volunteers: { id: number; nom: string; prenom: string }[];
   tables: SeatGrid[];
+  view?: "pointage" | "historique" | "statistiques";
 }) {
-  const [mode, setMode] = useState<CalendarMode>("day");
+  const [mode, setMode] = useState<CalendarMode>(
+    view === "statistiques" ? "month" : "day"
+  );
   const [selectedDate, setSelectedDate] = useState(() => toIsoDate(new Date()));
   const [form, setForm] = useState<PointageFormState>(INITIAL_FORM);
   const [isEditing, setIsEditing] = useState(false);
@@ -135,7 +141,7 @@ export function AttendanceManager({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="grid gap-5">
       <div className="flex justify-end">
         <ImportExportButtons dataset="presences" exportRange={range} />
       </div>
@@ -146,20 +152,73 @@ export function AttendanceManager({
         onModeChange={setMode}
         onDateChange={setSelectedDate}
       />
-      <AttendanceForm
-        volunteers={volunteers}
-        tables={tables}
-        busySeatIds={busySeatIds}
-        value={form}
-        isPending={pointMutation.isPending}
-        isEditing={isEditing}
-        onChange={(patch) => setForm((current) => ({ ...current, ...patch }))}
-        onCancelEdit={() => {
-          setIsEditing(false);
-          setForm(INITIAL_FORM);
-        }}
-        onSubmit={submit}
-      />
+      {view === "pointage" ? (
+        <AttendanceForm
+          volunteers={volunteers}
+          tables={tables}
+          busySeatIds={busySeatIds}
+          value={form}
+          isPending={pointMutation.isPending}
+          isEditing={isEditing}
+          onChange={(patch) => setForm((current) => ({ ...current, ...patch }))}
+          onCancelEdit={() => {
+            setIsEditing(false);
+            setForm(INITIAL_FORM);
+          }}
+          onSubmit={submit}
+        />
+      ) : null}
+      {view === "statistiques" ? (
+        <section
+          className="grid gap-3 sm:grid-cols-3"
+          aria-label="Résumé de la période"
+        >
+          <Card className="glass-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <CalendarCheck aria-hidden="true" className="size-4" />{" "}
+                Pointages
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-semibold tabular-nums">
+              {rows.length}
+            </CardContent>
+          </Card>
+          <Card className="glass-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <UsersRound aria-hidden="true" className="size-4" /> Bénévoles
+                présents
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-semibold tabular-nums">
+              {
+                new Set(
+                  rows
+                    .filter((row) => row.statut === "PRESENT")
+                    .map((row) => row.userId)
+                ).size
+              }
+            </CardContent>
+          </Card>
+          <Card className="glass-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Clock3 aria-hidden="true" className="size-4" /> Heures
+                enregistrées
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-2xl font-semibold tabular-nums">
+              {rows
+                .reduce((total, row) => total + (row.heuresTravaillees ?? 0), 0)
+                .toLocaleString("fr-FR", { maximumFractionDigits: 1 })}
+              <span className="ml-1 text-sm font-normal text-muted-foreground">
+                h
+              </span>
+            </CardContent>
+          </Card>
+        </section>
+      ) : null}
       <AttendanceTable
         rows={rows}
         isPending={attendanceQuery.isPending}
@@ -173,7 +232,7 @@ export function AttendanceManager({
             occupancyQuery.refetch(),
           ]);
         }}
-        onEdit={editRecord}
+        onEdit={view === "pointage" ? editRecord : () => undefined}
       />
       {attendanceQuery.isError || occupancyQuery.isError ? (
         <p role="alert" className="text-sm text-destructive">
