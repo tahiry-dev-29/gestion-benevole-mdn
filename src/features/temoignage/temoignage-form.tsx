@@ -5,8 +5,11 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 import { submitTemoignage } from "./temoignage.action";
+
+const CONTENU_HINT_ID = "temoignage-contenu-hint";
 
 export function TemoignageForm() {
   const [pending, setPending] = useState(false);
@@ -31,7 +34,14 @@ export function TemoignageForm() {
 
   if (sent)
     return (
-      <p role="status">Merci, votre témoignage sera publié après modération.</p>
+      <div className="grid gap-4 rounded-lg border border-border bg-card p-6">
+        <p role="status">
+          Merci, votre témoignage sera publié après modération.
+        </p>
+        <Button variant="outline" onClick={() => setSent(false)}>
+          Envoyer un autre témoignage
+        </Button>
+      </div>
     );
 
   return (
@@ -42,13 +52,22 @@ export function TemoignageForm() {
       </label>
       <label className="grid gap-2 text-sm font-medium">
         Votre témoignage
-        <textarea
-          className="min-h-32 rounded-md border border-input bg-background px-3 py-2 text-sm"
+        <Textarea
           name="contenu"
           minLength={20}
           maxLength={2000}
           required
+          placeholder="Décrivez votre expérience avec la Maison du Numérique…"
+          aria-describedby={CONTENU_HINT_ID}
+          className="min-h-32"
         />
+        <span
+          id={CONTENU_HINT_ID}
+          className="text-xs font-normal text-muted-foreground"
+        >
+          20 à 2000 caractères. Votre témoignage est publié après validation par
+          notre équipe.
+        </span>
       </label>
       <label className="hidden" aria-hidden="true">
         Site web

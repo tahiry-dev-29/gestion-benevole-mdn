@@ -49,10 +49,21 @@ export default async function TemoignagesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {tri.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="py-8 text-center text-muted-foreground"
+                >
+                  Aucun témoignage à modérer. Les soumissions du public
+                  apparaîtront ici.
+                </TableCell>
+              </TableRow>
+            ) : null}
             {tri.map((t) => (
               <TableRow key={t.id}>
                 <TableCell className="font-medium">{t.nom_auteur}</TableCell>
-                <TableCell className="max-w-md text-muted-foreground">
+                <TableCell className="max-w-md whitespace-pre-wrap text-muted-foreground">
                   {t.contenu}
                 </TableCell>
                 <TableCell>{statusBadge(t.statut)}</TableCell>

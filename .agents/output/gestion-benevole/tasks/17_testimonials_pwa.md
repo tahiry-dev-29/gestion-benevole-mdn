@@ -1,6 +1,6 @@
 Status: IN_PROGRESS
 
-> **Reprise au 2026-10-02 :** le parcours navigateur est vérifié : soumission anonyme en attente, invisible avant publication, visible après publication, puis masquée après rejet; honeypot accepté sans création de ligne et fixture supprimée. Le service worker n'a pas fourni de contrôleur pendant le contrôle offline; fallback/rechargement hors ligne restent à prouver. Voir [`STATUS-01-17.md`](./STATUS-01-17.md).
+> **Reprise au 2026-10-02 :** le parcours navigateur est vérifié : soumission anonyme en attente, invisible avant publication, visible après publication, puis masquée après rejet; honeypot accepté sans création de ligne et fixture supprimée. Le service worker n'a pas fourni de contrôleur pendant le contrôle offline; fallback/rechargement hors ligne restent à prouver. Diagnostic session thr-up -dev 08 : plugin PWA désactivé silencieusement par `NODE_ENV` résiduel (corrigé — `disable` sur phase Next + `NODE_ENV` retiré des `.env*`), puis installation SW bloquée par précache 404 (`app/admin/places/page-*.js`, arbre instable pendant le build). Voir [`STATUS-01-17.md`](./STATUS-01-17.md) et la tâche `08`.
 
 # Feature tasks: Témoignages et parcours hors ligne PWA (S8)
 

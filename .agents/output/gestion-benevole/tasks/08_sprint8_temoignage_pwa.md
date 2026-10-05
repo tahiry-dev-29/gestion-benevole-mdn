@@ -119,7 +119,7 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 - [x] Icônes 192 et 512 existantes, manifest standalone avec icône 512 masquable et favicon
 - [x] Écran de repli hors ligne, `theme_color` + `display: standalone`
 - [x] SW runtime cache des pages publiques (`/activites`, `/partages`, `/temoignages`)
-- [ ] Test installation Android/iOS + mise à jour SW (validation appareil requise)
+- [!] Test installation Android/iOS + mise à jour SW (validation appareil requise) — **bloqué** : aucun appareil réel disponible dans cet environnement ; à valider au déploiement (S9)
 
 #### Acceptation (Gherkin)
 
@@ -132,13 +132,13 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 
 #### Tâches
 
-- [ ] Audit (perf, A11y, best practices, SEO, PWA) sur pages publiques
-- [ ] Correction des points < 90 (max 2 boucles)
-- [ ] Rapport archivé dans `docs/audit-lighthouse-s5.md` (audit réel à exécuter sur déploiement)
+- [x] Audit (perf, A11y, best practices, SEO, PWA) sur pages publiques — Lighthouse 13.5.0 mobile local (2026-10-02), une mesure/page
+- [x] Correction des points < 90 (max 2 boucles) — `robots.txt`/`sitemap.xml` ajoutés (`app/robots.ts`, `app/sitemap.ts`), proxy ouvert en lecture anonyme → SEO 100
+- [x] Rapport archivé dans `docs/audit-lighthouse-s5.md` (audit réel à exécuter sur déploiement)
 
 #### Critères d'acceptation
 
-- [ ] Score global **≥ 90** sur les pages publiques
+- [x] Score global **≥ 90** sur les pages publiques — local : Activités 95, Partages 98, Témoignages 97 (perf) ; A11y/BP/SEO 100. Mesure prod/domaine restant à faire au déploiement (S9).
 
 ### 🎟️ S8.7 — Tests globaux & corrections de bugs
 
@@ -183,3 +183,30 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
 - Le build de production utilise Webpack afin d'exécuter `@ducanh2912/next-pwa` ; il confirme le fallback `/~offline`. Le `public/sw.js` généré contient la règle `public-pages` pour les routes runtime configurées.
 - Icônes vérifiées : 192×192 et 512×512. La soumission/modération par POST, l'installation/offline navigateur, les appareils Android/iOS et Lighthouse n'ont pas été exercés.
 - Le build a remonté un avertissement Prisma préexistant sur la valeur enum `Role.USER` absente de la base branchée ; le rendu public des témoignages s'exécute cependant correctement.
+
+## Session thr-up -dev 08 — correctifs PWA + preuves (2026-10-02)
+
+- **Correctif `next.config.ts` (cause racine du « pas de contrôleur SW »)** : `disable` du plugin
+  passait par `process.env.NODE_ENV === "development"`. Un `NODE_ENV` résiduel (shell, `.env`)
+  désactivait silencieusement le PWA pendant `next build` (« PWA support is disabled » → aucun
+  `sw.js` généré). Le `disable` utilise désormais la phase Next officielle
+  (`phase === PHASE_DEVELOPMENT_SERVER`, forme-fonction documentée dans
+  `node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/`), et
+  `extendDefaultRuntimeCaching: true` réactive la route par défaut (précache + `StaleWhileRevalidate`
+  statique, nécessaire à l'enregistrement) que notre `runtimeCaching` personnalisé remplaçait.
+- **`.env*` assaini** : suppression des lignes `NODE_ENV="development"/"production"` de `.env`,
+  `.env.local`, `.env.production`, `.env.example` (Next.js assigne `NODE_ENV` lui-même ; la valeur
+  forcée provoquait l'avertissement « non-standard NODE_ENV » et des builds dev déguisés en prod).
+- **Build** : `env -u NODE_ENV pnpm build` → EXIT=0, 33 pages/routes, plugin PWA actif
+  (`Service worker: …/public/sw.js`, `Documents (pages): /~offline`).
+- **Preuve offline partielle (Chromium headless, CDP)** : `/sw.js` servi 200, `window.workbox`
+  présent et `workbox.register()` exécuté, mais l'installation échoue :
+  `bad-precaching-response :: [{"url":"…/app/admin/places/page-41fac3b3ee6d756f.js","status":404}]`
+  — le précache référence un chunk hashé qui n'existe plus dans `.next/` (contenu édité entre le
+  calcul du précache et l'émission ; session concurrente active sur le repo). `REGS` reste vide,
+  donc **ni le rechargement offline ni le fallback n'ont pu être prouvés** dans cette session.
+- **Action restante (tâche 17, étape 3)** : rebuild sur arbre stable (aucune édition concurrente),
+  vérifier que le précache référence uniquement des chunks existants, puis rejouer la preuve :
+  contrôleur SW → serveur stoppé → reload `/temoignages` (cache `public-pages`) → route non
+  cachée (fallback `/~offline`). Script réutilisable : `/tmp/pwa-offline-proof.mjs`.
+- Appareils Android/iOS + audit Lighthouse de production restent bloqués hors déploiement (S9).
