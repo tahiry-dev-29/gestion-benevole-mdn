@@ -48,11 +48,23 @@ describe("admin dashboard metrics", () => {
     mocks.attendanceCount.mockResolvedValue(1);
     mocks.testimonialCount.mockResolvedValue(4);
     mocks.creditAggregate.mockResolvedValue({ _sum: { montant: 125.5 } });
-    mocks.userGroupBy.mockImplementation(({ by }: { by: string[] }) =>
-      by[0] === "categorie"
-        ? [{ categorie: "PRIMAIRE", _count: { _all: 3 } }]
-        : [{ statut: "ACTIF", _count: { _all: 3 } }]
-    );
+    // user.groupBy sert trois regroupements distincts : categorie, statut
+    // (statistiques) et createdAt (serie d'inscriptions du tableau de bord).
+    mocks.userGroupBy.mockImplementation(({ by }: { by: string[] }) => {
+      switch (by[0]) {
+        case "categorie":
+          return [{ categorie: "PRIMAIRE", _count: { _all: 3 } }];
+        case "createdAt":
+          return [
+            {
+              createdAt: new Date("2026-10-02T00:00:00.000Z"),
+              _count: { _all: 2 },
+            },
+          ];
+        default:
+          return [{ statut: "ACTIF", _count: { _all: 3 } }];
+      }
+    });
     mocks.attendanceGroupBy.mockResolvedValue([
       { date: new Date("2026-10-02T00:00:00.000Z"), _count: { _all: 1 } },
     ]);
