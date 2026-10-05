@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { PageHeader } from "@/features/admin/page-header";
 import { ObservationsList } from "@/features/observation/observations-list";
 import { listVolunteersAction } from "@/features/volunteers/volunteer.action";
@@ -29,7 +30,13 @@ export default async function ObservationsPage() {
     session?.user?.role === "ADMIN" || session?.user?.role === "SUPER_ADMIN";
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-4">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Observations" },
+        ]}
+      />
       <PageHeader
         title="Observations mensuelles"
         description="Notes et suivis mensuels des bénévoles par le responsable."

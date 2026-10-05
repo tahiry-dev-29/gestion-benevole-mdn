@@ -1,3 +1,4 @@
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -32,7 +33,13 @@ export default async function TemoignagesPage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-4">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Témoignages" },
+        ]}
+      />
       <PageHeader
         title="Témoignages"
         description="Modérez les témoignages des bénévoles et du public."

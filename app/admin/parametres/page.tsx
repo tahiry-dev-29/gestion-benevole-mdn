@@ -1,3 +1,4 @@
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/features/admin/page-header";
 
@@ -18,7 +19,13 @@ const settings = [
 
 export default function ParametresPage() {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-4">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Paramètres" },
+        ]}
+      />
       <PageHeader
         title="Paramètres"
         description="Configuration de l'espace d'administration."
@@ -26,7 +33,7 @@ export default function ParametresPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {settings.map((section) => (
-          <Card key={section.title}>
+          <Card key={section.title} className="glass-sm">
             <CardHeader>
               <CardTitle className="text-sm font-semibold">
                 {section.title}

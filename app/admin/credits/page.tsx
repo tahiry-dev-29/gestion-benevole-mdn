@@ -1,3 +1,4 @@
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { PageHeader } from "@/features/admin/page-header";
 import { CreditsList } from "@/features/credit/credits-list";
 import { listVolunteersAction } from "@/features/volunteers/volunteer.action";
@@ -18,7 +19,13 @@ export default async function CreditsPage() {
       : [];
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-4">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Crédits" },
+        ]}
+      />
       <PageHeader
         title="Crédits"
         description="Suivez les crédits attribués aux bénévoles et le cumul mensuel."

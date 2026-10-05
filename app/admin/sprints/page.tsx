@@ -1,3 +1,4 @@
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/features/admin/page-header";
@@ -36,7 +37,13 @@ function statusBadge(statut: string) {
 
 export default function SprintsPage() {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto grid w-full max-w-7xl gap-4">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Sprints" },
+        ]}
+      />
       <PageHeader
         title="Suivi du projet"
         description="Avancement des sprints du cahier des charges (suivi interne)."
@@ -44,7 +51,7 @@ export default function SprintsPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {sprints.map((sprint) => (
-          <Card key={sprint.id}>
+          <Card key={sprint.id} className="glass-sm">
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
               <CardTitle className="text-sm font-semibold">
                 {sprint.id} — {sprint.titre}

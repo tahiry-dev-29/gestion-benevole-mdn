@@ -1,18 +1,13 @@
 import { AlertCircle, CalendarCheck, CalendarDays, Users } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Progress } from "@/components/ui/progress";
 import { getAdminDashboardMetrics } from "@/features/admin/metrics";
+import { RecentUsersTable } from "@/features/admin/recent-users-table";
 import { StatCard } from "@/features/admin/stat-card";
 import { TableCard } from "@/features/admin/table-card";
+
 export default async function AdminPage() {
   const metrics = await getAdminDashboardMetrics();
   const stats = [
@@ -56,7 +51,13 @@ export default async function AdminPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="fluid-bg grid gap-6 rounded-2xl">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Tableau de bord" },
+        ]}
+      />
       <section>
         <h2 className="text-2xl font-bold tracking-tight">Tableau de bord</h2>
         <p className="text-sm text-muted-foreground">
@@ -76,53 +77,14 @@ export default async function AdminPage() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <TableCard title="Derniers utilisateurs" className="lg:col-span-2">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nom</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Rôle</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {metrics.recentUsers.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={3} className="text-muted-foreground">
-                    Aucun compte n’est encore enregistré.
-                  </TableCell>
-                </TableRow>
-              ) : null}
-              {metrics.recentUsers.map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell className="font-medium">
-                    {u.prenom} {u.nom}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {u.email}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        u.role === "ADMIN" || u.role === "SUPER_ADMIN"
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {u.role === "SUPER_ADMIN"
-                        ? "Super Admin"
-                        : u.role === "ADMIN"
-                          ? "Admin"
-                          : u.role}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <TableCard
+          title="Derniers utilisateurs"
+          className="glass-sm lg:col-span-2"
+        >
+          <RecentUsersTable users={metrics.recentUsers} />
         </TableCard>
 
-        <Card>
+        <Card className="glass">
           <CardHeader>
             <CardTitle>Répartition</CardTitle>
           </CardHeader>
@@ -133,14 +95,14 @@ export default async function AdminPage() {
                   <span className="text-muted-foreground">{row.label}</span>
                   <span className="font-medium">{row.value}</span>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                  <div
-                    className={`h-full ${row.color}`}
-                    style={{
-                      width: `${distributionTotal === 0 ? 0 : (row.value / distributionTotal) * 100}%`,
-                    }}
-                  />
-                </div>
+                <Progress
+                  value={
+                    distributionTotal === 0
+                      ? 0
+                      : (row.value / distributionTotal) * 100
+                  }
+                  aria-label={`${row.label}: ${row.value}`}
+                />
               </div>
             ))}
           </CardContent>
