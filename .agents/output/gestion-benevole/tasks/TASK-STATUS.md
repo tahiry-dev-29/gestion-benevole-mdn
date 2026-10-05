@@ -32,13 +32,13 @@ Plan file: `../plans/plan-002_design_system_ui_refonte.md`
 
 | ID | Titre | Statut | Dépend de | Prochain point |
 |----|-------|--------|-----------|---------------|
-| 19 | Design system & prérequis globaux | ⬜ TODO | — | `npx shadcn@latest add tabs breadcrumb popover` + `AdminBreadcrumb` |
-| 20 | Users UI refonte | ⬜ TODO | 19 | Fix scrollbar → Filter DropdownMenu → Tabs → Breadcrumb → DataTable → Analytics |
-| 21 | Bénévoles UI refonte | ⬜ TODO | 19 | Tabs Liste/Rôles → DropdownMenu → DataTable → Fiche Tabs |
-| 22 | Présences UI refonte | ⬜ TODO | 19 | Tabs Pointage/Historique/Stats → Breadcrumb |
-| 23 | Activités, Crédits, Observations, Partages UI | ⬜ TODO | 19 | Breadcrumb + DropdownMenu filter + actions sur chaque section |
-| 24 | Dashboard & Statistiques UI | ⬜ TODO | 19 | StatCards Card shadcn → DataTable → Breadcrumb → Tabs par domaine |
-| 25 | Observations, Partages, Temoignages, Places, Sprints, Paramètres | ⬜ TODO | 19 | Breadcrumb + Dialogs + glass |
+| 19 | Design system & prérequis globaux | ✅ DONE | — | Tabs/Breadcrumb déjà présents; Popover Radix ajouté; AdminBreadcrumb partagé; typecheck PASS |
+| 20 | Users UI refonte | ✅ DONE | 19 | Table responsive 768px, filtres menu, onglets, breadcrumb, tri/actions/quick view, fiches et Analytics vérifiés Chromium |
+| 21 | Bénévoles UI refonte | ✅ DONE | 19 | Tabs, breadcrumb, filtres groupés, actions contextuelles, fiche à onglets; TypeScript PASS |
+| 22 | Présences UI refonte | 🟡 IN_PROGRESS | 19 | UI Pointage/Historique/Stats + breadcrumb; TypeScript PASS; revue visuelle restante |
+| 23 | Activités, Crédits, Observations, Partages UI | 🟡 IN_PROGRESS | 19 | Breadcrumbs, filtres, menus, analytics crédits, tabs observations, Sheet partage; typecheck/build PASS; reste revue visuelle |
+| 24 | Dashboard & Statistiques UI | 🟡 IN_PROGRESS | 19 | Cards/DataTable/Breadcrumb, 4 tabs et agrégats + tendances; typecheck/lint/build PASS; reste revue visuelle |
+| 25 | Observations, Partages, Temoignages, Places, Sprints, Paramètres | 🟡 IN_PROGRESS | 19 | Breadcrumbs et glass sur routes bonus, aperçu Sheet; typecheck/lint/build PASS; actions Témoignages faites (typecheck/lint ciblé PASS); reste revue visuelle |
 
 ---
 

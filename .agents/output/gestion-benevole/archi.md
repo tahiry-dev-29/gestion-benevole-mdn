@@ -176,3 +176,93 @@ Mutations simples = **Server Actions** (`*.action.ts`, validation Zod) ; les end
 | Photo de profil = Gravatar dérivé de l'email | upload d'avatar | propriété demandée « get by email », zéro stockage |
 | Soft delete (`deletedAt`) + statut `INACTIF` | suppression en dur | traçabilité et historique de présence préservés |
 | `src/features/benevoles/` renommé `src/features/volunteers/` | garder le nom FR | cohérence avec `VOLUNTEER` et les routes `/admin/volunteer-management` |
+## Design System — plan-002 (ajouté 2026-10-05)
+
+La section suivante documente le design system Glass Liquid Blue introduit dans `plan-002` et les décisions d'architecture UI qui s'y rapportent.
+
+### Design System Glass Liquid Blue
+
+Fichier principal : `app/globals.css` (333 lignes, mis à jour 2026-10-05).
+
+#### Variables HSL principales
+
+| Token | Light | Dark |
+|-------|-------|------|
+| `--background` | `210 40% 97%` (blanc bleuté) | `215 40% 6%` (ocean profond) |
+| `--foreground` | `215 28% 12%` | `210 20% 94%` |
+| `--primary` | `210 100% 52%` (bleu électrique) | `210 100% 62%` |
+| `--accent` | `199 89% 56%` (cyan-bleu) | `199 89% 52%` |
+| `--card` | `210 50% 99%` | `215 40% 10%` |
+| `--border` | `210 48% 84%` | `210 40% 20%` |
+| `--radius` | `0.75rem` | — |
+
+#### Classes utilitaires glass
+
+| Classe | Effet | Cas d'usage |
+|--------|-------|-------------|
+| `.glass` | backdrop-blur 16px + border translucide | Cards, panels |
+| `.glass-sm` | blur 8px | Toolbar, TabsList |
+| `.glass-lg` | blur 28px | Panels prominents |
+| `.glass-xl` | blur 48px | Dialogs, modals |
+| `.glass-gloss` | Reflet top-edge (::before) | KPI Cards, sidebar header |
+| `.glass-glow` | Halo bleu focus/primary | Boutons primary, ring |
+| `.fluid-bg` | Fond ambiant radial bleu | Layout body, sections hero |
+| `.glass-noise` | Grain texture subtil (::after) | Backgrounds |
+
+#### Primitifs UI — convention mixte
+
+> **Règle absolue** : ce projet mélange deux librairies primitives.
+> Ne jamais substituer l'une à l'autre.
+
+| Primitif | Librairie | Composants |
+|----------|-----------|------------|
+| `@base-ui/react` | Base UI | `Dialog`, `Select`, `Badge` |
+| `@radix-ui/*` | Radix UI | `DropdownMenu`, `Sheet`, `Tooltip`, `Separator`, `Avatar`, `Checkbox` |
+
+### Composants UI à installer (plan-002)
+
+```bash
+npx shadcn@latest add tabs breadcrumb popover
+```
+
+Ces composants sont prérequis pour toutes les tâches 19–25.
+
+### Patterns UI standardisés (plan-002)
+
+#### Breadcrumb (toutes les pages admin)
+```tsx
+<AdminBreadcrumb items={[
+  { label: "Administration", href: "/admin/dashboard" },
+  { label: "Section", href: "/admin/section" },
+  { label: "Page courante" },
+]} />
+```
+Composant partagé : `src/components/shared/admin-breadcrumb.tsx`
+
+#### Filter DropdownMenu (remplace les Select multiples)
+- 1 bouton `⚙ Filtres (N)` avec badge count des filtres actifs
+- `DropdownMenuCheckboxItem` pour chaque option
+- Bouton "Réinitialiser" en bas
+- Utilise `@radix-ui/react-dropdown-menu` (déjà installé)
+
+#### DataTable améliorée
+- En-têtes triables : `column.toggleSorting()` + `ArrowUpDown`
+- Colonne Actions : `DropdownMenu` (Voir · Modifier · Supprimer)
+- Avatar colonne : `Popover` quick-view (nom, email, statut)
+
+#### Tabs intra-page
+- `TabsList className="glass-sm"` sur le panel de navigation
+- Tabs par section : Users (Liste · Présences · Analytics), Bénévoles (Liste · Rôles), Présences (Pointage · Historique · Stats), Statistiques (Bénévoles · Présences · Crédits · Activités)
+
+### Routes frontend — mise à jour plan-002
+
+Les routes suivantes ont été identifiées comme existantes mais non documentées dans archi.md :
+
+| Route | Statut |
+|-------|--------|
+| `/admin/users/presence` | Existe — redirection vers `/admin/presences` documentée |
+| `/admin/volunteer-management/roles` | Existe — à intégrer dans Tabs de `/admin/volunteer-management` |
+| `/admin/activites` | Doublon de `/admin/activities` — à clarifier |
+| `/admin/volunteers` | Page mock — à supprimer (voir nettoyage routes) |
+| `/admin/sprints` | Existe |
+| `/admin/places` | Existe |
