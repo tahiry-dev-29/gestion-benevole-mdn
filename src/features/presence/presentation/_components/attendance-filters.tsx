@@ -15,6 +15,7 @@ import type { AttendanceFilters } from "../use-attendance";
 
 type AttendanceFiltersProps = {
   tables: SeatGrid[];
+  volunteers: { id: number; nom: string; prenom: string }[];
   value: AttendanceFilters;
   onChange: (filters: AttendanceFilters) => void;
   isFetching: boolean;
@@ -23,17 +24,18 @@ type AttendanceFiltersProps = {
 
 export function AttendanceFiltersBar({
   tables,
+  volunteers,
   value,
   onChange,
   isFetching,
   onRefresh,
 }: AttendanceFiltersProps) {
   const hasFilters = Boolean(
-    value.query || value.statut !== "ALL" || value.seatId
+    value.query || value.statut !== "ALL" || value.seatId || value.volunteerId
   );
 
   return (
-    <div className="grid gap-2 sm:grid-cols-[minmax(12rem,1fr)_10rem_minmax(11rem,15rem)_auto]">
+    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-[minmax(12rem,1fr)_minmax(10rem,13rem)_10rem_minmax(11rem,15rem)_auto_auto]">
       <div className="relative">
         <Search
           aria-hidden="true"
@@ -49,6 +51,28 @@ export function AttendanceFiltersBar({
           className="pl-9"
         />
       </div>
+      <Select
+        value={value.volunteerId || "ALL"}
+        onValueChange={(volunteerId) =>
+          volunteerId &&
+          onChange({
+            ...value,
+            volunteerId: volunteerId === "ALL" ? "" : volunteerId,
+          })
+        }
+      >
+        <SelectTrigger aria-label="Filtrer par bénévole">
+          <SelectValue placeholder="Tous les bénévoles" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="ALL">Tous les bénévoles</SelectItem>
+          {volunteers.map((volunteer) => (
+            <SelectItem key={volunteer.id} value={String(volunteer.id)}>
+              {volunteer.prenom} {volunteer.nom}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <Select
         value={value.statut}
         onValueChange={(statut) => statut && onChange({ ...value, statut })}
@@ -87,7 +111,14 @@ export function AttendanceFiltersBar({
       <Button
         type="button"
         variant="ghost"
-        onClick={() => onChange({ query: "", statut: "ALL", seatId: "" })}
+        onClick={() =>
+          onChange({
+            query: "",
+            statut: "ALL",
+            seatId: "",
+            volunteerId: "",
+          })
+        }
         disabled={!hasFilters}
         aria-label="Effacer les filtres"
         title="Effacer les filtres"

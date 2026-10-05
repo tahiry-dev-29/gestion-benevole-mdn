@@ -137,6 +137,7 @@ export async function listAttendanceAction(input: unknown = {}) {
     ...(filters.statut ? { statut: filters.statut } : {}),
     ...(filters.table ? { seat: { tableNumber: filters.table } } : {}),
     ...(filters.seatId ? { seat_id: filters.seatId } : {}),
+    ...(filters.volunteerId ? { user_id: filters.volunteerId } : {}),
     ...(filters.query
       ? {
           user: {

@@ -11,22 +11,26 @@ type AttendanceTableProps = {
   rows: PresenceRecord[];
   isPending: boolean;
   tables: SeatGrid[];
+  volunteers: { id: number; nom: string; prenom: string }[];
   filters: AttendanceFilters;
   onFiltersChange: (filters: AttendanceFilters) => void;
   isFetching: boolean;
   onRefresh: () => void;
   onEdit: (record: PresenceRecord) => void;
+  readOnly?: boolean;
 };
 
 export function AttendanceTable({
   rows,
   isPending,
   tables,
+  volunteers,
   filters,
   onFiltersChange,
   isFetching,
   onRefresh,
   onEdit,
+  readOnly = false,
 }: AttendanceTableProps) {
   return (
     <section aria-labelledby="attendance-history-heading" className="space-y-3">
@@ -39,12 +43,19 @@ export function AttendanceTable({
         </p>
       </div>
       <DataTable
-        columns={createAttendanceColumns(onEdit)}
+        columns={createAttendanceColumns(onEdit, readOnly)}
         data={rows}
+        hiddenColumnsOnMobile={[
+          "place",
+          "heure_arrivee",
+          "heure_depart",
+          ...(readOnly ? ["actions"] : []),
+        ]}
         isLoading={isPending}
         toolbar={
           <AttendanceFiltersBar
             tables={tables}
+            volunteers={volunteers}
             value={filters}
             onChange={onFiltersChange}
             isFetching={isFetching}

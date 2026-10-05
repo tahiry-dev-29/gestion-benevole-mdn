@@ -13,9 +13,10 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export function createAttendanceColumns(
-  onEdit: (record: PresenceRecord) => void
+  onEdit: (record: PresenceRecord) => void,
+  readOnly = false
 ): ColumnDef<PresenceRecord>[] {
-  return [
+  const columns: ColumnDef<PresenceRecord>[] = [
     {
       accessorKey: "date",
       header: "Date",
@@ -80,4 +81,7 @@ export function createAttendanceColumns(
       ),
     },
   ];
+  return readOnly
+    ? columns.filter((column) => column.id !== "actions")
+    : columns;
 }

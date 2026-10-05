@@ -58,14 +58,23 @@ export default async function PresencesPage() {
         description="Pointage quotidien avec arrivée, départ, table et siège."
       />
       <Tabs defaultValue="pointage" className="grid gap-5">
-        <TabsList className="glass-sm flex h-auto w-full justify-start gap-1 overflow-hidden p-1 sm:w-fit">
-          <TabsTrigger value="pointage" className="min-h-10 gap-2 px-3">
+        <TabsList className="glass-sm grid h-auto w-full grid-cols-2 justify-start gap-1 p-1 sm:flex sm:w-fit">
+          <TabsTrigger
+            value="pointage"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <CalendarCheck aria-hidden="true" /> Pointage
           </TabsTrigger>
-          <TabsTrigger value="historique" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="historique"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <ClipboardList aria-hidden="true" /> Historique
           </TabsTrigger>
-          <TabsTrigger value="statistiques" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="statistiques"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <ChartNoAxesColumnIncreasing aria-hidden="true" /> Statistiques
           </TabsTrigger>
         </TabsList>

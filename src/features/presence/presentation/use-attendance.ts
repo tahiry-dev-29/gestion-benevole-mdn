@@ -11,11 +11,17 @@ export type AttendanceFilters = {
   query: string;
   statut: string;
   seatId: string;
+  volunteerId: string;
 };
 
-export function useAttendance(range: DateRange, filters?: AttendanceFilters) {
+export function useAttendance(
+  range: DateRange,
+  filters?: AttendanceFilters,
+  options?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: [...ATTENDANCE_KEY, range, filters],
+    enabled: options?.enabled ?? true,
     queryFn: async () => {
       const result = await listAttendanceAction({
         ...range,
@@ -24,6 +30,9 @@ export function useAttendance(range: DateRange, filters?: AttendanceFilters) {
           ? { statut: filters.statut }
           : {}),
         ...(filters?.seatId ? { seatId: Number(filters.seatId) } : {}),
+        ...(filters?.volunteerId
+          ? { volunteerId: Number(filters.volunteerId) }
+          : {}),
       });
       if (!result.success) throw new Error(result.error);
       return result.data;

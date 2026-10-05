@@ -6,6 +6,7 @@ export const presenceFilterSchema = z
     au: z.string().date().optional(),
     table: z.coerce.number().int().positive().optional(),
     seatId: z.coerce.number().int().positive().optional(),
+    volunteerId: z.coerce.number().int().positive().optional(),
     statut: z.enum(["PRESENT", "ABSENT", "RETARD"]).optional(),
     query: z.string().trim().max(120).optional(),
   })

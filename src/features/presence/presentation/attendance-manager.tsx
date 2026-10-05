@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CalendarCheck, Clock3, UsersRound } from "lucide-react";
 import { toast } from "sonner";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImportExportButtons } from "@/features/excel/import-export-buttons";
 import type { SeatGrid } from "@/features/places/places.schema";
 
@@ -17,6 +15,7 @@ import {
   type PointageFormState,
 } from "./_components/attendance-form";
 import { AttendanceTable } from "./_components/attendance-table";
+import { AttendanceStatsPanel } from "./attendance-stats-panel";
 import {
   type AttendanceFilters,
   useAttendance,
@@ -31,6 +30,7 @@ const INITIAL_FORM: PointageFormState = {
   arrivee: "",
   depart: "",
 };
+const EMPTY_ROWS: PresenceRecord[] = [];
 
 /** Sièges déjà pris à la date choisie, hors bénévole en cours de pointage. */
 function collectBusySeats(
@@ -67,6 +67,7 @@ export function AttendanceManager({
     query: "",
     statut: "ALL",
     seatId: "",
+    volunteerId: "",
   });
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
@@ -86,8 +87,37 @@ export function AttendanceManager({
     query: debouncedQuery,
     statut: filters.statut,
     seatId: filters.seatId,
+    volunteerId: filters.volunteerId,
   };
   const attendanceQuery = useAttendance(range, attendanceFilters);
+  const statsEnd = view === "statistiques" ? selectedDate : range.au;
+  const statsStartDate = new Date(`${statsEnd}T12:00:00`);
+  statsStartDate.setDate(statsStartDate.getDate() - 29);
+  const statsRange = { du: toIsoDate(statsStartDate), au: statsEnd };
+  const selectedMonthRange = useMemo(
+    () => computeRange("month", selectedDate),
+    [selectedDate]
+  );
+  const statsQuery = useAttendance(
+    statsRange,
+    {
+      query: "",
+      statut: "ALL",
+      seatId: "",
+      volunteerId: "",
+    },
+    { enabled: view === "statistiques" }
+  );
+  const periodStatsQuery = useAttendance(
+    selectedMonthRange,
+    {
+      query: "",
+      statut: "ALL",
+      seatId: "",
+      volunteerId: "",
+    },
+    { enabled: view === "statistiques" }
+  );
   const occupancyQuery = useAttendance({ du: selectedDate, au: selectedDate });
   const pointMutation = usePointAttendance();
   const rows: PresenceRecord[] = useMemo(
@@ -98,7 +128,13 @@ export function AttendanceManager({
     () => occupancyQuery.data ?? [],
     [occupancyQuery.data]
   );
-
+  const dataError =
+    attendanceQuery.error?.message ??
+    statsQuery.error?.message ??
+    periodStatsQuery.error?.message ??
+    (occupancyQuery.isError
+      ? "Impossible de vérifier les sièges déjà occupés."
+      : null);
   const busySeatIds = useMemo(
     () => collectBusySeats(occupancyRows, selectedDate, form.userId),
     [occupancyRows, selectedDate, form.userId]
@@ -126,25 +162,13 @@ export function AttendanceManager({
     );
   }
 
-  function editRecord(record: PresenceRecord) {
-    setIsEditing(true);
-    setMode("day");
-    setSelectedDate(record.date);
-    setForm({
-      userId: String(record.userId),
-      tableNumber: record.tableNumber ? String(record.tableNumber) : "",
-      seatId: record.seatId ? String(record.seatId) : "",
-      status: record.statut,
-      arrivee: record.heure_arrivee ?? "",
-      depart: record.heure_depart ?? "",
-    });
-  }
-
   return (
     <div className="grid gap-5">
-      <div className="flex justify-end">
-        <ImportExportButtons dataset="presences" exportRange={range} />
-      </div>
+      {view !== "statistiques" ? (
+        <div className="flex justify-end">
+          <ImportExportButtons dataset="presences" exportRange={range} />
+        </div>
+      ) : null}
       <AttendanceCalendar
         mode={mode}
         selectedDate={selectedDate}
@@ -169,76 +193,34 @@ export function AttendanceManager({
         />
       ) : null}
       {view === "statistiques" ? (
-        <section
-          className="grid gap-3 sm:grid-cols-3"
-          aria-label="Résumé de la période"
-        >
-          <Card className="glass-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <CalendarCheck aria-hidden="true" className="size-4" />{" "}
-                Pointages
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-2xl font-semibold tabular-nums">
-              {rows.length}
-            </CardContent>
-          </Card>
-          <Card className="glass-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <UsersRound aria-hidden="true" className="size-4" /> Bénévoles
-                présents
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-2xl font-semibold tabular-nums">
-              {
-                new Set(
-                  rows
-                    .filter((row) => row.statut === "PRESENT")
-                    .map((row) => row.userId)
-                ).size
-              }
-            </CardContent>
-          </Card>
-          <Card className="glass-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Clock3 aria-hidden="true" className="size-4" /> Heures
-                enregistrées
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-2xl font-semibold tabular-nums">
-              {rows
-                .reduce((total, row) => total + (row.heuresTravaillees ?? 0), 0)
-                .toLocaleString("fr-FR", { maximumFractionDigits: 1 })}
-              <span className="ml-1 text-sm font-normal text-muted-foreground">
-                h
-              </span>
-            </CardContent>
-          </Card>
-        </section>
+        <AttendanceStatsPanel
+          selectedDate={selectedDate}
+          statisticsRows={statsQuery.data ?? EMPTY_ROWS}
+          monthRows={periodStatsQuery.data ?? EMPTY_ROWS}
+        />
       ) : null}
-      <AttendanceTable
-        rows={rows}
-        isPending={attendanceQuery.isPending}
-        tables={tables}
-        filters={filters}
-        onFiltersChange={setFilters}
-        isFetching={attendanceQuery.isFetching || occupancyQuery.isFetching}
-        onRefresh={() => {
-          void Promise.all([
-            attendanceQuery.refetch(),
-            occupancyQuery.refetch(),
-          ]);
-        }}
-        onEdit={view === "pointage" ? editRecord : () => undefined}
-      />
-      {attendanceQuery.isError || occupancyQuery.isError ? (
+      {view === "historique" ? (
+        <AttendanceTable
+          rows={rows}
+          isPending={attendanceQuery.isPending}
+          tables={tables}
+          volunteers={volunteers}
+          filters={filters}
+          onFiltersChange={setFilters}
+          isFetching={attendanceQuery.isFetching || occupancyQuery.isFetching}
+          onRefresh={() => {
+            void Promise.all([
+              attendanceQuery.refetch(),
+              occupancyQuery.refetch(),
+            ]);
+          }}
+          onEdit={() => undefined}
+          readOnly
+        />
+      ) : null}
+      {dataError ? (
         <p role="alert" className="text-sm text-destructive">
-          {attendanceQuery.isError
-            ? attendanceQuery.error.message
-            : "Impossible de vérifier les sièges déjà occupés."}
+          {dataError}
         </p>
       ) : null}
     </div>
