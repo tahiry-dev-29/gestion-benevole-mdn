@@ -24,21 +24,40 @@ function toPartage(row: {
   };
 }
 
+const SORT_FIELDS = {
+  titre: "titre",
+  datePublication: "date_publication",
+} as const;
+
 export const partageRepository = {
   async list(
-    { page = 1, pageSize = 10, statut }: PartageListParams = {},
+    {
+      q,
+      page = 1,
+      pageSize = 10,
+      sortBy = "datePublication",
+      sortDir = "desc",
+      statut,
+    }: PartageListParams = {},
     publishedOnly = false
   ) {
-    const where = publishedOnly
-      ? { statut: "PUBLIE" as const }
-      : statut
-        ? { statut }
-        : {};
+    const where = {
+      ...(publishedOnly ? { statut: "PUBLIE" as const } : {}),
+      ...(!publishedOnly && statut ? { statut } : {}),
+      ...(q
+        ? {
+            OR: [
+              { titre: { contains: q, mode: "insensitive" as const } },
+              { contenu: { contains: q, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+    };
     const [rows, total] = await Promise.all([
       prisma.partage.findMany({
         where,
         include: { user: { select: { prenom: true, nom: true } } },
-        orderBy: { date_publication: "desc" },
+        orderBy: { [SORT_FIELDS[sortBy]]: sortDir },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),

@@ -14,7 +14,10 @@ export type PartageInput = {
 };
 
 export type PartageListParams = {
+  q?: string;
   page?: number;
   pageSize?: number;
+  sortBy?: "titre" | "datePublication";
+  sortDir?: "asc" | "desc";
   statut?: "BROUILLON" | "PUBLIE";
 };

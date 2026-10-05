@@ -23,14 +23,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 
-const formSchema = z.object({
-  titre: z.string().trim().min(1, "Le titre est requis").max(150),
-  contenu: z.string().trim().min(1, "Le contenu est requis").max(20000),
-  statut: z.enum(["BROUILLON", "PUBLIE"]),
-});
+import {
+  type CreatePartageInput,
+  createPartageSchema,
+} from "../application/partage.schema";
 
-export type PartageFormValues = z.infer<typeof formSchema>;
+export type PartageFormValues = CreatePartageInput;
 
 type Props = {
   open: boolean;
@@ -54,8 +54,8 @@ export function PartageForm({
     setValue,
     control,
     formState: { errors },
-  } = useForm<PartageFormValues>({
-    resolver: zodResolver(formSchema),
+  } = useForm<z.input<typeof createPartageSchema>, unknown, PartageFormValues>({
+    resolver: zodResolver(createPartageSchema),
     defaultValues: { titre: "", contenu: "", statut: "BROUILLON" },
   });
   const statut = useWatch({ control, name: "statut" });
@@ -77,7 +77,7 @@ export function PartageForm({
           </SheetDescription>
         </SheetHeader>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(event) => void handleSubmit(onSubmit)(event)}
           className="flex flex-1 flex-col gap-4 overflow-y-auto px-4"
         >
           <div className="flex flex-col gap-2">
@@ -93,12 +93,11 @@ export function PartageForm({
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="partage-contenu">Contenu</Label>
-            <textarea
+            <Textarea
               id="partage-contenu"
               rows={8}
               {...register("contenu")}
               aria-invalid={!!errors.contenu}
-              className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
             {errors.contenu ? (
               <p className="text-xs text-destructive">
@@ -134,7 +133,10 @@ export function PartageForm({
           >
             Annuler
           </Button>
-          <Button onClick={handleSubmit(onSubmit)} disabled={isPending}>
+          <Button
+            onClick={(event) => void handleSubmit(onSubmit)(event)}
+            disabled={isPending}
+          >
             {initialData ? "Enregistrer" : "Créer"}
           </Button>
         </SheetFooter>

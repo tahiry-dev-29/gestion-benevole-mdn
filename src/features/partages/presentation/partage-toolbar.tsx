@@ -1,6 +1,6 @@
 "use client";
 
-import { Filter, Search } from "lucide-react";
+import { Filter, RefreshCw, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,13 +18,17 @@ type Props = {
   status: "ALL" | "BROUILLON" | "PUBLIE";
   onSearchChange: (value: string) => void;
   onStatusChange: (value: "ALL" | "BROUILLON" | "PUBLIE") => void;
+  onRefresh: () => void;
+  isRefreshing?: boolean;
 };
 
-export function ActiviteToolbar({
+export function PartageToolbar({
   search,
   status,
   onSearchChange,
   onStatusChange,
+  onRefresh,
+  isRefreshing,
 }: Props) {
   return (
     <div className="glass-sm flex w-full min-w-0 flex-col gap-2 rounded-xl p-2 sm:flex-row sm:items-center">
@@ -36,7 +40,7 @@ export function ActiviteToolbar({
         <Input
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
-          placeholder="Rechercher une activité…"
+          placeholder="Rechercher un partage…"
           className="h-9 border-transparent bg-muted/50 pl-8 focus-visible:border-input"
         />
       </div>
@@ -82,6 +86,20 @@ export function ActiviteToolbar({
           </Button>
         </DropdownMenuContent>
       </DropdownMenu>
+      <Button
+        variant="outline"
+        size="icon"
+        className="size-9 shrink-0"
+        onClick={onRefresh}
+        disabled={isRefreshing}
+        aria-label="Actualiser les partages"
+        title="Actualiser"
+      >
+        <RefreshCw
+          className={isRefreshing ? "size-4 animate-spin" : "size-4"}
+          aria-hidden="true"
+        />
+      </Button>
     </div>
   );
 }

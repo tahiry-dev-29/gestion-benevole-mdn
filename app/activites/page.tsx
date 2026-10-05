@@ -26,7 +26,7 @@ export default async function ActivitesPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
       <header className="mb-10 max-w-2xl space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-widest text-sky-300">
+        <p className="text-sm font-semibold uppercase tracking-widest text-primary">
           La vie associative
         </p>
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -47,7 +47,7 @@ export default async function ActivitesPage() {
               {item.image ? (
                 <Image
                   src={item.image}
-                  alt=""
+                  alt={`Illustration : ${item.titre}`}
                   width={960}
                   height={540}
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -70,11 +70,7 @@ export default async function ActivitesPage() {
                 <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">
                   {item.description}
                 </p>
-                <Button
-                  asChild
-                  variant="link"
-                  className="h-auto p-0 text-sky-300"
-                >
+                <Button asChild variant="link" className="h-auto p-0">
                   <Link href={`/activites/${item.id}`}>
                     Découvrir <ChevronRight className="size-4" />
                   </Link>
@@ -91,7 +87,7 @@ export default async function ActivitesPage() {
       <nav className="mt-12 border-t pt-6">
         <Link
           href="/partages"
-          className="text-sm font-medium text-sky-300 hover:underline"
+          className="text-sm font-medium text-primary hover:underline"
         >
           Voir aussi les partages de l’association{" "}
           <ChevronRight className="inline size-4" />

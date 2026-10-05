@@ -26,7 +26,7 @@ export default async function PartagesPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <header className="mb-10 max-w-2xl space-y-3">
-        <p className="text-sm font-semibold uppercase tracking-widest text-sky-300">
+        <p className="text-sm font-semibold uppercase tracking-widest text-primary">
           Ressources et témoignages
         </p>
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -55,11 +55,7 @@ export default async function PartagesPage() {
               <p className="mt-3 line-clamp-3 whitespace-pre-wrap leading-7 text-muted-foreground">
                 {partage.contenu}
               </p>
-              <Button
-                asChild
-                variant="link"
-                className="mt-3 h-auto p-0 text-sky-300"
-              >
+              <Button asChild variant="link" className="mt-3 h-auto p-0">
                 <Link href={`/partages/${partage.id}`}>
                   Lire le partage <ArrowUpRight className="size-4" />
                 </Link>
@@ -75,7 +71,7 @@ export default async function PartagesPage() {
       <nav className="mt-12 border-t pt-6">
         <Link
           href="/activites"
-          className="text-sm font-medium text-sky-300 hover:underline"
+          className="text-sm font-medium text-primary hover:underline"
         >
           Découvrir nos activités →
         </Link>

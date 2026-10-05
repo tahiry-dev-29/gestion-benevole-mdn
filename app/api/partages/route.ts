@@ -18,13 +18,24 @@ export async function GET(request: Request) {
     50,
     Math.max(1, Number(searchParams.get("pageSize")) || 10)
   );
+  const q = searchParams.get("q") ?? undefined;
+  const sortBy =
+    (["titre", "datePublication"] as const).find(
+      (f) => f === searchParams.get("sortBy")
+    ) ?? "datePublication";
+  const sortDir =
+    (["asc", "desc"] as const).find((d) => d === searchParams.get("sortDir")) ??
+    "desc";
   const statut = canModerate
     ? (["BROUILLON", "PUBLIE"] as const).find(
         (value) => value === searchParams.get("statut")
       )
     : undefined;
   return NextResponse.json(
-    await partageRepository.list({ page, pageSize, statut }, !canModerate)
+    await partageRepository.list(
+      { q, page, pageSize, sortBy, sortDir, statut },
+      !canModerate
+    )
   );
 }
 

@@ -11,6 +11,15 @@ export type PartageInput = {
   statut: "BROUILLON" | "PUBLIE";
 };
 
+export type PartageQueryParams = {
+  q?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortDir?: string;
+  statut?: "BROUILLON" | "PUBLIE";
+};
+
 type PartagesResult = { data: Partage[]; total: number };
 
 const partageResponseSchema = z.object({
@@ -38,14 +47,22 @@ async function requestJson<T>(
   return schema.parse(payload);
 }
 
-export function usePartages(page: number, statut?: "BROUILLON" | "PUBLIE") {
+export function usePartages(params: PartageQueryParams) {
   return useQuery({
-    queryKey: ["partages", page, statut],
-    queryFn: () =>
-      requestJson<PartagesResult>(
-        `/api/partages?page=${page}&pageSize=10${statut ? `&statut=${statut}` : ""}`,
+    queryKey: ["partages", params],
+    queryFn: () => {
+      const sp = new URLSearchParams();
+      if (params.q) sp.set("q", params.q);
+      sp.set("page", String(params.page ?? 1));
+      sp.set("pageSize", String(params.pageSize ?? 10));
+      if (params.sortBy) sp.set("sortBy", params.sortBy);
+      if (params.sortDir) sp.set("sortDir", params.sortDir);
+      if (params.statut) sp.set("statut", params.statut);
+      return requestJson<PartagesResult>(
+        `/api/partages?${sp.toString()}`,
         partagesResponseSchema
-      ),
+      );
+    },
   });
 }
 

@@ -47,7 +47,7 @@ export default async function ActiviteDetailPage({ params }: Props) {
         {activite.image ? (
           <Image
             src={activite.image}
-            alt=""
+            alt={`Illustration : ${activite.titre}`}
             width={1440}
             height={810}
             sizes="(max-width: 896px) 100vw, 896px"
@@ -70,7 +70,7 @@ export default async function ActiviteDetailPage({ params }: Props) {
       </article>
       <Link
         href="/partages"
-        className="mt-8 inline-flex text-sm font-medium text-sky-300 hover:underline"
+        className="mt-8 inline-flex text-sm font-medium text-primary hover:underline"
       >
         Explorer les partages de l’association →
       </Link>

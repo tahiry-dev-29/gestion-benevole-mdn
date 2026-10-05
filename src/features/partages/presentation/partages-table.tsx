@@ -1,24 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { RefreshCw } from "lucide-react";
+import * as React from "react";
+import { type SortingState } from "@tanstack/react-table";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
+import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { QueryError } from "@/components/shared/query-error";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 import type { Partage } from "../domain/partage.entity";
 
+import { getPartageColumns } from "./partage-columns";
 import { PartageForm, type PartageFormValues } from "./partage-form";
-import { PartagesTableGrid } from "./partages-table-grid";
+import { PartageToolbar } from "./partage-toolbar";
 import {
   type PartageInput,
   useDeletePartage,
@@ -29,19 +34,38 @@ import {
 const PAGE_SIZE = 10;
 
 export function PartagesTable() {
-  const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState<
+  const [search, setSearch] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState<
     "ALL" | "BROUILLON" | "PUBLIE"
   >("ALL");
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<Partage | null>(null);
-  const [deleting, setDeleting] = useState<Partage | null>(null);
-  const query = usePartages(
-    page,
-    statusFilter === "BROUILLON" || statusFilter === "PUBLIE"
-      ? statusFilter
-      : undefined
-  );
+  const [debouncedQ, setDebouncedQ] = React.useState("");
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [pageIndex, setPageIndex] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [editing, setEditing] = React.useState<Partage | null>(null);
+  const [deleting, setDeleting] = React.useState<Partage | null>(null);
+  const [quickView, setQuickView] = React.useState<Partage | null>(null);
+
+  React.useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const sort = sorting[0];
+  const params = {
+    q: debouncedQ || undefined,
+    page: pageIndex + 1,
+    pageSize: PAGE_SIZE,
+    sortBy: sort?.id,
+    sortDir: sort?.desc ? "desc" : "asc",
+    statut:
+      statusFilter === "BROUILLON" || statusFilter === "PUBLIE"
+        ? statusFilter
+        : undefined,
+  };
+  const query = usePartages(params);
+  const rows = query.data?.data ?? [];
+  const total = query.data?.total ?? 0;
   const save = useSavePartage();
   const remove = useDeletePartage();
 
@@ -78,11 +102,6 @@ export function PartagesTable() {
     );
   }
 
-  function startEditing(partage: Partage) {
-    setEditing(partage);
-    setOpen(true);
-  }
-
   function confirmDelete() {
     if (!deleting) return;
     remove.mutate(deleting.id, {
@@ -93,6 +112,21 @@ export function PartagesTable() {
       onError: () => toast.error("Impossible de supprimer le partage"),
     });
   }
+
+  const columns = React.useMemo(
+    () =>
+      getPartageColumns({
+        onEdit: (partage) => {
+          setEditing(partage);
+          setOpen(true);
+        },
+        onDelete: (partage) => setDeleting(partage),
+        onView: (partage) => setQuickView(partage),
+        onTogglePublish: (partage) => togglePublish(partage),
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [save]
+  );
 
   return (
     <div className="space-y-6">
@@ -105,88 +139,86 @@ export function PartagesTable() {
               setEditing(null);
               setOpen(true);
             }}
+            className="gap-2"
           >
-            Publier un partage
+            <Plus className="size-4" /> Publier un partage
           </Button>
         }
       />
-      <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-2">
-        <Select
-          value={statusFilter}
-          onValueChange={(value) => {
-            if (
-              value === "ALL" ||
-              value === "BROUILLON" ||
-              value === "PUBLIE"
-            ) {
-              setStatusFilter(value);
-              setPage(1);
-            }
-          }}
-        >
-          <SelectTrigger
-            className="h-9 w-[170px]"
-            aria-label="Filtrer par publication"
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Tous les statuts</SelectItem>
-            <SelectItem value="BROUILLON">Brouillon</SelectItem>
-            <SelectItem value="PUBLIE">Publié</SelectItem>
-          </SelectContent>
-        </Select>
-        <Button
-          variant="outline"
-          size="icon"
-          className="size-9"
-          onClick={() => void query.refetch()}
-          disabled={query.isFetching}
-          aria-label="Actualiser les partages"
-          title="Actualiser"
-        >
-          <RefreshCw
-            className={query.isFetching ? "size-4 animate-spin" : "size-4"}
-          />
-        </Button>
-      </div>
       {query.isError ? (
-        <p role="alert" className="text-sm text-destructive">
-          Impossible de charger les partages.
-        </p>
+        <QueryError
+          message="Impossible de charger les partages."
+          onRetry={() => void query.refetch()}
+        />
       ) : null}
-      <PartagesTableGrid
-        rows={query.data?.data ?? []}
+      <DataTable
+        columns={columns}
+        data={rows}
+        total={total}
+        pageCount={Math.ceil(total / PAGE_SIZE)}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={{ pageIndex, pageSize: PAGE_SIZE }}
+        onPaginationChange={(updater) => {
+          const next =
+            typeof updater === "function"
+              ? updater({ pageIndex, pageSize: PAGE_SIZE })
+              : updater;
+          setPageIndex(next.pageIndex);
+        }}
         isLoading={query.isLoading}
-        onEdit={startEditing}
-        onDelete={setDeleting}
-        onTogglePublish={togglePublish}
+        emptyMessage="Aucun partage trouvé."
+        toolbar={
+          <PartageToolbar
+            search={search}
+            status={statusFilter}
+            onSearchChange={setSearch}
+            onStatusChange={(value) => {
+              setStatusFilter(value);
+              setPageIndex(0);
+            }}
+            onRefresh={() => void query.refetch()}
+            isRefreshing={query.isFetching}
+          />
+        }
       />
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <span>{query.data?.total ?? 0} partage(s)</span>
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setPage((value) => Math.max(1, value - 1))}
-            disabled={page === 1}
-          >
-            Précédent
-          </Button>
-          <span className="flex items-center px-2">
-            Page {page} /{" "}
-            {Math.max(1, Math.ceil((query.data?.total ?? 0) / PAGE_SIZE))}
-          </span>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setPage((value) => value + 1)}
-            disabled={page >= Math.ceil((query.data?.total ?? 0) / PAGE_SIZE)}
-          >
-            Suivant
-          </Button>
-        </div>
-      </div>
+      <Sheet
+        open={quickView !== null}
+        onOpenChange={(value) => !value && setQuickView(null)}
+      >
+        <SheetContent className="glass-xl w-full overflow-y-auto sm:max-w-xl">
+          {quickView ? (
+            <>
+              <SheetHeader className="pr-8 text-left">
+                <div className="flex items-center gap-3">
+                  <Avatar>
+                    <AvatarFallback className="bg-primary/10 text-primary">
+                      {(quickView.auteur ?? "A")
+                        .split(/\s+/)
+                        .map((part) => part[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid gap-1">
+                    <SheetTitle>{quickView.titre}</SheetTitle>
+                    <SheetDescription>
+                      {quickView.auteur ?? "Auteur non renseigné"} ·{" "}
+                      {new Date(quickView.datePublication).toLocaleDateString(
+                        "fr-FR"
+                      )}
+                    </SheetDescription>
+                  </div>
+                </div>
+              </SheetHeader>
+              <div className="mt-6 whitespace-pre-wrap text-sm leading-7 text-foreground">
+                {quickView.contenu}
+              </div>
+            </>
+          ) : null}
+        </SheetContent>
+      </Sheet>
       <PartageForm
         open={open}
         onOpenChange={setOpen}
