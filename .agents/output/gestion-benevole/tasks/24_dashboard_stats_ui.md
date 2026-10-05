@@ -1,4 +1,4 @@
-Status: IN_PROGRESS
+Status: DONE
 
 # Feature tasks: Refonte UI/UX — Dashboard + Statistiques
 
@@ -49,8 +49,8 @@ Files to create/modify:
 - `src/features/admin/stat-card.tsx`
 
 Steps:
-1. [ ] Lire le `StatCard` actuel — identifier ce qui est utilisé
-2. [ ] Remplacer la structure par :
+1. [x] Lire le `StatCard` actuel — identifier ce qui est utilisé
+2. [x] Remplacer la structure par :
    ```tsx
    <Card className="glass glass-gloss">
      <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -63,13 +63,13 @@ Steps:
      </CardContent>
    </Card>
    ```
-3. [ ] Ajouter prop optionnelle `trend?: string` (ex: "↑ +12 ce mois")
-4. [ ] Appliquer `.glass.glass-gloss` sur la card
+3. [x] Ajouter prop optionnelle `trend?: string` (ex: "↑ +12 ce mois")
+4. [x] Appliquer `.glass.glass-gloss` sur la card
 
 Acceptance criteria:
-- [ ] `StatCard` utilise `Card`, `CardHeader`, `CardTitle`, `CardContent` shadcn
-- [ ] Effet glass appliqué
-- [ ] `pnpm typecheck` PASS
+- [x] `StatCard` utilise `Card`, `CardHeader`, `CardTitle`, `CardContent` shadcn
+- [x] Effet glass appliqué
+- [x] `pnpm typecheck` PASS
 
 ---
 
@@ -86,21 +86,21 @@ Files to create/modify:
 - `src/features/admin/table-card.tsx`
 
 Steps:
-1. [ ] Auditer `table-card.tsx` : identifier si c'est un wrapper de table HTML ou de `DataTable`
-2. [ ] Si table HTML brute : remplacer par `<DataTable>` avec colonnes : Nom · Email · Rôle · Statut · Date
-3. [ ] Ajouter `Badge` dans les colonnes Rôle et Statut
-4. [ ] Les données `metrics.recentUsers` (ou équivalent) passées en props
+1. [x] Auditer `table-card.tsx` : identifier si c'est un wrapper de table HTML ou de `DataTable`
+2. [x] Si table HTML brute : remplacer par `<DataTable>` avec colonnes : Nom · Email · Rôle · Statut · Date
+3. [x] Ajouter `Badge` dans les colonnes Rôle et Statut
+4. [x] Les données `metrics.recentUsers` (ou équivalent) passées en props
 
 Acceptance criteria:
-- [ ] Table récents utilise `<DataTable>` shadcn
-- [ ] Badges sur Rôle/Statut
-- [ ] `pnpm typecheck` PASS
+- [x] Table récents utilise `<DataTable>` shadcn
+- [x] Badges sur Rôle/Statut
+- [x] `pnpm typecheck` PASS
 
 ---
 
 ### TASK-D-03: Breadcrumb + layout glass Dashboard
 
-**Status:** IN_PROGRESS
+**Status:** DONE
 **Parent:** Refonte Dashboard & Statistiques
 **Depends on:** TASK-DS-01, TASK-DS-03
 
@@ -108,14 +108,14 @@ Files to create/modify:
 - `app/admin/dashboard/page.tsx`
 
 Steps:
-1. [ ] Ajouter `<AdminBreadcrumb items={[{ label: "Administration", href: "/admin/dashboard" }, { label: "Tableau de bord" }]} />`
-2. [ ] Appliquer `.fluid-bg` sur le wrapper principal `<div className="space-y-6">`
-3. [ ] Appliquer `.glass` sur la section Distribution
+1. [x] Ajouter `<AdminBreadcrumb items={[{ label: "Administration", href: "/admin/dashboard" }, { label: "Tableau de bord" }]} />`
+2. [x] Appliquer `.fluid-bg` sur le wrapper principal `<div className="space-y-6">`
+3. [x] Appliquer `.glass` sur la section Distribution
 
 Acceptance criteria:
-- [ ] Breadcrumb visible : Administration > Tableau de bord
-- [ ] `fluid-bg` appliqué
-- [ ] `pnpm typecheck` PASS
+- [x] Breadcrumb visible : Administration > Tableau de bord
+- [x] `fluid-bg` appliqué
+- [x] `pnpm typecheck` PASS
 
 ---
 
@@ -137,29 +137,29 @@ Files to create/modify:
 - `src/features/admin/tabs/stats-activites-tab.tsx` (nouveau)
 
 Steps:
-1. [ ] Ajouter `<AdminBreadcrumb items={[..., { label: "Statistiques" }]} />`
-2. [ ] Entourer avec `<Tabs defaultValue="benevoles">` :
+1. [x] Ajouter `<AdminBreadcrumb items={[..., { label: "Statistiques" }]} />`
+2. [x] Entourer avec `<Tabs defaultValue="benevoles">` :
    - `<TabsTrigger value="benevoles">` Bénévoles (icon `Users`)
    - `<TabsTrigger value="presences">` Présences (icon `CalendarCheck`)
    - `<TabsTrigger value="credits">` Crédits (icon `Coins`)
    - `<TabsTrigger value="activites">` Activités (icon `CalendarDays`)
-3. [ ] Tab Bénévoles : 4 KPI Cards actuelles + `<Progress>` répartition par statut + répartition par catégorie
-4. [ ] Tab Présences : KPIs présences + graphe 30 jours (réutiliser `PresenceStatsTab` si créé)
-5. [ ] Tab Crédits : total crédits, moyenne, top 5 bénévoles + barres Progress
-6. [ ] Tab Activités : nombre publié, en cours, terminées + répartition
-7. [ ] Appliquer `.glass` sur chaque section de tab
+3. [x] Tab Bénévoles : 4 KPI Cards actuelles + `<Progress>` répartition par statut + répartition par catégorie
+4. [x] Tab Présences : KPIs présences + graphe 30 jours (réutiliser `PresenceStatsTab` si créé)
+5. [x] Tab Crédits : total crédits, moyenne, top 5 bénévoles + barres Progress
+6. [x] Tab Activités : publiées et brouillons + répartition (statuts réellement définis par le domaine)
+7. [x] Appliquer `.glass` sur chaque section de tab
 
 Acceptance criteria:
-- [ ] Breadcrumb : Administration > Statistiques
-- [ ] 4 Tabs fonctionnels avec contenu réel
-- [ ] KPI Cards et Progress bars dans chaque tab
-- [ ] `pnpm typecheck` PASS
+- [x] Breadcrumb : Administration > Statistiques
+- [x] 4 Tabs fonctionnels avec contenu réel
+- [x] KPI Cards et Progress bars dans chaque tab
+- [x] `pnpm typecheck` PASS
 
 ---
 
 ### TASK-S-02: Tendances et indicateurs dynamiques
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte Dashboard & Statistiques
 **Depends on:** TASK-S-01
 
@@ -170,13 +170,13 @@ Files to create/modify:
 - Tabs créés en TASK-S-01
 
 Steps:
-1. [ ] Enrichir `getAdminStatistics()` avec : bénévoles ce mois vs mois dernier, présences cette semaine vs semaine dernière
-2. [ ] Afficher la tendance via `<Badge>` : `↑ +5` en vert / `↓ -2` en rouge
-3. [ ] Appliquer le badge sur les KPI Cards correspondantes
+1. [x] Enrichir `getAdminStatistics()` avec : bénévoles ce mois vs mois dernier, présences cette semaine vs semaine dernière
+2. [x] Afficher la tendance via `<Badge>` : `↑ +5` en vert / `↓ -2` en rouge
+3. [x] Appliquer le badge sur les KPI Cards correspondantes
 
 Acceptance criteria:
-- [ ] Tendances visibles sur les KPI Cards
-- [ ] `pnpm typecheck` PASS
+- [x] Tendances visibles sur les KPI Cards
+- [x] `pnpm typecheck` PASS
 
 ---
 
@@ -196,4 +196,8 @@ Acceptance criteria:
 - TypeScript : `pnpm typecheck` — PASS.
 - Lint ciblé des fichiers modifiés — PASS. Lint complet — PASS sans erreur (warnings existants).
 - Build : `pnpm build` — PASS, 34 routes statiques générées et routes dynamiques listées.
-- Reste : revue visuelle Chromium desktop/mobile.
+- Vérifications actuelles : TypeScript et lint ciblé PASS après les derniers changements.
+- Visuel automatisé omis conformément à la consigne utilisateur.
+
+- Dashboard : table récente complétée avec badges rôle/statut et date d’inscription; colonnes email/date masquées sur mobile.
+- Statistiques : les tendances apparaissent en badges directionnels; les états d’activité reflètent l’enum réelle Brouillon/Publié.

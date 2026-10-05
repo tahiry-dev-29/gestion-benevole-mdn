@@ -35,7 +35,7 @@ Ajouter Breadcrumb, consolider les filtres en DropdownMenu, moderniser les colon
 
 ## Parent task: Refonte sections secondaires
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Depends on:** Task 19 (TASK-DS-01)
 
 ---
@@ -44,7 +44,7 @@ Ajouter Breadcrumb, consolider les filtres en DropdownMenu, moderniser les colon
 
 ### TASK-A-01: Breadcrumb + DropdownMenu filter — Activités
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte sections secondaires
 **Depends on:** TASK-DS-01, TASK-DS-03
 
@@ -55,20 +55,20 @@ Files to create/modify:
 - `src/features/activites/presentation/activite-toolbar.tsx`
 
 Steps:
-1. [ ] `activites/page.tsx` : ajouter `<AdminBreadcrumb items={[{ label: "Administration", href: "/admin/dashboard" }, { label: "Activités" }]} />`
-2. [ ] `activite-toolbar.tsx` : identifier les filtres actuels (statut, type, date?) et les regrouper dans 1 `<DropdownMenu>` avec badge count + reset
-3. [ ] Appliquer `.glass-sm` sur le toolbar container
+1. [x] `activites/page.tsx` : ajouter `<AdminBreadcrumb items={[{ label: "Administration", href: "/admin/dashboard" }, { label: "Activités" }]} />`
+2. [x] `activite-toolbar.tsx` : identifier les filtres actuels (statut, type, date?) et les regrouper dans 1 `<DropdownMenu>` avec badge count + reset
+3. [x] Appliquer `.glass-sm` sur le toolbar container
 
 Acceptance criteria:
-- [ ] Breadcrumb : Administration > Activités
-- [ ] 1 bouton Filtres avec DropdownMenu
-- [ ] `pnpm typecheck` PASS
+- [x] Breadcrumb : Administration > Activités
+- [x] 1 bouton Filtres avec DropdownMenu
+- [x] `pnpm typecheck` PASS
 
 ---
 
 ### TASK-A-02: DropdownMenu actions colonnes — Activités
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte sections secondaires
 **Depends on:** None
 
@@ -78,13 +78,13 @@ Files to create/modify:
 - `src/features/activites/presentation/activite-columns.tsx`
 
 Steps:
-1. [ ] Identifier la colonne actions actuelle
-2. [ ] Remplacer par `<DropdownMenu>` avec : Voir · Modifier · Supprimer (destructif)
-3. [ ] `onDelete` passé depuis `ActivitesTable` vers `createActiviteColumns({ onDelete })`
+1. [x] Identifier la colonne actions actuelle
+2. [x] Remplacer par `<DropdownMenu>` avec : Voir · Modifier · Supprimer (destructif)
+3. [x] `onDelete` passé depuis `ActivitesTable` vers `createActiviteColumns({ onDelete })`
 
 Acceptance criteria:
-- [ ] DropdownMenu actions fonctionnel sur chaque ligne
-- [ ] `pnpm typecheck` PASS
+- [x] DropdownMenu actions fonctionnel sur chaque ligne
+- [x] `pnpm typecheck` PASS
 
 ---
 
@@ -92,7 +92,7 @@ Acceptance criteria:
 
 ### TASK-C-01: Breadcrumb + Tabs (Liste · Analytiques) — Crédits
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte sections secondaires
 **Depends on:** TASK-DS-01, TASK-DS-03
 
@@ -103,22 +103,22 @@ Files to create/modify:
 - `src/features/credit/tabs/credits-analytics-tab.tsx` (nouveau)
 
 Steps:
-1. [ ] `credits/page.tsx` : ajouter `<AdminBreadcrumb>` + entourer avec `<Tabs>` :
+1. [x] `credits/page.tsx` : ajouter `<AdminBreadcrumb>` + entourer avec `<Tabs>` :
    - Tab "liste" : `<CreditsList>`
    - Tab "analytiques" : `<CreditsAnalyticsTab>`
-2. [ ] `CreditsAnalyticsTab` : 3 Cards KPI (Total crédits, Moyenne/bénévole, Bénévole le mieux crédité) + tableau top 5 bénévoles par cumul
+2. [x] `CreditsAnalyticsTab` : 3 Cards KPI (Total crédits, Moyenne/bénévole, Bénévole le mieux crédité) + tableau top 5 bénévoles par cumul
 
 Acceptance criteria:
-- [ ] Breadcrumb : Administration > Crédits
-- [ ] 2 Tabs : Liste + Analytiques
-- [ ] Cards KPI dans Analytiques
-- [ ] `pnpm typecheck` PASS
+- [x] Breadcrumb : Administration > Crédits
+- [x] 2 Tabs : Liste + Analytiques
+- [x] Cards KPI dans Analytiques
+- [x] `pnpm typecheck` PASS
 
 ---
 
 ### TASK-C-02: DropdownMenu filter + actions colonnes — Crédits
 
-**Status:** TODO
+**Status:** IN_PROGRESS
 **Parent:** Refonte sections secondaires
 **Depends on:** None
 
@@ -127,13 +127,13 @@ Files to create/modify:
 - `src/features/credit/_components/credit-columns.tsx`
 
 Steps:
-1. [ ] `credit-filters.tsx` : consolider les filtres (bénévole, mois, type?) en 1 `<DropdownMenu>`
-2. [ ] `credit-columns.tsx` : remplacer actions simples par `<DropdownMenu>` : Modifier · Supprimer
+1. [x] `credit-filters.tsx` : consolider les filtres (bénévole, mois, type?) en 1 `<DropdownMenu>`
+2. [ ] `credit-columns.tsx` : `<DropdownMenu>` actif avec suppression. Modifier reste ouvert : aucune action de modification n’existe côté domaine/API, et le plan exclut les mutations métier.
 
 Acceptance criteria:
-- [ ] 1 bouton Filtres dans CreditsList
-- [ ] DropdownMenu actions dans chaque ligne
-- [ ] `pnpm typecheck` PASS
+- [x] 1 bouton Filtres dans CreditsList
+- [x] DropdownMenu actions dans chaque ligne
+- [x] `pnpm typecheck` PASS
 
 ---
 
@@ -141,7 +141,7 @@ Acceptance criteria:
 
 ### TASK-O-01: Breadcrumb + Tabs (Mes obs · Toutes) + DropdownMenu filter
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte sections secondaires
 **Depends on:** TASK-DS-01, TASK-DS-03
 
@@ -150,23 +150,23 @@ Files to create/modify:
 - `src/features/observation/_components/observation-filters.tsx`
 
 Steps:
-1. [ ] Ajouter `<AdminBreadcrumb items={[..., { label: "Observations" }]} />`
-2. [ ] Entourer avec `<Tabs>` :
+1. [x] Ajouter `<AdminBreadcrumb items={[..., { label: "Observations" }]} />`
+2. [x] Entourer avec `<Tabs>` :
    - "mes-observations" : observations filtrées par `currentUserId`
    - "toutes" : toutes les observations (si isAdmin)
-3. [ ] `observation-filters.tsx` : consolider en 1 `<DropdownMenu>` (bénévole, période, type?)
+3. [x] `observation-filters.tsx` : consolider en 1 `<DropdownMenu>` (bénévole, période, type?)
 
 Acceptance criteria:
-- [ ] Breadcrumb présent
-- [ ] Tabs Mes observations / Toutes (conditionnellement visible selon le rôle)
-- [ ] 1 bouton Filtres
-- [ ] `pnpm typecheck` PASS
+- [x] Breadcrumb présent
+- [x] Tabs Mes observations / Toutes (conditionnellement visible selon le rôle)
+- [x] 1 bouton Filtres
+- [x] `pnpm typecheck` PASS
 
 ---
 
 ### TASK-O-02: DropdownMenu actions colonnes — Observations
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte sections secondaires
 **Depends on:** None
 
@@ -174,11 +174,11 @@ Files to create/modify:
 - `src/features/observation/_components/observation-columns.tsx`
 
 Steps:
-1. [ ] Remplacer actions simples par `<DropdownMenu>` : Voir · Modifier · Supprimer
+1. [x] Remplacer actions simples par `<DropdownMenu>` : Voir · Modifier · Supprimer
 
 Acceptance criteria:
-- [ ] DropdownMenu actions fonctionnel
-- [ ] `pnpm typecheck` PASS
+- [x] DropdownMenu actions fonctionnel
+- [x] `pnpm typecheck` PASS
 
 ---
 
@@ -186,7 +186,7 @@ Acceptance criteria:
 
 ### TASK-T-01: Breadcrumb + DropdownMenu filter — Partages
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte sections secondaires
 **Depends on:** TASK-DS-01, TASK-DS-03
 
@@ -195,30 +195,30 @@ Files to create/modify:
 - `src/features/partages/presentation/partage-toolbar.tsx`
 
 Steps:
-1. [ ] Ajouter `<AdminBreadcrumb items={[..., { label: "Partages" }]} />`
-2. [ ] `partage-toolbar.tsx` : consolider filtres en 1 `<DropdownMenu>`
+1. [x] Ajouter `<AdminBreadcrumb items={[..., { label: "Partages" }]} />`
+2. [x] `partage-toolbar.tsx` : consolider filtres en 1 `<DropdownMenu>`
 
 Acceptance criteria:
-- [ ] Breadcrumb présent
-- [ ] 1 bouton Filtres
-- [ ] `pnpm typecheck` PASS
+- [x] Breadcrumb présent
+- [x] 1 bouton Filtres
+- [x] `pnpm typecheck` PASS
 
 ---
 
 ### TASK-T-02: DropdownMenu actions colonnes — Partages
 
-**Status:** TODO
+**Status:** DONE
 **Parent:** Refonte sections secondaires
 
 Files to create/modify:
 - `src/features/partages/presentation/partage-columns.tsx`
 
 Steps:
-1. [ ] Remplacer actions par `<DropdownMenu>` : Modifier · Supprimer
+1. [x] Remplacer actions par `<DropdownMenu>` : Modifier · Supprimer
 
 Acceptance criteria:
-- [ ] DropdownMenu actions fonctionnel
-- [ ] `pnpm typecheck` PASS
+- [x] DropdownMenu actions fonctionnel
+- [x] `pnpm typecheck` PASS
 
 ---
 
@@ -240,4 +240,6 @@ Acceptance criteria:
 - Build : `pnpm build` — PASS.
 - Onglets Mes observations / Toutes ajoutés (admin voit les deux; Mes observations filtre par auteur).
 - Actions Activités et Partages déjà accessibles via leurs menus dédiés; actions Crédits/Observations regroupées également.
-- À compléter : vérification visuelle.
+- Visuel automatisé omis conformément à la consigne utilisateur; le code est contrôlé par lint ciblé et typecheck.
+
+- Revue UI : analytics Crédits présente désormais le meilleur bénévole et respecte le filtre actif; Observations propose un aperçu Sheet complet.
