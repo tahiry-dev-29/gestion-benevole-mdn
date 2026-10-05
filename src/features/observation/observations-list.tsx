@@ -1,30 +1,21 @@
 "use client";
 
 import * as React from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { ClipboardList, UserRound } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { ObservationItem } from "@/features/observation/observation-queries.action";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TableCard } from "@/features/admin/table-card";
-import {
-  deleteObservationAction,
-  updateObservationAction,
-} from "@/features/observation/observation.action";
-import {
-  listObservationsAction,
-  type ObservationItem,
-} from "@/features/observation/observation-queries.action";
+  useDeleteObservation,
+  useObservations,
+} from "@/features/observation/use-observations";
 
+import { EditObservationDialog } from "./_components/edit-observation-dialog";
 import { ObservationFilters } from "./_components/observation-filters";
-import { ObservationRow } from "./_components/observation-row";
+import { ObservationTable } from "./_components/observation-table";
 
 interface User {
   id: number;
@@ -51,72 +42,32 @@ export function ObservationsList({
   const [filterAnnee, setFilterAnnee] = React.useState<number | undefined>(
     CURRENT_YEAR
   );
-  const [editingId, setEditingId] = React.useState<number | null>(null);
-  const [editContenu, setEditContenu] = React.useState("");
+  const [editingObs, setEditingObs] = React.useState<ObservationItem | null>(
+    null
+  );
   const [deleteTarget, setDeleteTarget] = React.useState<number | null>(null);
 
-  const observationsQuery = useQuery({
-    queryKey: ["observations", filterUserId, filterMois, filterAnnee],
-    queryFn: async () => {
-      const res = await listObservationsAction({
-        userId: filterUserId,
-        mois: filterMois,
-        annee: filterAnnee,
-      });
-      if (!res.success) throw new Error(res.error);
-      return res.data ?? [];
-    },
+  const observationsQuery = useObservations({
+    userId: filterUserId,
+    mois: filterMois,
+    annee: filterAnnee,
   });
-  const observations = observationsQuery.data ?? [];
-
-  const updateMutation = useMutation({
-    mutationFn: async (input: { observationId: number; contenu: string }) => {
-      const result = await updateObservationAction(input);
-      if (!result.success) throw new Error(result.error);
-      return result.data;
-    },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["observations"] }),
-  });
-  const deleteMutation = useMutation({
-    mutationFn: async (observationId: number) => {
-      const result = await deleteObservationAction({ observationId });
-      if (!result.success) throw new Error(result.error);
-    },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["observations"] }),
-  });
+  const deleteObservation = useDeleteObservation();
 
   function handleRefresh() {
     void queryClient.invalidateQueries({ queryKey: ["observations"] });
   }
 
-  function canModify(obs: ObservationItem) {
-    return isAdmin || obs.auteurId === currentUserId;
-  }
-
-  async function handleSaveEdit(obs: ObservationItem) {
-    if (!editContenu.trim()) return;
-    try {
-      await updateMutation.mutateAsync({
-        observationId: obs.id,
-        contenu: editContenu,
-      });
-      toast.success("Observation mise à jour");
-      setEditingId(null);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Erreur");
-    }
-  }
-
   async function handleDelete() {
     if (!deleteTarget) return;
     try {
-      await deleteMutation.mutateAsync(deleteTarget);
+      await deleteObservation.mutateAsync(deleteTarget);
       toast.success("Observation supprimée");
       setDeleteTarget(null);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Erreur");
+      toast.error(
+        error instanceof Error ? error.message : "Erreur de suppression"
+      );
     }
   }
 
@@ -127,72 +78,75 @@ export function ObservationsList({
         filterUserId={filterUserId}
         filterMois={filterMois}
         filterAnnee={filterAnnee}
+        isFetching={observationsQuery.isFetching}
         onFilterUserChange={setFilterUserId}
         onFilterMoisChange={setFilterMois}
         onFilterAnneeChange={setFilterAnnee}
         onRefresh={handleRefresh}
       />
 
-      <TableCard title="Historique des observations">
-        {observationsQuery.isPending ? (
-          <p role="status" className="p-4 text-sm text-muted-foreground">
-            Chargement des observations…
-          </p>
+      {observationsQuery.isError ? (
+        <div
+          role="alert"
+          className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+        >
+          {observationsQuery.error.message}
+        </div>
+      ) : null}
+
+      <Tabs
+        defaultValue={isAdmin ? "miennes" : "toutes"}
+        className="grid gap-4"
+      >
+        <TabsList className="glass-sm h-auto w-fit gap-1 p-1">
+          {isAdmin ? (
+            <TabsTrigger value="miennes" className="min-h-10 gap-2 px-3">
+              <UserRound aria-hidden="true" />
+              Mes observations
+            </TabsTrigger>
+          ) : null}
+          <TabsTrigger value="toutes" className="min-h-10 gap-2 px-3">
+            <ClipboardList aria-hidden="true" />
+            Toutes
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="toutes">
+          <ObservationTable
+            observations={observationsQuery.data ?? []}
+            isLoading={observationsQuery.isPending}
+            currentUserId={currentUserId}
+            isAdmin={isAdmin}
+            onEdit={setEditingObs}
+            onDelete={setDeleteTarget}
+          />
+        </TabsContent>
+        {isAdmin ? (
+          <TabsContent value="miennes">
+            <ObservationTable
+              observations={(observationsQuery.data ?? []).filter(
+                (item) => item.auteurId === currentUserId
+              )}
+              isLoading={observationsQuery.isPending}
+              currentUserId={currentUserId}
+              isAdmin={isAdmin}
+              onEdit={setEditingObs}
+              onDelete={setDeleteTarget}
+            />
+          </TabsContent>
         ) : null}
-        {observationsQuery.isError ? (
-          <p role="alert" className="p-4 text-sm text-destructive">
-            {observationsQuery.error.message}
-          </p>
-        ) : null}
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Bénévole</TableHead>
-              <TableHead>Période</TableHead>
-              <TableHead>Observation</TableHead>
-              <TableHead>Auteur</TableHead>
-              <TableHead className="w-24" />
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {observations.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="text-center text-muted-foreground py-8"
-                >
-                  Aucune observation pour les filtres sélectionnés
-                </TableCell>
-              </TableRow>
-            ) : (
-              observations.map((obs) => (
-                <ObservationRow
-                  key={obs.id}
-                  obs={obs}
-                  canModify={canModify(obs)}
-                  isEditing={editingId === obs.id}
-                  editContenu={editContenu}
-                  isSaving={updateMutation.isPending}
-                  onStartEdit={() => {
-                    setEditingId(obs.id);
-                    setEditContenu(obs.contenu);
-                  }}
-                  onCancelEdit={() => setEditingId(null)}
-                  onEditChange={setEditContenu}
-                  onSaveEdit={() => handleSaveEdit(obs)}
-                  onDeleteClick={() => setDeleteTarget(obs.id)}
-                />
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableCard>
+      </Tabs>
+
+      <EditObservationDialog
+        observation={editingObs}
+        open={editingObs !== null}
+        onOpenChange={(open) => !open && setEditingObs(null)}
+      />
 
       <ConfirmDeleteDialog
         open={deleteTarget !== null}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
         onConfirm={handleDelete}
-        isPending={deleteMutation.isPending}
+        isPending={deleteObservation.isPending}
         title="Supprimer cette observation ?"
         description="Cette observation sera définitivement supprimée."
       />

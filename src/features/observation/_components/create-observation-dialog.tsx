@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Loader2, PenLine } from "lucide-react";
 import { toast } from "sonner";
 
@@ -23,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createObservationAction } from "@/features/observation/observation.action";
+import { Textarea } from "@/components/ui/textarea";
 import {
   CURRENT_MONTH,
   CURRENT_YEAR,
@@ -32,6 +31,7 @@ import {
   type CreateObservationInput,
   createObservationSchema,
 } from "@/features/observation/observation.schema";
+import { useCreateObservation } from "@/features/observation/use-observations";
 
 import { PeriodSelects } from "./period-selects";
 
@@ -51,14 +51,7 @@ export function CreateObservationDialog({
   onCreated,
 }: CreateObservationDialogProps) {
   const [open, setOpen] = React.useState(false);
-  const createObservation = useMutation({
-    mutationFn: async (values: CreateObservationInput) => {
-      const result = await createObservationAction(values);
-      if (!result.success) throw new Error(result.error);
-      return result.data;
-    },
-  });
-
+  const createObservation = useCreateObservation();
   const [charCount, setCharCount] = React.useState(0);
 
   const {
@@ -99,7 +92,7 @@ export function CreateObservationDialog({
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="glass-xl sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <PenLine className="size-5" />
@@ -153,11 +146,11 @@ export function CreateObservationDialog({
                   ({charCount}/1000)
                 </span>
               </Label>
-              <textarea
+              <Textarea
                 id="contenu"
                 rows={4}
                 maxLength={1000}
-                className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+                className="resize-none"
                 placeholder="Notes sur le bénévole ce mois..."
                 {...register("contenu", {
                   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => {
