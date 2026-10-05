@@ -35,7 +35,7 @@ Plan file: `../plans/plan-002_design_system_ui_refonte.md`
 | 19 | Design system & prérequis globaux | ✅ DONE | — | Tabs/Breadcrumb déjà présents; Popover Radix ajouté; AdminBreadcrumb partagé; typecheck PASS |
 | 20 | Users UI refonte | ✅ DONE | 19 | Table responsive 768px, filtres menu, onglets, breadcrumb, tri/actions/quick view, fiches et Analytics vérifiés Chromium |
 | 21 | Bénévoles UI refonte | ✅ DONE | 19 | Tabs, breadcrumb, filtres groupés, actions contextuelles, fiche à onglets; TypeScript PASS |
-| 22 | Présences UI refonte | 🟡 IN_PROGRESS | 19 | UI Pointage/Historique/Stats + breadcrumb; TypeScript PASS; revue visuelle restante |
+| 22 | Présences UI refonte | ✅ DONE | 19 | Pointage/Historique/Stats, filtres date+bénévole, KPIs + graphe 30j; typecheck et lint ciblé PASS |
 | 23 | Activités, Crédits, Observations, Partages UI | 🟡 IN_PROGRESS | 19 | Breadcrumbs, filtres, menus, analytics crédits, tabs observations, Sheet partage; typecheck/build PASS; reste revue visuelle |
 | 24 | Dashboard & Statistiques UI | 🟡 IN_PROGRESS | 19 | Cards/DataTable/Breadcrumb, 4 tabs et agrégats + tendances; typecheck/lint/build PASS; reste revue visuelle |
 | 25 | Observations, Partages, Temoignages, Places, Sprints, Paramètres | 🟡 IN_PROGRESS | 19 | Breadcrumbs et glass sur routes bonus, aperçu Sheet; typecheck/lint/build PASS; actions Témoignages faites (typecheck/lint ciblé PASS); reste revue visuelle |
