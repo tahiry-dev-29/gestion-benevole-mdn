@@ -2,9 +2,11 @@
 
 import * as React from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { BarChart3, ListFilter } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useCredits,
   useCreditTotals,
@@ -14,6 +16,7 @@ import {
 import { CreditFilters } from "./_components/credit-filters";
 import { CreditTable } from "./_components/credit-table";
 import { CreditTotals } from "./_components/credit-totals";
+import { CreditsAnalyticsTab } from "./tabs/credits-analytics-tab";
 
 interface User {
   id: number;
@@ -35,6 +38,7 @@ export function CreditsList({ benevoles }: CreditsListProps) {
     CURRENT_YEAR
   );
   const [deleteTarget, setDeleteTarget] = React.useState<number | null>(null);
+
   const creditsQuery = useCredits({
     userId: filterUserId,
     mois: filterMois,
@@ -42,8 +46,10 @@ export function CreditsList({ benevoles }: CreditsListProps) {
   });
   const totalsQuery = useCreditTotals({ mois: filterMois, annee: filterAnnee });
   const deleteCredit = useDeleteCredit();
+
   const credits = creditsQuery.data ?? [];
   const cumulData = totalsQuery.data ?? { parBenevole: [], totalGlobal: 0 };
+  const isFetching = creditsQuery.isFetching || totalsQuery.isFetching;
 
   function handleRefresh() {
     void queryClient.invalidateQueries({ queryKey: ["credits"] });
@@ -70,29 +76,48 @@ export function CreditsList({ benevoles }: CreditsListProps) {
         filterUserId={filterUserId}
         filterMois={filterMois}
         filterAnnee={filterAnnee}
+        isFetching={isFetching}
         onFilterUserChange={setFilterUserId}
         onFilterMoisChange={setFilterMois}
         onFilterAnneeChange={setFilterAnnee}
         onRefresh={handleRefresh}
       />
 
-      <CreditTotals
-        totalGlobal={cumulData.totalGlobal}
-        cumul={cumulData.parBenevole}
-      />
-
-      <CreditTable credits={credits} onDeleteClick={setDeleteTarget} />
-
-      {creditsQuery.isPending || totalsQuery.isPending ? (
-        <p role="status" className="text-sm text-muted-foreground">
-          Chargement des crédits…
-        </p>
-      ) : null}
-      {creditsQuery.isError || totalsQuery.isError ? (
-        <p role="alert" className="text-sm text-destructive">
-          {creditsQuery.error?.message ?? totalsQuery.error?.message}
-        </p>
-      ) : null}
+      <Tabs defaultValue="liste" className="grid gap-5">
+        <TabsList className="glass-sm h-auto w-full justify-start gap-1 p-1 sm:w-fit">
+          <TabsTrigger value="liste" className="min-h-10 gap-2 px-3">
+            <ListFilter aria-hidden="true" /> Liste
+          </TabsTrigger>
+          <TabsTrigger value="analytiques" className="min-h-10 gap-2 px-3">
+            <BarChart3 aria-hidden="true" /> Analytiques
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="liste" className="grid gap-5">
+          <CreditTotals
+            totalGlobal={cumulData.totalGlobal}
+            cumul={cumulData.parBenevole}
+          />
+          {creditsQuery.isError || totalsQuery.isError ? (
+            <div
+              role="alert"
+              className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+            >
+              {creditsQuery.error?.message ?? totalsQuery.error?.message}
+            </div>
+          ) : null}
+          <CreditTable
+            credits={credits}
+            isLoading={creditsQuery.isPending}
+            onDeleteClick={setDeleteTarget}
+          />
+        </TabsContent>
+        <TabsContent value="analytiques">
+          <CreditsAnalyticsTab
+            cumul={cumulData.parBenevole}
+            totalGlobal={cumulData.totalGlobal}
+          />
+        </TabsContent>
+      </Tabs>
 
       <ConfirmDeleteDialog
         open={deleteTarget !== null}

@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
+import { creditPeriod } from "@/features/credit/credit.utils";
 import { prisma } from "@/lib/prisma";
 
 function isAdminRole(role?: string | null): boolean {
@@ -29,17 +30,19 @@ export async function GET(request: NextRequest) {
     const mois = parseInt(moisParam, 10);
     const annee = parseInt(anneeParam, 10);
     if (!isNaN(mois) && !isNaN(annee)) {
+      const range = creditPeriod(annee, mois);
       where.date = {
-        gte: new Date(annee, mois - 1, 1),
-        lt: new Date(annee, mois, 1),
+        gte: range.from,
+        lt: range.to,
       };
     }
   } else if (anneeParam) {
     const annee = parseInt(anneeParam, 10);
     if (!isNaN(annee)) {
+      const range = creditPeriod(annee);
       where.date = {
-        gte: new Date(annee, 0, 1),
-        lt: new Date(annee + 1, 0, 1),
+        gte: range.from,
+        lt: range.to,
       };
     }
   }
