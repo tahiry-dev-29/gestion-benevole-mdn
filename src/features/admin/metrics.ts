@@ -173,6 +173,7 @@ export async function getAdminStatistics() {
   return {
     activeVolunteers,
     publishedActivities,
+    volunteersThisMonth,
     totalCredits: credits._sum.montant ?? 0,
     presentToday,
     volunteerStatuses: volunteerStatuses.map((row) => ({

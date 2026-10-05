@@ -74,14 +74,14 @@ export function AdminSidebar() {
       collapsible="icon"
       className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground h-full transition-colors"
     >
-      <SidebarHeader className="border-b border-sidebar-border/40 pb-3">
+      <SidebarHeader className="border-b border-sidebar-border/40 pb-3 group-data-[collapsible=icon]:px-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
               className="hover:bg-transparent cursor-default"
             >
-              <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-card border border-border shadow-xs shrink-0 overflow-hidden">
+              <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-card border border-border shadow-xs shrink-0 overflow-hidden group-data-[collapsible=icon]:size-8">
                 <Image
                   src="/logo.png"
                   alt="Logo"
@@ -108,7 +108,7 @@ export function AdminSidebar() {
           <NavMain key={group.label} label={group.label} items={group.items} />
         ))}
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border/40 p-2">
+      <SidebarFooter className="border-t border-sidebar-border/40 p-2 group-data-[collapsible=icon]:px-0">
         <NavUser user={currentUser} />
       </SidebarFooter>
       <SidebarRail />

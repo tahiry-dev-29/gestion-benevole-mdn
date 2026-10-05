@@ -13,7 +13,7 @@ export function StatsCreditsPanel({
   const average = users.length ? total / users.length : 0;
   return (
     <div className="grid gap-4">
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
         <StatsCard title="Crédits attribués" value={`${total.toFixed(2)} €`} />
         <StatsCard
           title="Moyenne par bénévole crédité"

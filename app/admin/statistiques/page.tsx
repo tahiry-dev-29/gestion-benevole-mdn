@@ -25,17 +25,29 @@ export default async function StatistiquesPage() {
         description="Une lecture claire de l’activité associative."
       />
       <Tabs defaultValue="benevoles" className="grid gap-5">
-        <TabsList className="glass-sm flex h-auto w-full max-w-full justify-start gap-1 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:w-fit">
-          <TabsTrigger value="benevoles" className="min-h-10 gap-2 px-3">
+        <TabsList className="glass-sm grid h-auto w-full max-w-full grid-cols-2 justify-start gap-1 p-1 sm:flex sm:w-fit">
+          <TabsTrigger
+            value="benevoles"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <Users aria-hidden="true" /> Bénévoles
           </TabsTrigger>
-          <TabsTrigger value="presences" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="presences"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <CalendarCheck aria-hidden="true" /> Présences
           </TabsTrigger>
-          <TabsTrigger value="credits" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="credits"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <Coins aria-hidden="true" /> Crédits
           </TabsTrigger>
-          <TabsTrigger value="activites" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="activites"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <CalendarDays aria-hidden="true" /> Activités
           </TabsTrigger>
         </TabsList>
@@ -43,6 +55,7 @@ export default async function StatistiquesPage() {
           <StatsVolunteerPanel
             statuses={metrics.volunteerStatuses}
             categories={metrics.volunteerCategories}
+            newThisMonth={metrics.volunteersThisMonth}
             trend={metrics.trends.volunteers}
           />
         </TabsContent>

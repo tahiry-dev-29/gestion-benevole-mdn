@@ -18,7 +18,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { isRole } from "@/lib/rbac";
 import { cn } from "@/lib/utils";
@@ -30,7 +29,6 @@ function isActive(pathname: string, url: string) {
 }
 
 export function GestionGroup() {
-  const { state } = useSidebar();
   const pathname = usePathname();
   const { data: session } = useSession();
   const sessionRole = session?.user?.role;
@@ -50,10 +48,9 @@ export function GestionGroup() {
     .filter((item) => !item.items || item.items.length > 0);
 
   const activeItem = items.find((item) => isActive(pathname, item.url));
-  const isCollapsed = state === "collapsed";
 
   return (
-    <SidebarGroup className="py-1">
+    <SidebarGroup className="py-1 group-data-[collapsible=icon]:px-0">
       <SidebarGroupLabel className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/75 px-3 py-1.5 h-auto">
         Gestion
       </SidebarGroupLabel>

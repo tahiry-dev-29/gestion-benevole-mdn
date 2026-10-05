@@ -70,7 +70,8 @@ export function StatsCard({
             className={`mt-2 text-xs font-medium ${trend === 0 ? "text-muted-foreground" : trend !== undefined && trend < 0 ? "text-destructive" : "text-primary"}`}
             aria-label={caption}
           >
-            {trend === 0 ? "→" : trend !== undefined && trend < 0 ? "↓" : "↑"} {trendLabel}
+            {trend === 0 ? "→" : trend !== undefined && trend < 0 ? "↓" : "↑"}{" "}
+            {trendLabel}
           </p>
         ) : caption ? (
           <p className="mt-1 text-xs text-muted-foreground">{caption}</p>

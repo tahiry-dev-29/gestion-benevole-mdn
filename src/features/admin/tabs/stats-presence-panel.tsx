@@ -17,10 +17,32 @@ export function StatsPresencePanel({
   const dailyAverage = days.length ? total / days.length : 0;
   return (
     <div className="grid gap-4">
-      <section className="grid gap-3 sm:grid-cols-3" aria-label="Indicateurs de présence">
-        <StatsCard title="Aujourd’hui" value={String(today)} caption="Pointages présents" />
-        <StatsCard title="Sur 30 jours" value={String(total)} caption="Présences enregistrées" />
-        <StatsCard title="Moyenne quotidienne" value={dailyAverage.toFixed(1)} trend={trend} trendLabel={`${trend > 0 ? "+" : ""}${trend} cette semaine`} caption="Variation des 7 jours vs la semaine précédente" />
+      <section
+        className="grid grid-cols-2 gap-3 xl:grid-cols-4"
+        aria-label="Indicateurs de présence"
+      >
+        <StatsCard
+          title="Aujourd’hui"
+          value={String(today)}
+          caption="Pointages présents"
+        />
+        <StatsCard
+          title="Sur 30 jours"
+          value={String(total)}
+          caption="Présences enregistrées"
+        />
+        <StatsCard
+          title="Moyenne par jour"
+          value={dailyAverage.toFixed(1)}
+          caption="Sur les 30 derniers jours"
+        />
+        <StatsCard
+          title="Écart hebdomadaire"
+          value={`${trend > 0 ? "+" : ""}${trend}`}
+          trend={trend}
+          trendLabel="vs semaine précédente"
+          caption="Pointages présents"
+        />
       </section>
       <Card className="glass-sm">
         <CardHeader>
