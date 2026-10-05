@@ -13,7 +13,7 @@ export function UserCreateIdentityFields({
   return (
     <>
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="prenom">Prénom *</Label>
           <Input
             id="prenom"
@@ -23,7 +23,7 @@ export function UserCreateIdentityFields({
             placeholder="Ex: Jean"
           />
         </div>
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="nom">Nom *</Label>
           <Input
             id="nom"
@@ -34,7 +34,7 @@ export function UserCreateIdentityFields({
           />
         </div>
       </div>
-      <div className="space-y-1.5">
+      <div className="flex flex-col gap-1.5">
         <Label htmlFor="email">Email *</Label>
         <Input
           id="email"
@@ -46,7 +46,7 @@ export function UserCreateIdentityFields({
         />
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="matricule">Matricule *</Label>
           <Input
             id="matricule"
@@ -55,7 +55,7 @@ export function UserCreateIdentityFields({
             onChange={(e) => onChange({ matricule: e.target.value })}
           />
         </div>
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="telephone">Téléphone / WhatsApp *</Label>
           <Input
             id="telephone"

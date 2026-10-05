@@ -8,8 +8,8 @@ export function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-      <h2 className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+    <section className="glass-sm flex flex-col gap-5 rounded-lg p-4 sm:p-6">
+      <h2 className="border-b pb-3 text-sm font-semibold text-foreground">
         {title}
       </h2>
       {children}
@@ -27,10 +27,14 @@ export function FormField({
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-xs text-slate-300">{label}</Label>
+    <div className="flex flex-col gap-1.5">
+      <Label className="text-sm font-medium text-foreground">{label}</Label>
       {children}
-      {error ? <p className="text-[11px] text-destructive">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

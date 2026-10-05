@@ -56,7 +56,7 @@ export function CreateUserModal({
 }: CreateUserModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md bg-slate-900 border-slate-800 text-slate-100">
+      <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold">
             Ajouter un utilisateur
@@ -64,7 +64,7 @@ export function CreateUserModal({
         </DialogHeader>
 
         {formError && (
-          <div className="p-3 text-xs bg-red-950/60 border border-red-800 text-red-300 rounded-lg">
+          <div className="p-3 text-xs rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
             {formError}
           </div>
         )}
@@ -87,17 +87,19 @@ export function CreateUserModal({
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs text-slate-300">Genre</Label>
+                <Label className="text-sm font-medium text-foreground">
+                  Genre
+                </Label>
                 <Select
                   value={formData.sexe}
                   onValueChange={(v) =>
                     setFormData({ ...formData, sexe: v ?? "" })
                   }
                 >
-                  <SelectTrigger className="bg-slate-950/60 border-slate-800 text-slate-200 h-9">
+                  <SelectTrigger className="min-h-11 bg-background">
                     <SelectValue placeholder="Choisir" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
+                  <SelectContent className="">
                     <SelectItem value="Masculin">Masculin</SelectItem>
                     <SelectItem value="Féminin">Féminin</SelectItem>
                     <SelectItem value="Non précisé">Non précisé</SelectItem>
@@ -108,7 +110,10 @@ export function CreateUserModal({
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="age" className="text-xs text-slate-300">
+                <Label
+                  htmlFor="age"
+                  className="text-sm font-medium text-foreground"
+                >
                   Âge
                 </Label>
                 <Input
@@ -121,12 +126,15 @@ export function CreateUserModal({
                     setFormData({ ...formData, age: e.target.value })
                   }
                   placeholder="25"
-                  className="bg-slate-950/60 border-slate-800 text-slate-200"
+                  className="min-h-11 bg-background"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="contact" className="text-xs text-slate-300">
+                <Label
+                  htmlFor="contact"
+                  className="text-sm font-medium text-foreground"
+                >
                   Contact
                 </Label>
                 <Input
@@ -136,13 +144,15 @@ export function CreateUserModal({
                     setFormData({ ...formData, contact: e.target.value })
                   }
                   placeholder="034 00 000 00"
-                  className="bg-slate-950/60 border-slate-800 text-slate-200"
+                  className="min-h-11 bg-background"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs text-slate-300">Catégorie</Label>
+              <Label className="text-sm font-medium text-foreground">
+                Catégorie
+              </Label>
               <Select
                 value={formData.categorie}
                 onValueChange={(v) =>
@@ -152,10 +162,10 @@ export function CreateUserModal({
                   })
                 }
               >
-                <SelectTrigger className="bg-slate-950/60 border-slate-800 text-slate-200 h-9">
+                <SelectTrigger className="min-h-11 bg-background">
                   <SelectValue placeholder="Sélectionner une catégorie" />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-slate-800 text-slate-200">
+                <SelectContent className="">
                   <SelectItem value="PRIMAIRE">Primaire</SelectItem>
                   <SelectItem value="COLLEGIEN">Collégien</SelectItem>
                   <SelectItem value="UNIVERSITAIRE">Universitaire</SelectItem>
@@ -168,7 +178,7 @@ export function CreateUserModal({
               <div className="space-y-1.5">
                 <Label
                   htmlFor="etablissement"
-                  className="text-xs text-slate-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   École / établissement
                 </Label>
@@ -179,7 +189,7 @@ export function CreateUserModal({
                     setFormData({ ...formData, etablissement: e.target.value })
                   }
                   placeholder="Lycée / Université"
-                  className="bg-slate-950/60 border-slate-800 text-slate-200"
+                  className="min-h-11 bg-background"
                 />
               </div>
 
@@ -195,7 +205,10 @@ export function CreateUserModal({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="facebook" className="text-xs text-slate-300">
+                <Label
+                  htmlFor="facebook"
+                  className="text-sm font-medium text-foreground"
+                >
                   Facebook
                 </Label>
                 <Input
@@ -205,7 +218,7 @@ export function CreateUserModal({
                     setFormData({ ...formData, facebook: e.target.value })
                   }
                   placeholder="Lien ou Nom Facebook"
-                  className="bg-slate-950/60 border-slate-800 text-slate-200"
+                  className="min-h-11 bg-background"
                 />
               </div>
             </div>
@@ -248,14 +261,14 @@ export function CreateUserModal({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="bg-slate-950/60 border-slate-800 text-slate-300 hover:bg-slate-800"
+                className="min-h-11"
               >
                 Annuler
               </Button>
               <Button
                 type="submit"
                 disabled={isPending}
-                className="bg-cyan-600 hover:bg-cyan-500 text-white font-medium gap-2"
+                className="min-h-11 gap-2"
               >
                 {isPending && <Loader2 className="size-4 animate-spin" />}
                 Créer l&apos;utilisateur

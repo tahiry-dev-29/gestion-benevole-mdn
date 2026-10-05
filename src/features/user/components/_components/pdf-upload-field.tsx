@@ -60,8 +60,8 @@ export function PdfUploadField({
   });
 
   return (
-    <div className="space-y-2">
-      <label htmlFor={id} className="text-xs text-slate-300">
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="text-sm font-medium text-foreground">
         {label} (PDF, 5 Mo maximum)
       </label>
       <Input
@@ -74,7 +74,7 @@ export function PdfUploadField({
           if (file) upload.mutate(file);
           event.currentTarget.value = "";
         }}
-        className="bg-slate-950/60 border-slate-800 text-slate-200 text-sm"
+        className="min-h-11 bg-background"
       />
       {upload.isPending ? (
         <p
@@ -89,7 +89,7 @@ export function PdfUploadField({
           href={value}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs text-cyan-400 underline"
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4"
         >
           <ExternalLink className="size-3.5" /> Voir le PDF
         </a>

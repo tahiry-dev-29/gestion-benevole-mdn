@@ -75,43 +75,52 @@ export const createUserSchema = z
   );
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type CreateUserFormInput = z.input<typeof createUserSchema>;
 
 // Schéma de mise à jour (similaire, email non modifiable ici)
-export const updateUserSchema = z.object({
-  nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-  email: z.string().email("Adresse email invalide"),
-  sexe: SexeEnum.optional(),
-  matricule: z.string().min(1, "Le matricule est requis"),
-  telephone: z.string().min(1, "Le téléphone est requis"),
-  materielPC: z.boolean(),
-  accepteRegles: z.boolean(),
-  spinneret: z.string().trim().min(1, "Le spinneret est requis").optional(),
-  etablissement: z.string().optional(),
-  societe: z.string().optional(),
-  age: z.coerce.number().int().min(1).max(120).optional(),
-  dateNaissance: z.string().optional(),
-  socialProfile: z.string().url("URL invalide").optional().or(z.literal("")),
-  cvUrl: z
-    .string()
-    .optional()
-    .refine((v) => !v || v.endsWith(".pdf"), {
-      message: "Le CV doit être un fichier PDF",
-    }),
-  certificatUrl: z
-    .string()
-    .optional()
-    .refine((v) => !v || v.endsWith(".pdf"), {
-      message: "Le certificat doit être un fichier PDF",
-    }),
-  siteWeb: z.string().url("URL invalide").optional().or(z.literal("")),
-  joursDisponibles: z.array(z.string()).optional(),
-  disponibilites: jsonSchema.optional(),
-  contactUrgence: z.string().optional(),
-  facebook: z.string().optional(),
-  categorie: CategoryEnum.optional(),
-  statut: z.enum(["ACTIF", "INACTIF"]).optional(),
-});
+export const updateUserSchema = z
+  .object({
+    nom: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
+    prenom: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
+    email: z.string().email("Adresse email invalide"),
+    sexe: SexeEnum.optional(),
+    matricule: z.string().min(1, "Le matricule est requis"),
+    telephone: z.string().min(1, "Le téléphone est requis"),
+    materielPC: z.boolean(),
+    accepteRegles: z.boolean(),
+    spinneret: z.string().trim().min(1, "Le spinneret est requis").optional(),
+    etablissement: z.string().optional(),
+    societe: z.string().optional(),
+    age: z.coerce.number().int().min(1).max(120).optional(),
+    dateNaissance: z.string().optional(),
+    socialProfile: z.string().url("URL invalide").optional().or(z.literal("")),
+    cvUrl: z
+      .string()
+      .optional()
+      .refine((v) => !v || v.endsWith(".pdf"), {
+        message: "Le CV doit être un fichier PDF",
+      }),
+    certificatUrl: z
+      .string()
+      .optional()
+      .refine((v) => !v || v.endsWith(".pdf"), {
+        message: "Le certificat doit être un fichier PDF",
+      }),
+    siteWeb: z.string().url("URL invalide").optional().or(z.literal("")),
+    joursDisponibles: z.array(z.string()).optional(),
+    disponibilites: jsonSchema.optional(),
+    contactUrgence: z.string().optional(),
+    facebook: z.string().optional(),
+    categorie: CategoryEnum.optional(),
+    statut: z.enum(["ACTIF", "INACTIF"]).optional(),
+  })
+  .refine(
+    (data) => Boolean(data.etablissement?.trim() || data.societe?.trim()),
+    {
+      message: "Une école ou une société est requise",
+      path: ["etablissement"],
+    }
+  );
 
 export const userListFiltersSchema = z.object({
   query: z.string().trim().max(120).optional(),
@@ -152,7 +161,7 @@ export const approveCertificateSchema = z.object({
 
 export const rejectCertificateSchema = z.object({
   userId: z.number().int().positive(),
-  motif: z.string().min(1, "Le motif de rejet est requis"),
+  motif: z.string().trim().min(1, "Le motif de rejet est requis"),
 });
 
 export type ApproveCertificateInput = z.infer<typeof approveCertificateSchema>;

@@ -96,6 +96,7 @@ describe("approveCertificateAction", () => {
       email: "user@example.com",
       matricule: "U-42",
       telephone: "0340000000",
+      etablissement: "Université",
       materielPC: false,
       accepteRegles: true,
       certificatUrl: "/uploads/certificat-42.pdf",
@@ -129,6 +130,20 @@ describe("approveCertificateAction", () => {
         },
       })
     );
+  });
+
+  it("blocks VOLUNTEER from rejecting a certificate before writing", async () => {
+    mocks.getServerSession.mockResolvedValue({
+      user: { id: "8", role: "VOLUNTEER" },
+    });
+
+    await expect(
+      rejectCertificateAction({ userId: 42, motif: "Document illisible" })
+    ).resolves.toMatchObject({
+      success: false,
+      error: "Accès réservé aux administrateurs.",
+    });
+    expect(mocks.updateMany).not.toHaveBeenCalled();
   });
 });
 

@@ -1,8 +1,6 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { getUserDetailsAction } from "@/features/user/user.action";
 
 import { UserUpdateForm } from "./_components/user-update-form";
@@ -20,26 +18,28 @@ export default async function UserUpdatePage({ params }: Props) {
   if (!result.success || !result.data) notFound();
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Link href={`/admin/users/${userId}`}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-slate-400 hover:text-slate-100"
-          >
-            <ArrowLeft className="size-5" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-xl font-bold text-slate-100">
+    <main className="mx-auto grid w-full max-w-4xl gap-5 pb-8">
+      <AdminBreadcrumb
+        items={[
+          { label: "Administration", href: "/admin/dashboard" },
+          { label: "Utilisateurs", href: "/admin/users" },
+          {
+            label: `${result.data.prenom} ${result.data.nom}`,
+            href: `/admin/users/${userId}`,
+          },
+          { label: "Modifier" },
+        ]}
+      />
+      <header className="flex items-start gap-3">
+        <div className="min-w-0">
+          <p className="text-sm text-muted-foreground">Compte USER</p>
+          <h1 className="mt-0.5 truncate text-2xl font-semibold tracking-tight text-foreground">
             Modifier {result.data.prenom} {result.data.nom}
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">Compte utilisateur</p>
         </div>
-      </div>
+      </header>
 
       <UserUpdateForm userId={userId} initialData={result.data} />
-    </div>
+    </main>
   );
 }

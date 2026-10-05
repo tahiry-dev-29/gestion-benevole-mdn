@@ -57,7 +57,7 @@ export function UserUpdateExtraFields({
           {DAYS.map((day) => (
             <label
               key={day}
-              className="flex cursor-pointer items-center gap-2 text-sm text-slate-300"
+              className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-foreground"
             >
               <Checkbox
                 checked={days.includes(day)}
@@ -99,7 +99,7 @@ export function UserUpdateExtraFields({
       </Section>
 
       <Section title="Règles et équipement">
-        <div className="space-y-3">
+        <div className="grid gap-3">
           <CheckboxField
             checked={personalComputer}
             label="Dispose d’un PC personnel"
@@ -126,9 +126,9 @@ function CheckboxField({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-3">
+    <label className="flex min-h-11 cursor-pointer items-center gap-3">
       <Checkbox checked={checked} onCheckedChange={onChange} />
-      <span className="text-sm text-slate-300">{label}</span>
+      <span className="text-sm text-foreground">{label}</span>
     </label>
   );
 }

@@ -1,13 +1,15 @@
-import { Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 
 interface UsersTableFilterBarProps {
   search: string;
@@ -28,64 +30,124 @@ export function UsersTableFilterBar({
   onCertificateFilterChange,
   totalResults,
 }: UsersTableFilterBarProps) {
+  const activeFilterCount =
+    Number(statusFilter !== "ALL") + Number(certificateFilter !== "ALL");
+  const changeStatus = (value: string) =>
+    onStatusFilterChange(
+      statusFilter === value && value !== "ALL" ? "ALL" : value
+    );
+  const changeCertificate = (value: string) =>
+    onCertificateFilterChange(
+      certificateFilter === value && value !== "ALL" ? "ALL" : value
+    );
+
   return (
-    <div className="flex w-full flex-col gap-2 rounded-xl border bg-card p-2 sm:flex-row sm:items-center">
-      <div className="relative min-w-48 flex-1">
+    <div className="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
+      <div className="relative col-span-2 min-w-0 sm:col-span-1">
         <Search
-          className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden="true"
+          className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
         />
         <Input
           aria-label="Rechercher les comptes USER"
-          placeholder="Rechercher par nom, email, contact..."
+          placeholder="Nom, email ou matricule"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="h-9 border-transparent bg-muted/50 pl-9 focus-visible:border-input"
+          className="min-h-11 bg-background pl-9"
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <Select
-          value={certificateFilter}
-          onValueChange={onCertificateFilterChange}
-        >
-          <SelectTrigger
-            className="h-9 w-[160px]"
-            aria-label="Filtrer par certificat"
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            className="min-h-11 justify-start gap-2 px-3 sm:justify-center"
+            aria-label={`Filtres${activeFilterCount ? `, ${activeFilterCount} actifs` : ""}`}
           >
-            <SelectValue placeholder="Certificat" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Tous certificats</SelectItem>
-            <SelectItem value="NON_DEMANDE">Non demandé</SelectItem>
-            <SelectItem value="EN_ATTENTE">En attente</SelectItem>
-            <SelectItem value="APPROUVE">Approuvé</SelectItem>
-            <SelectItem value="REJETE">Rejeté</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-          <SelectTrigger
-            className="h-9 w-[130px]"
-            aria-label="Filtrer par statut du compte"
+            <Filter aria-hidden="true" data-icon="inline-start" />
+            Filtres
+            {activeFilterCount ? (
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+                {activeFilterCount}
+              </span>
+            ) : null}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-64">
+          <DropdownMenuLabel>Statut du compte</DropdownMenuLabel>
+          <DropdownMenuCheckboxItem
+            checked={statusFilter === "ALL"}
+            onCheckedChange={() => changeStatus("ALL")}
           >
-            <SelectValue placeholder="Statut" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">Tous statuts</SelectItem>
-            <SelectItem value="ACTIF">Actif</SelectItem>
-            <SelectItem value="INACTIF">Inactif</SelectItem>
-          </SelectContent>
-        </Select>
+            Tous les comptes
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={statusFilter === "ACTIF"}
+            onCheckedChange={() => changeStatus("ACTIF")}
+          >
+            Actifs
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={statusFilter === "INACTIF"}
+            onCheckedChange={() => changeStatus("INACTIF")}
+          >
+            Inactifs
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Certificat</DropdownMenuLabel>
+          <DropdownMenuCheckboxItem
+            checked={certificateFilter === "ALL"}
+            onCheckedChange={() => changeCertificate("ALL")}
+          >
+            Tous les certificats
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={certificateFilter === "NON_DEMANDE"}
+            onCheckedChange={() => changeCertificate("NON_DEMANDE")}
+          >
+            Non demandé
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={certificateFilter === "EN_ATTENTE"}
+            onCheckedChange={() => changeCertificate("EN_ATTENTE")}
+          >
+            À vérifier
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={certificateFilter === "APPROUVE"}
+            onCheckedChange={() => changeCertificate("APPROUVE")}
+          >
+            Approuvé
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            checked={certificateFilter === "REJETE"}
+            onCheckedChange={() => changeCertificate("REJETE")}
+          >
+            Rejeté
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuSeparator />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="min-h-9 w-full justify-start px-2"
+            onClick={() => {
+              onStatusFilterChange("ALL");
+              onCertificateFilterChange("ALL");
+            }}
+            disabled={activeFilterCount === 0}
+          >
+            Réinitialiser les filtres
+          </Button>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-        <div
-          className="whitespace-nowrap px-2 text-sm text-muted-foreground"
-          aria-live="polite"
-        >
-          <span className="font-medium text-foreground">{totalResults}</span>{" "}
-          résultats
-        </div>
-      </div>
+      <p
+        className="flex min-h-11 items-center justify-end text-sm text-muted-foreground"
+        aria-live="polite"
+      >
+        <span className="font-medium text-foreground">{totalResults}</span>
+        <span className="ml-1">résultat{totalResults === 1 ? "" : "s"}</span>
+      </p>
     </div>
   );
 }

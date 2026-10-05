@@ -127,7 +127,7 @@ export function UserUpdateForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
       <UserUpdateFields
         control={control}
         register={register}
@@ -136,19 +136,19 @@ export function UserUpdateForm({
         onPendingChange={markUploadPending}
       />
 
-      <div className="flex justify-end gap-3">
+      <div className="flex flex-col-reverse gap-2 rounded-lg border bg-card p-3 sm:flex-row sm:justify-end">
         <Button
           type="button"
           variant="outline"
           onClick={() => router.push(`/admin/users/${userId}`)}
-          className="border-slate-700 text-slate-300"
+          className="min-h-11 w-full sm:w-auto"
         >
           Annuler
         </Button>
         <Button
           type="submit"
           disabled={updateUser.isPending || pendingUploads > 0}
-          className="bg-cyan-600 hover:bg-cyan-500 text-white gap-2"
+          className="min-h-11 w-full gap-2 sm:w-auto"
         >
           {(updateUser.isPending || pendingUploads > 0) && (
             <Loader2 className="size-4 animate-spin" />

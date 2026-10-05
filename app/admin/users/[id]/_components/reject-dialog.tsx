@@ -59,7 +59,7 @@ export function RejectDialog({ userId }: { userId: number }) {
           <DialogHeader>
             <DialogTitle>Rejeter le certificat</DialogTitle>
           </DialogHeader>
-          <div className="space-y-3 text-sm">
+          <div className="grid gap-3 text-sm">
             <Label className="text-slate-300 text-xs">Motif de rejet *</Label>
             <Input
               value={motif}

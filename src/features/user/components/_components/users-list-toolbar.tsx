@@ -26,27 +26,35 @@ export function UsersListToolbar({
   isRefreshing: boolean;
 }) {
   return (
-    <div className="relative w-full pr-10">
-      <UsersTableFilterBar
-        search={search}
-        onSearchChange={onSearchChange}
-        statusFilter={status}
-        onStatusFilterChange={onStatusChange}
-        certificateFilter={certificate}
-        onCertificateFilterChange={onCertificateChange}
-        totalResults={total}
-      />
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-0 top-1/2 size-8 -translate-y-1/2"
-        onClick={onRefresh}
-        disabled={isRefreshing}
-        aria-label="Actualiser les comptes USER"
-        title="Actualiser"
-      >
-        <RefreshCw className={isRefreshing ? "animate-spin" : undefined} />
-      </Button>
-    </div>
+    <section
+      aria-label="Recherche et filtres"
+      className="glass-sm rounded-lg border bg-card p-3"
+    >
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <UsersTableFilterBar
+          search={search}
+          onSearchChange={onSearchChange}
+          statusFilter={status}
+          onStatusFilterChange={onStatusChange}
+          certificateFilter={certificate}
+          onCertificateFilterChange={onCertificateChange}
+          totalResults={total}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          className="min-h-11 min-w-11 shrink-0 gap-2 self-end lg:self-auto"
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          aria-label="Actualiser les comptes USER"
+        >
+          <RefreshCw
+            aria-hidden="true"
+            className={isRefreshing ? "animate-spin" : "size-4"}
+          />
+          <span className="sr-only lg:not-sr-only">Actualiser</span>
+        </Button>
+      </div>
+    </section>
   );
 }

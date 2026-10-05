@@ -20,7 +20,7 @@ import {
 import { FormField, Section } from "./user-update-field-primitives";
 import { type FormValues, userUpdateFormSchema } from "./user-update-schema";
 
-const fieldClass = "bg-slate-950/60 border-slate-800 text-slate-200 text-sm";
+const fieldClass = "min-h-11 bg-background";
 
 export function UserUpdateProfileFields({
   control,
