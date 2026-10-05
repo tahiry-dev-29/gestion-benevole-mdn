@@ -5,201 +5,113 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --font-sans: var(--font-open-sans);
-  --font-mono: var(--font-ibm-plex-mono);
-  --font-heading: var(--font-open-sans);
-  --font-body: var(--font-source-serif-4);
-  --color-sidebar-ring: hsl(var(--sidebar-ring));
-  --color-sidebar-border: hsl(var(--sidebar-border));
-  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
-  --color-sidebar-accent: hsl(var(--sidebar-accent));
-  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
-  --color-sidebar-primary: hsl(var(--sidebar-primary));
-  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
-  --color-sidebar: hsl(var(--sidebar));
-  --color-chart-5: hsl(var(--chart-5));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-1: hsl(var(--chart-1));
-  --color-ring: hsl(var(--ring));
-  --color-input: hsl(var(--input));
-  --color-border: hsl(var(--border));
-  --color-destructive: hsl(var(--destructive));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-muted: hsl(var(--muted));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-secondary: hsl(var(--secondary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-primary: hsl(var(--primary));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-  --color-popover: hsl(var(--popover));
-  --color-card-foreground: hsl(var(--card-foreground));
-  --color-card: hsl(var(--card));
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --color-background: oklch(var(--background));
+  --color-foreground: oklch(var(--foreground));
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: oklch(var(--sidebar-ring));
+  --color-sidebar-border: oklch(var(--sidebar-border));
+  --color-sidebar-accent-foreground: oklch(var(--sidebar-accent-foreground));
+  --color-sidebar-accent: oklch(var(--sidebar-accent));
+  --color-sidebar-primary-foreground: oklch(var(--sidebar-primary-foreground));
+  --color-sidebar-primary: oklch(var(--sidebar-primary));
+  --color-sidebar-foreground: oklch(var(--sidebar-foreground));
+  --color-sidebar: oklch(var(--sidebar));
+  --color-chart-5: oklch(var(--chart-5));
+  --color-chart-4: oklch(var(--chart-4));
+  --color-chart-3: oklch(var(--chart-3));
+  --color-chart-2: oklch(var(--chart-2));
+  --color-chart-1: oklch(var(--chart-1));
+  --color-ring: oklch(var(--ring));
+  --color-input: oklch(var(--input));
+  --color-border: oklch(var(--border));
+  --color-destructive: oklch(var(--destructive));
+  --color-accent-foreground: oklch(var(--accent-foreground));
+  --color-accent: oklch(var(--accent));
+  --color-muted-foreground: oklch(var(--muted-foreground));
+  --color-muted: oklch(var(--muted));
+  --color-secondary-foreground: oklch(var(--secondary-foreground));
+  --color-secondary: oklch(var(--secondary));
+  --color-primary-foreground: oklch(var(--primary-foreground));
+  --color-primary: oklch(var(--primary));
+  --color-popover-foreground: oklch(var(--popover-foreground));
+  --color-popover: oklch(var(--popover));
+  --color-card-foreground: oklch(var(--card-foreground));
+  --color-card: oklch(var(--card));
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ═══════════════════════════════════════════════════════
-   🌊 GLASS LIQUID BLUE — Light Mode
-   Shadcn-compatible HSL variables with a frosted-glass,
-   translucent liquid blue aesthetic.
-   ═══════════════════════════════════════════════════════ */
 :root {
-  /* Base surface — cool off-white with blue tint */
-  --background: 210 40% 97%;
-  --foreground: 215 28% 12%;
-
-  /* Card — crisp white glass panel */
-  --card: 210 50% 99%;
-  --card-foreground: 215 28% 12%;
-
-  /* Popover — slightly lifted glass */
-  --popover: 210 50% 100%;
-  --popover-foreground: 215 28% 12%;
-
-  /* Primary — electric blue, deepened for WCAG AA (4.58:1 with white text) */
-  --primary: 210 100% 45%;
-  --primary-foreground: 0 0% 100%;
-
-  /* Secondary — muted glass-blue wash */
-  --secondary: 210 40% 92%;
-  --secondary-foreground: 215 40% 22%;
-
-  /* Muted — very faint frosted layer */
-  --muted: 210 38% 94%;
-  --muted-foreground: 215 18% 46%;
-
-  /* Accent — bright cyan-blue pulse */
-  --accent: 199 89% 56%;
-  --accent-foreground: 0 0% 100%;
-
-  /* Destructive — deepened for WCAG AA (4.52:1 with white text) */
-  --destructive: 0 84% 50%;
-  --destructive-foreground: 0 0% 100%;
-
-  /* Borders & inputs — translucent glass-edge */
-  --border: 210 48% 84%;
-  --input: 210 45% 91%;
-  --ring: 210 100% 52%;
-
-  --radius: 0.75rem;
-
-  /* Charts — fluid blue spectrum */
-  --chart-1: 210 100% 52%;
-  --chart-2: 199 89% 48%;
-  --chart-3: 188 76% 44%;
-  --chart-4: 221 83% 53%;
-  --chart-5: 262 80% 58%;
-
-  /* Sidebar */
-  --sidebar: 210 48% 96%;
-  --sidebar-foreground: 215 28% 12%;
-  --sidebar-primary: 210 100% 52%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 40% 91%;
-  --sidebar-accent-foreground: 215 40% 22%;
-  --sidebar-border: 210 48% 85%;
-  --sidebar-ring: 210 100% 52%;
-
-  /* ── Glass / Liquid design tokens (light) ── */
-  --glass-blur: 16px;
-  --glass-blur-sm: 8px;
-  --glass-blur-lg: 28px;
-  --glass-blur-xl: 48px;
-  --glass-shadow:
-    0 8px 32px 0 hsl(210 60% 25% / 0.1), 0 1px 2px 0 hsl(210 60% 35% / 0.06);
-  --glass-shadow-sm: 0 4px 16px 0 hsl(210 60% 25% / 0.07);
-  --glass-shadow-lg:
-    0 16px 48px 0 hsl(210 60% 25% / 0.14), 0 2px 4px 0 hsl(210 60% 35% / 0.07);
-  --glass-glow:
-    0 0 0 1px hsl(210 100% 58% / 0.28), 0 0 24px hsl(210 100% 58% / 0.14);
-  --glass-border-color: hsl(210 60% 80% / 0.38);
-  --glass-border-color-strong: hsl(210 60% 72% / 0.58);
+  --background: 1 0 0;
+  --foreground: 0.145 0 0;
+  --card: 1 0 0;
+  --card-foreground: 0.145 0 0;
+  --popover: 1 0 0;
+  --popover-foreground: 0.145 0 0;
+  --primary: 0.205 0 0;
+  --primary-foreground: 0.985 0 0;
+  --secondary: 0.97 0 0;
+  --secondary-foreground: 0.205 0 0;
+  --muted: 0.97 0 0;
+  --muted-foreground: 0.556 0 0;
+  --accent: 0.97 0 0;
+  --accent-foreground: 0.205 0 0;
+  --destructive: 0.577 0.245 27.325;
+  --border: 0.922 0 0;
+  --input: 0.922 0 0;
+  --ring: 0.708 0 0;
+  --radius: 0.875rem;
+  --chart-1: 0.87 0 0;
+  --chart-2: 0.556 0 0;
+  --chart-3: 0.439 0 0;
+  --chart-4: 0.371 0 0;
+  --chart-5: 0.269 0 0;
+  --sidebar: 0.985 0 0;
+  --sidebar-foreground: 0.145 0 0;
+  --sidebar-primary: 0.205 0 0;
+  --sidebar-primary-foreground: 0.985 0 0;
+  --sidebar-accent: 0.97 0 0;
+  --sidebar-accent-foreground: 0.205 0 0;
+  --sidebar-border: 0.922 0 0;
+  --sidebar-ring: 0.708 0 0;
 }
 
-/* ═══════════════════════════════════════════════════════
-   🌑 GLASS LIQUID BLUE — Dark Mode
-   Deep ocean glass with luminous electric-blue accents.
-   ═══════════════════════════════════════════════════════ */
 .dark {
-  /* Base surface — deep dark ocean */
-  --background: 215 40% 6%;
-  --foreground: 210 20% 94%;
-
-  /* Card — dark frosted glass panel */
-  --card: 215 40% 10%;
-  --card-foreground: 210 20% 94%;
-
-  /* Popover — deep glass layer */
-  --popover: 215 38% 9%;
-  --popover-foreground: 210 20% 94%;
-
-  /* Primary — electric blue glow */
-  --primary: 210 100% 62%;
-  --primary-foreground: 215 40% 6%;
-
-  /* Secondary — dark glass blue */
-  --secondary: 215 35% 17%;
-  --secondary-foreground: 210 20% 88%;
-
-  /* Muted — subtle deep tint */
-  --muted: 215 30% 13%;
-  --muted-foreground: 210 20% 58%;
-
-  /* Accent — bright cyan pulse on dark */
-  --accent: 199 89% 52%;
-  --accent-foreground: 215 40% 6%;
-
-  /* Destructive */
-  --destructive: 0 62% 52%;
-  --destructive-foreground: 0 0% 100%;
-
-  /* Borders & inputs — dark glass edge */
-  --border: 210 40% 20%;
-  --input: 210 38% 16%;
-  --ring: 210 100% 62%;
-
-  /* Charts — vivid fluid spectrum (dark) */
-  --chart-1: 210 100% 62%;
-  --chart-2: 199 89% 54%;
-  --chart-3: 188 76% 50%;
-  --chart-4: 221 83% 64%;
-  --chart-5: 262 80% 67%;
-
-  /* Sidebar */
-  --sidebar: 215 40% 8%;
-  --sidebar-foreground: 210 20% 90%;
-  --sidebar-primary: 210 100% 62%;
-  --sidebar-primary-foreground: 215 40% 6%;
-  --sidebar-accent: 215 35% 14%;
-  --sidebar-accent-foreground: 210 20% 86%;
-  --sidebar-border: 210 40% 18%;
-  --sidebar-ring: 210 100% 62%;
-
-  /* ── Glass / Liquid design tokens (dark) ── */
-  --glass-blur: 16px;
-  --glass-blur-sm: 8px;
-  --glass-blur-lg: 28px;
-  --glass-blur-xl: 48px;
-  --glass-shadow:
-    0 8px 32px 0 hsl(215 60% 3% / 0.55), 0 1px 2px 0 hsl(210 60% 5% / 0.28);
-  --glass-shadow-sm: 0 4px 16px 0 hsl(215 60% 3% / 0.38);
-  --glass-shadow-lg:
-    0 16px 48px 0 hsl(215 60% 3% / 0.72), 0 2px 4px 0 hsl(210 60% 5% / 0.35);
-  --glass-glow:
-    0 0 0 1px hsl(210 100% 60% / 0.32), 0 0 28px hsl(210 100% 60% / 0.2);
-  --glass-border-color: hsl(210 50% 40% / 0.24);
-  --glass-border-color-strong: hsl(210 50% 55% / 0.42);
+  --background: 0.145 0 0;
+  --foreground: 0.985 0 0;
+  --card: 0.205 0 0;
+  --card-foreground: 0.985 0 0;
+  --popover: 0.205 0 0;
+  --popover-foreground: 0.985 0 0;
+  --primary: 0.922 0 0;
+  --primary-foreground: 0.205 0 0;
+  --secondary: 0.269 0 0;
+  --secondary-foreground: 0.985 0 0;
+  --muted: 0.269 0 0;
+  --muted-foreground: 0.708 0 0;
+  --accent: 0.269 0 0;
+  --accent-foreground: 0.985 0 0;
+  --destructive: 0.704 0.191 22.216;
+  --border: 1 0 0 / 10%;
+  --input: 1 0 0 / 15%;
+  --ring: 0.556 0 0;
+  --chart-1: 0.87 0 0;
+  --chart-2: 0.556 0 0;
+  --chart-3: 0.439 0 0;
+  --chart-4: 0.371 0 0;
+  --chart-5: 0.269 0 0;
+  --sidebar: 0.205 0 0;
+  --sidebar-foreground: 0.985 0 0;
+  --sidebar-primary: 0.488 0.243 264.376;
+  --sidebar-primary-foreground: 0.985 0 0;
+  --sidebar-accent: 0.269 0 0;
+  --sidebar-accent-foreground: 0.985 0 0;
+  --sidebar-border: 1 0 0 / 10%;
+  --sidebar-ring: 0.556 0 0;
 }
 
 @layer base {
@@ -214,70 +126,25 @@
   html {
     @apply font-sans;
   }
-
-  body {
-    font-family: var(--font-body);
-    line-height: 1.65;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-heading);
-  }
-
-  code,
-  pre {
-    font-family: var(--font-mono);
-  }
 }
 
-/* ═══════════════════════════════════════════════════════
-   🫧 GLASS / LIQUID FLUID UTILITIES
-   Use these classes to apply glassmorphism effects to any
-   element. Works best over a colourful or blurred background.
-   ═══════════════════════════════════════════════════════ */
 @layer utilities {
-  /* ── Core glass panel ── */
   .glass {
-    background: hsl(var(--card) / 0.6);
-    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-    border: 1px solid var(--glass-border-color);
-    box-shadow: var(--glass-shadow);
+    @apply bg-card/60 backdrop-blur-md border border-border shadow-sm;
   }
 
-  /* Small / subtle glass */
   .glass-sm {
-    background: hsl(var(--card) / 0.55);
-    backdrop-filter: blur(var(--glass-blur-sm)) saturate(160%);
-    -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(160%);
-    border: 1px solid var(--glass-border-color);
-    box-shadow: var(--glass-shadow-sm);
+    @apply bg-card/55 backdrop-blur-sm border border-border shadow-sm;
   }
 
-  /* Large / prominent glass panel */
   .glass-lg {
-    background: hsl(var(--card) / 0.65);
-    backdrop-filter: blur(var(--glass-blur-lg)) saturate(200%);
-    -webkit-backdrop-filter: blur(var(--glass-blur-lg)) saturate(200%);
-    border: 1px solid var(--glass-border-color-strong);
-    box-shadow: var(--glass-shadow-lg);
+    @apply bg-card/65 backdrop-blur-xl border border-border shadow-md;
   }
 
-  /* Extra deep glass (dialog / modal level) */
   .glass-xl {
-    background: hsl(var(--card) / 0.75);
-    backdrop-filter: blur(var(--glass-blur-xl)) saturate(220%);
-    -webkit-backdrop-filter: blur(var(--glass-blur-xl)) saturate(220%);
-    border: 1px solid var(--glass-border-color-strong);
-    box-shadow: var(--glass-shadow-lg);
+    @apply bg-card/75 backdrop-blur-2xl border border-border shadow-md;
   }
 
-  /* ── Gloss top-edge highlight (liquid sheen) ── */
   .glass-gloss {
     position: relative;
     overflow: hidden;
@@ -288,8 +155,8 @@
     inset: 0;
     background: linear-gradient(
       135deg,
-      hsl(0 0% 100% / 0.2) 0%,
-      hsl(0 0% 100% / 0.07) 38%,
+      hsl(0 0% 100% / 0.15) 0%,
+      hsl(0 0% 100% / 0.05) 38%,
       transparent 58%
     );
     pointer-events: none;
@@ -297,62 +164,14 @@
     z-index: 0;
   }
 
-  /* ── Glowing blue ring + shadow ── */
   .glass-glow {
-    box-shadow: var(--glass-glow), var(--glass-shadow);
+    @apply shadow-md ring-1 ring-ring/20;
   }
 
-  /* ── Animated liquid gradient border ── */
-  .glass-border-gradient {
-    position: relative;
-    isolation: isolate;
-  }
-  .glass-border-gradient::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(
-      135deg,
-      hsl(210 100% 70% / 0.65),
-      hsl(199 89% 62% / 0.3) 50%,
-      hsl(221 83% 66% / 0.55)
-    );
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* ── Fluid ambient background ── */
   .fluid-bg {
-    background:
-      radial-gradient(
-        ellipse 85% 55% at 50% -8%,
-        hsl(210 100% 58% / 0.18) 0%,
-        transparent 62%
-      ),
-      radial-gradient(
-        ellipse 60% 45% at 85% 108%,
-        hsl(199 89% 54% / 0.12) 0%,
-        transparent 60%
-      ),
-      radial-gradient(
-        ellipse 48% 40% at 10% 92%,
-        hsl(221 83% 56% / 0.1) 0%,
-        transparent 60%
-      ),
-      hsl(var(--background));
+    @apply bg-background;
   }
 
-  /* ── Liquid noise texture overlay (subtle grain) ── */
   .glass-noise {
     position: relative;
   }
@@ -365,5 +184,33 @@
     opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
     background-size: 120px 120px;
+  }
+
+  .glass-border-gradient {
+    position: relative;
+    isolation: isolate;
+  }
+  .glass-border-gradient::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      oklch(var(--border) / 0.8),
+      oklch(var(--ring) / 0.4) 50%,
+      oklch(var(--border) / 0.7)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: -1;
   }
 }

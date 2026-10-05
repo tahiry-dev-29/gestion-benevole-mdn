@@ -1,9 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono,Open_Sans, Source_Serif_4 } from "next/font/google";
+import {
+  IBM_Plex_Mono,
+  Inter,
+  Open_Sans,
+  Source_Serif_4,
+} from "next/font/google";
+import Script from "next/script";
 
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const openSans = Open_Sans({
   subsets: [
@@ -57,6 +66,12 @@ export const viewport: Viewport = {
   themeColor: "#0284c7",
 };
 
+/**
+ * Doit rester synchrone et sans dependance : ce script s'execute avant
+ * l'hydratation pour poser la classe `dark` sur <html> sans flash.
+ */
+const THEME_INIT_SCRIPT = `try{var t=localStorage.getItem("app-theme")||localStorage.getItem("admin-theme");document.documentElement.classList.toggle("dark",t!=="light")}catch(e){document.documentElement.classList.add("dark")}`;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -69,27 +84,23 @@ export default async function RootLayout({
         "h-full antialiased dark",
         openSans.variable,
         sourceSerif4.variable,
-        iBMPlexMono.variable
+        iBMPlexMono.variable,
+        "font-sans",
+        inter.variable
       )}
       suppressHydrationWarning
     >
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var theme = localStorage.getItem('app-theme') || localStorage.getItem('admin-theme');
-                if (theme === 'light') {
-                  document.documentElement.classList.remove('dark');
-                } else {
-                  document.documentElement.classList.add('dark');
-                }
-              } catch (e) {}
-            `,
-          }}
-        />
+        {/* Applique le thème avant le premier rendu pour eviter tout flash.
+            Passe par `next/script` : un <script> inline ecrit directement dans
+            <head> par un RSC n'est pas execute lors du rendu client. */}
+        <Script id="theme-init" strategy="beforeInteractive">
+          {THEME_INIT_SCRIPT}
+        </Script>
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
     </html>
   );
 }
