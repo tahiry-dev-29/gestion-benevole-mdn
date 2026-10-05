@@ -25,10 +25,10 @@ export function VolunteerStatsCards() {
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <Card className="relative overflow-hidden border shadow-xs transition-shadow hover:shadow-md">
+      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
         <div className="absolute top-0 left-0 h-1 w-full bg-primary" />
         <CardContent className="flex items-center justify-between p-4">
-          <div className="space-y-1">
+          <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">
               Total comptes
             </p>
@@ -40,52 +40,52 @@ export function VolunteerStatsCards() {
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden border shadow-xs transition-shadow hover:shadow-md">
-        <div className="absolute top-0 left-0 h-1 w-full bg-emerald-500" />
+      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
+        <div className="absolute top-0 left-0 h-1 w-full bg-primary" />
         <CardContent className="flex items-center justify-between p-4">
-          <div className="space-y-1">
+          <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">
               Comptes actifs
             </p>
-            <p className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+            <p className="text-2xl font-bold tracking-tight text-primary">
               {activeCount}
             </p>
           </div>
-          <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <UserCheck className="size-5" />
           </div>
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden border shadow-xs transition-shadow hover:shadow-md">
-        <div className="absolute top-0 left-0 h-1 w-full bg-amber-500" />
+      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
+        <div className="absolute top-0 left-0 h-1 w-full bg-muted-foreground" />
         <CardContent className="flex items-center justify-between p-4">
-          <div className="space-y-1">
+          <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">
               Comptes inactifs
             </p>
-            <p className="text-2xl font-bold tracking-tight text-amber-600 dark:text-amber-400">
+            <p className="text-2xl font-bold tracking-tight text-muted-foreground">
               {inactiveCount}
             </p>
           </div>
-          <div className="flex size-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-muted text-muted-foreground">
             <UserX className="size-5" />
           </div>
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden border shadow-xs transition-shadow hover:shadow-md">
-        <div className="absolute top-0 left-0 h-1 w-full bg-indigo-500" />
+      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
+        <div className="absolute top-0 left-0 h-1 w-full bg-accent" />
         <CardContent className="flex items-center justify-between p-4">
-          <div className="space-y-1">
+          <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">
               Administrateurs
             </p>
-            <p className="text-2xl font-bold tracking-tight text-indigo-600 dark:text-indigo-400">
+            <p className="text-2xl font-bold tracking-tight text-accent-foreground">
               {adminCount}
             </p>
           </div>
-          <div className="flex size-10 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-accent text-accent-foreground">
             <Shield className="size-5" />
           </div>
         </CardContent>

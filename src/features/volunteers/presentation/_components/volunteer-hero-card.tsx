@@ -33,8 +33,8 @@ export function VolunteerHeroCard({
   const isActif = volunteer.statut === "ACTIF";
 
   return (
-    <Card className="overflow-hidden border shadow-xs">
-      <div className="h-2 w-full bg-linear-to-r from-primary via-indigo-500 to-teal-500" />
+    <Card className="glass overflow-hidden">
+      <div className="h-2 w-full bg-linear-to-r from-primary via-primary/70 to-accent" />
       <CardContent className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="size-16 border-2 border-background shadow-md">
@@ -42,7 +42,7 @@ export function VolunteerHeroCard({
               {getInitials(volunteer.prenom, volunteer.nom)}
             </AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
+          <div className="grid gap-1">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-xl font-bold tracking-tight">
                 {formatFullName(volunteer)}
@@ -52,11 +52,11 @@ export function VolunteerHeroCard({
                 className={cn(
                   "font-medium",
                   volunteer.role === "SUPER_ADMIN" &&
-                    "border-purple-300 bg-purple-500/10 text-purple-700 dark:border-purple-800 dark:text-purple-300",
+                    "border-primary/30 bg-primary/10 text-primary",
                   volunteer.role === "ADMIN" &&
-                    "border-blue-300 bg-blue-500/10 text-blue-700 dark:border-blue-800 dark:text-blue-300",
+                    "bg-secondary text-secondary-foreground",
                   volunteer.role === "VOLUNTEER" &&
-                    "border-teal-300 bg-teal-500/10 text-teal-700 dark:border-teal-800 dark:text-teal-300"
+                    "bg-accent text-accent-foreground"
                 )}
               >
                 <Shield className="mr-1 size-3" />
@@ -67,14 +67,14 @@ export function VolunteerHeroCard({
                 className={cn(
                   "gap-1.5 font-medium",
                   isActif
-                    ? "border-emerald-300 bg-emerald-500/10 text-emerald-700 dark:border-emerald-800 dark:text-emerald-400"
+                    ? "border-primary/30 bg-primary/10 text-primary"
                     : "border-muted bg-muted/60 text-muted-foreground"
                 )}
               >
                 <span
                   className={cn(
                     "size-1.5 rounded-full",
-                    isActif ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground"
+                    isActif ? "bg-primary" : "bg-muted-foreground"
                   )}
                 />
                 {statutLabel(volunteer.statut)}

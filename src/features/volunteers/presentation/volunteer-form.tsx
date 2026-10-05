@@ -134,7 +134,7 @@ export function VolunteerForm({
   });
 
   return (
-    <form onSubmit={submit} className="max-w-2xl space-y-6">
+    <form onSubmit={submit} className="grid max-w-2xl gap-6">
       <VolunteerFields
         register={register}
         control={control}

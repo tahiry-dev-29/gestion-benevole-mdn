@@ -12,6 +12,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
   Table,
   TableBody,
   TableCell,
@@ -32,13 +40,13 @@ import {
 } from "./use-volunteers";
 
 const ROLE_COLORS: Record<Role, string> = {
-  SUPER_ADMIN: "bg-purple-500",
-  ADMIN: "bg-blue-500",
-  VOLUNTEER: "bg-teal-500",
+  SUPER_ADMIN: "bg-primary",
+  ADMIN: "bg-secondary-foreground",
+  VOLUNTEER: "bg-accent",
   USER: "bg-muted-foreground",
 };
 
-export function RolesManagement() {
+export function RolesManagement({ embedded = false }: { embedded?: boolean }) {
   const router = useRouter();
   const { data: session } = useSession();
   const sessionRole = session?.user?.role;
@@ -68,23 +76,35 @@ export function RolesManagement() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="grid gap-6">
       <PageHeader
         title="Rôles & permissions"
         description="Matrice des rôles, comptes par rôle et bascule d'activation."
         action={
-          <Button asChild variant="outline" size="sm" className="gap-2 shadow-xs">
-            <Link href="/admin/volunteer-management">
-              <ArrowLeft className="size-4" /> Retour aux bénévoles
-            </Link>
-          </Button>
+          !embedded ? (
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="gap-2 shadow-xs"
+            >
+              <Link href="/admin/volunteer-management">
+                <ArrowLeft className="size-4" /> Retour aux bénévoles
+              </Link>
+            </Button>
+          ) : undefined
         }
       />
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {ROLES.map((role) => (
-          <Card key={role} className="relative overflow-hidden border shadow-xs transition-shadow hover:shadow-md">
-            <div className={`absolute top-0 left-0 h-1 w-full ${ROLE_COLORS[role]}`} />
+          <Card
+            key={role}
+            className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md"
+          >
+            <div
+              className={`absolute top-0 left-0 h-1 w-full ${ROLE_COLORS[role]}`}
+            />
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {roleLabel(role)}
@@ -101,7 +121,7 @@ export function RolesManagement() {
 
       <RolesMatrix />
 
-      <div className="space-y-6">
+      <div className="grid gap-6">
         {VOLUNTEER_ROLES.map((role) => {
           const roleAccounts = accounts.filter(
             (account) => account.role === role
@@ -141,48 +161,86 @@ export function RolesManagement() {
                         const nextStatut =
                           account.statut === "ACTIF" ? "INACTIF" : "ACTIF";
                         return (
-                          <TableRow key={account.id}>
-                            <TableCell className="font-medium">
-                              {formatFullName(account)}
-                              {isSelf ? (
-                                <span className="ml-2 text-xs text-muted-foreground">
-                                  (vous)
-                                </span>
-                              ) : null}
-                            </TableCell>
-                            <TableCell className="text-muted-foreground">
-                              {account.email}
-                            </TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  account.statut === "ACTIF"
-                                    ? "outline"
-                                    : "secondary"
+                          <ContextMenu key={account.id}>
+                            <ContextMenuTrigger asChild>
+                              <TableRow className="cursor-context-menu">
+                                <TableCell className="font-medium">
+                                  {formatFullName(account)}
+                                  {isSelf ? (
+                                    <span className="ml-2 text-xs text-muted-foreground">
+                                      (vous)
+                                    </span>
+                                  ) : null}
+                                </TableCell>
+                                <TableCell className="text-muted-foreground">
+                                  {account.email}
+                                </TableCell>
+                                <TableCell>
+                                  <Badge
+                                    variant={
+                                      account.statut === "ACTIF"
+                                        ? "outline"
+                                        : "secondary"
+                                    }
+                                  >
+                                    {statutLabel(account.statut)}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                    disabled={
+                                      !canManage || statutMutation.isPending
+                                    }
+                                    onClick={() =>
+                                      toggle(account.id, nextStatut)
+                                    }
+                                  >
+                                    {statutMutation.isPending ? (
+                                      <Loader2 className="size-4 animate-spin" />
+                                    ) : null}
+                                    {nextStatut === "ACTIF"
+                                      ? "Activer"
+                                      : "Désactiver"}
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            </ContextMenuTrigger>
+                            <ContextMenuContent className="w-56">
+                              <ContextMenuItem
+                                onSelect={() =>
+                                  router.push(
+                                    `/admin/volunteer-management/${account.id}`
+                                  )
                                 }
                               >
-                                {statutLabel(account.statut)}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="gap-2"
+                                Voir la fiche
+                                <ContextMenuShortcut>↵</ContextMenuShortcut>
+                              </ContextMenuItem>
+                              <ContextMenuSeparator />
+                              <ContextMenuItem
                                 disabled={
                                   !canManage || statutMutation.isPending
                                 }
-                                onClick={() => toggle(account.id, nextStatut)}
+                                onSelect={() => toggle(account.id, nextStatut)}
                               >
-                                {statutMutation.isPending ? (
-                                  <Loader2 className="size-4 animate-spin" />
-                                ) : null}
                                 {nextStatut === "ACTIF"
-                                  ? "Activer"
-                                  : "Désactiver"}
-                              </Button>
-                            </TableCell>
-                          </TableRow>
+                                  ? "Activer le compte"
+                                  : "Désactiver le compte"}
+                              </ContextMenuItem>
+                              {isSelf ? (
+                                <>
+                                  <ContextMenuSeparator />
+                                  <ContextMenuItem disabled>
+                                    Vous ne pouvez pas modifier votre propre
+                                    compte
+                                  </ContextMenuItem>
+                                </>
+                              ) : null}
+                            </ContextMenuContent>
+                          </ContextMenu>
                         );
                       })}
                     </TableBody>

@@ -1,5 +1,5 @@
-import { RolesManagement } from "@/features/volunteers/presentation/roles-management";
+import { redirect } from "next/navigation";
 
 export default function VolunteerRolesPage() {
-  return <RolesManagement />;
+  redirect("/admin/volunteer-management?tab=roles");
 }

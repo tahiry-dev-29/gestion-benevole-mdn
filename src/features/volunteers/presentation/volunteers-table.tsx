@@ -3,17 +3,19 @@
 import * as React from "react";
 import Link from "next/link";
 import { type SortingState } from "@tanstack/react-table";
-import { ShieldCheck, UserPlus } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { isRole } from "@/lib/rbac";
 
 import type { ListVolunteersParams, Volunteer } from "../volunteer.entity";
 
+import { VolunteerMobileCard } from "./_components/volunteer-mobile-card";
 import { VolunteerStatsCards } from "./_components/volunteer-stats-cards";
 import { VolunteersTableToolbar } from "./_components/volunteers-table-toolbar";
 import { useDeleteVolunteer, useVolunteers } from "./use-volunteers";
@@ -44,7 +46,9 @@ export function VolunteersTable() {
   const [statutFilter, setStatutFilter] = React.useState<string>(ALL);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pageIndex, setPageIndex] = React.useState(0);
-  const [deleteTarget, setDeleteTarget] = React.useState<Volunteer | null>(null);
+  const [deleteTarget, setDeleteTarget] = React.useState<Volunteer | null>(
+    null
+  );
 
   React.useEffect(() => {
     const timer = setTimeout(() => setDebouncedQ(search), 300);
@@ -70,6 +74,7 @@ export function VolunteersTable() {
     useVolunteers(params);
   const rows = data?.data ?? [];
   const total = data?.total ?? 0;
+  const mobilePageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const deleteMutation = useDeleteVolunteer();
 
   const columns = React.useMemo(
@@ -101,23 +106,16 @@ export function VolunteersTable() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="grid gap-6">
       <PageHeader
         title="Gestion bénévole"
         description="Gérez les comptes habilités de l'association (SUPER_ADMIN, ADMIN et Bénévoles)."
         action={
-          <div className="flex items-center gap-2">
-            <Button asChild variant="outline" className="gap-2 shadow-xs">
-              <Link href="/admin/volunteer-management/roles">
-                <ShieldCheck className="size-4" /> Rôles & permissions
-              </Link>
-            </Button>
-            <Button asChild className="gap-2 shadow-xs">
-              <Link href="/admin/volunteer-management/add">
-                <UserPlus className="size-4" /> Nouveau bénévole
-              </Link>
-            </Button>
-          </div>
+          <Button asChild className="gap-2 shadow-xs">
+            <Link href="/admin/volunteer-management/add">
+              <UserPlus className="size-4" /> Nouveau bénévole
+            </Link>
+          </Button>
         }
       />
 
@@ -129,48 +127,98 @@ export function VolunteersTable() {
         </div>
       ) : null}
 
-      <DataTable
-        columns={columns}
-        data={rows}
-        total={total}
-        pageCount={Math.ceil(total / PAGE_SIZE)}
-        sorting={sorting}
-        onSortingChange={setSorting}
-        pagination={{ pageIndex, pageSize: PAGE_SIZE }}
-        onPaginationChange={(updater) => {
-          const next =
-            typeof updater === "function"
-              ? updater({ pageIndex, pageSize: PAGE_SIZE })
-              : updater;
-          setPageIndex(next.pageIndex);
+      <VolunteersTableToolbar
+        search={search}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPageIndex(0);
         }}
-        isLoading={isLoading}
-        emptyMessage="Aucun bénévole ne correspond à votre recherche."
-        toolbar={
-          <VolunteersTableToolbar
-            search={search}
-            onSearchChange={(v) => {
-              setSearch(v);
-              setPageIndex(0);
-            }}
-            roleFilter={roleFilter}
-            onRoleFilterChange={(v) => {
-              setRoleFilter(v ?? ALL);
-              setPageIndex(0);
-            }}
-            statutFilter={statutFilter}
-            onStatutFilterChange={(v) => {
-              setStatutFilter(v ?? ALL);
-              setPageIndex(0);
-            }}
-            onResetFilters={handleResetFilters}
-            hasActiveFilters={hasActiveFilters}
-            total={total}
-            isFetching={isFetching}
-            onRefetch={() => void refetch()}
-          />
-        }
+        roleFilter={roleFilter}
+        onRoleFilterChange={(value) => {
+          setRoleFilter(value ?? ALL);
+          setPageIndex(0);
+        }}
+        statutFilter={statutFilter}
+        onStatutFilterChange={(value) => {
+          setStatutFilter(value ?? ALL);
+          setPageIndex(0);
+        }}
+        onResetFilters={handleResetFilters}
+        hasActiveFilters={hasActiveFilters}
+        total={total}
+        isFetching={isFetching}
+        onRefetch={() => void refetch()}
       />
+
+      <div className="hidden xl:block">
+        <DataTable
+          columns={columns}
+          data={rows}
+          total={total}
+          pageCount={Math.ceil(total / PAGE_SIZE)}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={{ pageIndex, pageSize: PAGE_SIZE }}
+          onPaginationChange={(updater) => {
+            const next =
+              typeof updater === "function"
+                ? updater({ pageIndex, pageSize: PAGE_SIZE })
+                : updater;
+            setPageIndex(next.pageIndex);
+          }}
+          isLoading={isLoading}
+          emptyMessage="Aucun bénévole ne correspond à votre recherche."
+        />
+      </div>
+
+      <section
+        className="grid gap-3 xl:hidden"
+        aria-label="Liste des bénévoles"
+      >
+        {isLoading
+          ? Array.from({ length: 3 }, (_, index) => (
+              <Skeleton key={index} className="h-40 rounded-xl" />
+            ))
+          : rows.map((volunteer) => (
+              <VolunteerMobileCard
+                key={volunteer.id}
+                volunteer={volunteer}
+                onDelete={setDeleteTarget}
+              />
+            ))}
+        {!isLoading && rows.length === 0 ? (
+          <div className="glass-sm rounded-xl border-dashed p-8 text-center text-sm text-muted-foreground">
+            Aucun bénévole ne correspond à votre recherche.
+          </div>
+        ) : null}
+        {mobilePageCount > 1 ? (
+          <div className="flex items-center justify-between gap-3 rounded-xl border bg-card p-3">
+            <Button
+              variant="outline"
+              className="min-h-11 gap-2"
+              onClick={() => setPageIndex((page) => Math.max(0, page - 1))}
+              disabled={pageIndex === 0}
+            >
+              <ChevronLeft aria-hidden="true" className="size-4" />
+              Précédent
+            </Button>
+            <span className="text-sm text-muted-foreground" aria-live="polite">
+              {pageIndex + 1} / {mobilePageCount}
+            </span>
+            <Button
+              variant="outline"
+              className="min-h-11 gap-2"
+              onClick={() =>
+                setPageIndex((page) => Math.min(mobilePageCount - 1, page + 1))
+              }
+              disabled={pageIndex >= mobilePageCount - 1}
+            >
+              Suivant
+              <ChevronRight aria-hidden="true" className="size-4" />
+            </Button>
+          </div>
+        ) : null}
+      </section>
 
       <ConfirmDeleteDialog
         open={Boolean(deleteTarget)}

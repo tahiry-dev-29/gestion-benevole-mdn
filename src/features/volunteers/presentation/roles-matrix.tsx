@@ -23,7 +23,7 @@ import { roleLabel } from "./labels";
 
 function Cell({ granted }: { granted: boolean }) {
   return granted ? (
-    <Check className="mx-auto size-4 text-emerald-500" aria-label="Autorisé" />
+    <Check className="mx-auto size-4 text-primary" aria-label="Autorisé" />
   ) : (
     <X className="mx-auto size-4 text-muted-foreground" aria-label="Refusé" />
   );

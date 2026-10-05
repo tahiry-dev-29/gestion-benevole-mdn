@@ -15,14 +15,14 @@ export function VolunteerMetadataCard({
   volunteer,
 }: VolunteerMetadataCardProps) {
   return (
-    <Card className="shadow-xs lg:col-span-1">
+    <Card className="glass-sm lg:col-span-1">
       <CardHeader>
         <CardTitle className="text-base font-semibold">
           Métadonnées & Audit
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-1">
+      <CardContent className="grid gap-4">
+        <div className="grid gap-1">
           <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
             <Calendar className="size-3.5" /> Date d&apos;entrée
           </span>
@@ -30,13 +30,15 @@ export function VolunteerMetadataCard({
             {formatDate(volunteer.dateEntree)}
           </p>
         </div>
-        <div className="space-y-1">
+        <div className="grid gap-1">
           <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
             <Clock className="size-3.5" /> Compte créé le
           </span>
-          <p className="text-sm font-medium">{formatDate(volunteer.createdAt)}</p>
+          <p className="text-sm font-medium">
+            {formatDate(volunteer.createdAt)}
+          </p>
         </div>
-        <div className="space-y-1">
+        <div className="grid gap-1">
           <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
             <Shield className="size-3.5" /> Créé par
           </span>
@@ -44,7 +46,7 @@ export function VolunteerMetadataCard({
             {volunteer.createdBy ? formatFullName(volunteer.createdBy) : "—"}
           </p>
         </div>
-        <div className="space-y-1">
+        <div className="grid gap-1">
           <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
             <KeyRound className="size-3.5" /> ID interne
           </span>

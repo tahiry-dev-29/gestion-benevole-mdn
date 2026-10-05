@@ -8,6 +8,7 @@ import {
   ChevronsUpDown,
   Eye,
   MoreHorizontal,
+  Pencil,
   Trash2,
 } from "lucide-react";
 
@@ -22,6 +23,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 import type { Volunteer } from "../volunteer.entity";
@@ -44,7 +50,7 @@ function SortHeader({
     <button
       type="button"
       onClick={() => column.toggleSorting(sorted === "asc")}
-      className="-mx-2 inline-flex items-center gap-1 rounded px-2 py-1 font-medium hover:text-foreground"
+      className="-mx-2 inline-flex min-h-9 items-center gap-1 rounded px-2 py-1 font-medium hover:text-foreground"
     >
       {label}
       {sorted === "asc" ? (
@@ -65,33 +71,16 @@ function getInitials(prenom: string, nom: string): string {
 }
 
 function RoleBadge({ role }: { role: Volunteer["role"] }) {
-  const label = roleLabel(role);
-  if (role === "SUPER_ADMIN") {
-    return (
-      <Badge
-        variant="outline"
-        className="border-purple-300 bg-purple-500/10 font-medium text-purple-700 dark:border-purple-800 dark:text-purple-300"
-      >
-        {label}
-      </Badge>
-    );
-  }
-  if (role === "ADMIN") {
-    return (
-      <Badge
-        variant="outline"
-        className="border-blue-300 bg-blue-500/10 font-medium text-blue-700 dark:border-blue-800 dark:text-blue-300"
-      >
-        {label}
-      </Badge>
-    );
-  }
   return (
     <Badge
-      variant="outline"
-      className="border-teal-300 bg-teal-500/10 font-medium text-teal-700 dark:border-teal-800 dark:text-teal-300"
+      variant={role === "SUPER_ADMIN" ? "outline" : "secondary"}
+      className={
+        role === "SUPER_ADMIN"
+          ? "border-primary/30 bg-primary/10 font-medium text-primary"
+          : "font-medium"
+      }
     >
-      {label}
+      {roleLabel(role)}
     </Badge>
   );
 }
@@ -104,14 +93,14 @@ function StatutBadge({ statut }: { statut: Volunteer["statut"] }) {
       className={cn(
         "gap-1.5 font-medium",
         isActif
-          ? "border-emerald-300 bg-emerald-500/10 text-emerald-700 dark:border-emerald-800 dark:text-emerald-400"
+          ? "border-primary/30 bg-primary/10 text-primary"
           : "border-muted bg-muted/60 text-muted-foreground"
       )}
     >
       <span
         className={cn(
           "size-1.5 rounded-full",
-          isActif ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground"
+          isActif ? "bg-primary" : "bg-muted-foreground"
         )}
       />
       {statutLabel(statut)}
@@ -131,11 +120,42 @@ export function getVolunteerColumns({
         const fullName = formatFullName(row.original);
         return (
           <div className="flex items-center gap-3">
-            <Avatar className="size-9 border shadow-2xs">
-              <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-10 shrink-0 rounded-full p-0"
+                  aria-label={`Aperçu du compte de ${fullName}`}
+                >
+                  <Avatar className="size-9 border shadow-2xs">
+                    <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-72">
+                <p className="font-semibold text-foreground">{fullName}</p>
+                <p className="truncate text-sm text-muted-foreground">
+                  {row.original.email}
+                </p>
+                <dl className="mt-3 grid gap-2 border-t pt-3 text-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-muted-foreground">Rôle</dt>
+                    <dd>{roleLabel(row.original.role)}</dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-muted-foreground">Statut</dt>
+                    <dd>{statutLabel(row.original.statut)}</dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-muted-foreground">Entrée</dt>
+                    <dd>{formatDate(row.original.dateEntree)}</dd>
+                  </div>
+                </dl>
+              </PopoverContent>
+            </Popover>
             <div className="flex flex-col">
               <Link
                 href={`/admin/volunteer-management/${row.original.id}`}
@@ -211,6 +231,14 @@ export function getVolunteerColumns({
                 className="cursor-pointer gap-2"
               >
                 <Eye className="size-4 text-muted-foreground" /> Fiche détaillée
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/admin/volunteer-management/${row.original.id}#modifier`}
+                className="cursor-pointer gap-2"
+              >
+                <Pencil className="size-4 text-muted-foreground" /> Modifier
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
