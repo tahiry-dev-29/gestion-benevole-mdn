@@ -2,7 +2,7 @@
 
 Plan-ID: plan-001
 Project: gestion-benevole
-Related task files: `../tasks/10_foundation_auth.md`, `../tasks/11_volunteer_management.md`, `../tasks/12_user_management.md`, `../tasks/13_presence_places.md`, `../tasks/14_excel.md`, `../tasks/15_observation_credit.md`, `../tasks/16_activities_shares.md`, `../tasks/17_testimonials_pwa.md`, `../tasks/18_end_to_end.md`
+Related task files: `../.archives/tasks/10_foundation_auth.md`, `../.archives/tasks/11_volunteer_management.md`, `../tasks/12_user_management.md`, `../.archives/tasks/13_presence_places.md`, `../.archives/tasks/14_excel.md`, `../tasks/15_observation_credit.md`, `../.archives/tasks/16_activities_shares.md`, `../tasks/17_testimonials_pwa.md`, `../tasks/18_end_to_end.md`
 Sprint / Reference: Sprints 0–8 / PRD V1
 Date: 2026-10-02
 Status: DRAFT
@@ -184,13 +184,13 @@ La gestion `/admin/users` ne crée, n'affiche et ne modifie que les comptes `USE
 
 ## 11. Related task files
 
-- `../tasks/10_foundation_auth.md` — S0–S1, navigation et RBAC.
-- `../tasks/11_volunteer_management.md` — S2, gestion des comptes habilités.
+- `../.archives/tasks/10_foundation_auth.md` — S0–S1, navigation et RBAC.
+- `../.archives/tasks/11_volunteer_management.md` — S2, gestion des comptes habilités.
 - `../tasks/12_user_management.md` — S3, gestion USER et conversion.
-- `../tasks/13_presence_places.md` — S4, pointage et places.
-- `../tasks/14_excel.md` — S5, import/export.
+- `../.archives/tasks/13_presence_places.md` — S4, pointage et places.
+- `../.archives/tasks/14_excel.md` — S5, import/export.
 - `../tasks/15_observation_credit.md` — S6, observations et crédits.
-- `../tasks/16_activities_shares.md` — S7, contenus publics.
+- `../.archives/tasks/16_activities_shares.md` — S7, contenus publics.
 - `../tasks/17_testimonials_pwa.md` — S8, témoignages et offline PWA.
 - `../tasks/18_end_to_end.md` — validation transversale 0–8.
 

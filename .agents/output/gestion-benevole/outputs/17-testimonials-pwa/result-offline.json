@@ -1,0 +1,17 @@
+{
+  "base": "http://localhost:3108",
+  "phase": "offline",
+  "steps": [
+    {
+      "name": "server-stopped reload /temoignages from cache",
+      "ok": true,
+      "detail": "h1=Témoignages url=http://localhost:3108/temoignages err=none"
+    },
+    {
+      "name": "server-stopped uncached route shows fallback",
+      "ok": true,
+      "detail": "Vous êtes hors connexionLes pages publiques déjà consultées restent disponibles. Reconnect err=none"
+    }
+  ],
+  "ok": true
+}

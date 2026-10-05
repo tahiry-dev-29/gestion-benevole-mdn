@@ -1,6 +1,6 @@
 Status: DONE
 
-> **Suivi de remise en état:** règles et parcours observations/crédits sont suivis dans [`15_observation_credit.md`](15_observation_credit.md), Plan `plan-001`.
+> **Suivi de remise en état:** règles et parcours observations/crédits sont suivis dans [`15_observation_credit.md`](../../tasks/15_observation_credit.md), Plan `plan-001`.
 
 # Tâche 06 — Sprint 6 : Observation mensuelle & Liste Crédit
 
@@ -8,7 +8,7 @@ Status: DONE
 > cumulé des crédits (heures) avec export optionnel
 > 📌 **Statut :** 🟢 Terminé · **Vélocité cible :** ~42 points
 >
-> ℹ️ L'option d'export (S6.2) s'aligne sur l'**Excel `exceljs`** livré au sprint 5 (`tasks/05_sprint5_excel_import_export.md`) plutôt que sur un export CSV/PDF spécifique.
+> ℹ️ L'option d'export (S6.2) s'aligne sur l'**Excel `exceljs`** livré au sprint 5 (`./05_sprint5_excel_import_export.md`) plutôt que sur un export CSV/PDF spécifique.
 
 - [x] Toutes les cases cochées = PR fusionnée + revue Lead (CDC §6)
 

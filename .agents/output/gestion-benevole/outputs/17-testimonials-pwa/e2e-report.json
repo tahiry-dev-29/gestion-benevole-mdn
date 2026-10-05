@@ -1,0 +1,35 @@
+{
+  "base": "http://localhost:3000",
+  "phase": "e2e-2026-10-05",
+  "checks": [
+    {
+      "name": "form: shadcn textarea + placeholder + hint",
+      "ok": true,
+      "detail": "Décrivez votre expérience avec la Maison du Numérique…"
+    },
+    {
+      "name": "submit: success status shown",
+      "ok": true,
+      "detail": "Merci, votre témoignage sera publié après modération."
+    },
+    {
+      "name": "admin: new submission visible EN_ATTENTE (no rebuild)",
+      "ok": true,
+      "detail": "[\"Playwright Test\",\"Test de bout en bout : témoignage temporaire pour \",\"En attente\",\"PublierRejeterSupprimer\"]"
+    },
+    {
+      "name": "admin: confirm dialog opens",
+      "ok": true,
+      "detail": "Supprimer ce témoignage ?"
+    },
+    {
+      "name": "admin: row removed, empty state, action toast",
+      "ok": true,
+      "detail": "[\"Témoignage supprimé.\"]"
+    },
+    {
+      "name": "public: deleted testimonial not visible",
+      "ok": true
+    }
+  ]
+}

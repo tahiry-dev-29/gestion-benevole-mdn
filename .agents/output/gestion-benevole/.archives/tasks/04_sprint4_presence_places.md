@@ -1,10 +1,10 @@
 Status: DONE
 
-> **Suivi de remise en état:** route `/admin/presences`, pointage et places sont suivis dans [`13_presence_places.md`](13_presence_places.md), Plan `plan-001`.
+> **Suivi de remise en état:** route `/admin/presences`, pointage et places sont suivis dans [`13_presence_places.md`](../../tasks/13_presence_places.md), Plan `plan-001`.
 
 # Tâche 04 — Sprint 4 : Présence & Places (CRUD tables/sièges)
 
-**Sprint:** 4 · **Durée:** 2 semaines · **Priorité:** Haute · **Dépend de:** Tâche 03 · **Plan:** [`prd.md`](../prd.md) §5 · **Archi:** [`archi.md`](../archi.md)
+**Sprint:** 4 · **Durée:** 2 semaines · **Priorité:** Haute · **Dépend de:** Tâche 03 · **Plan:** [`prd.md`](../../prd.md) §5 · **Archi:** [`archi.md`](../../archi.md)
 
 ---
 

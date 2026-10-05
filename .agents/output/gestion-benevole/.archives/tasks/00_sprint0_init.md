@@ -1,6 +1,6 @@
 Status: DONE
 
-> **Suivi de remise en état:** les preuves fonctionnelles restantes du socle/navigation sont suivies dans [`10_foundation_auth.md`](10_foundation_auth.md), Plan `plan-001`.
+> **Suivi de remise en état:** les preuves fonctionnelles restantes du socle/navigation sont suivies dans [`10_foundation_auth.md`](../../tasks/10_foundation_auth.md), Plan `plan-001`.
 
 # Tâche 00 — Sprint 0 : Initialisation & Setup
 

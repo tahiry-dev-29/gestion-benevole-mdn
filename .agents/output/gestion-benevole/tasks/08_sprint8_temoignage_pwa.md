@@ -210,3 +210,14 @@ témoignages modérés par l'admin, et l'app est installable/offline avec scores
   contrôleur SW → serveur stoppé → reload `/temoignages` (cache `public-pages`) → route non
   cachée (fallback `/~offline`). Script réutilisable : `/tmp/pwa-offline-proof.mjs`.
 - Appareils Android/iOS + audit Lighthouse de production restent bloqués hors déploiement (S9).
+
+## Session thr-dev 08 — preuve offline navigateur (2026-10-05)
+
+- **Build** : `env -u NODE_ENV pnpm build` → EXIT=0 (33 pages/routes, plugin PWA actif, fallback `/~offline`). 6 fichiers WIP partages hors tâche temporairement écartés puis restaurés à l'octet près (`diff -q` OK) — voir tâche 17 pour le détail.
+- **Preuve offline (Chromium, serveur `:3108` arrêté, profil persistant)** : SW actif + contrôleur ; `public-pages` contient `/temoignages`, `/activites`, `/partages` ; `/temoignages` rechargé serveur arrêté = rendu complet depuis le cache (capture `offline-temoignages.png`) ; route inconnue → fallback `/~offline` « Vous êtes hors connexion » (capture `offline-fallback.png`). Script `/tmp/pw08x/pwa-proof-phases.mjs`, artifacts `/tmp/pwa-proof-08/`.
+- **Réserve méthode** : l'émulation offline Playwright (`context.setOffline`) contourne le SW dans ce Chromium — seul le serveur arrêté prouve. Le 404 précache du 2026-10-02 (`app/admin/places/page-*.js`) ne se reproduit pas sur arbre stable.
+- **Reste ouvert** : installation/mise à jour SW sur appareils Android/iOS réels, Lighthouse prod (S9), S8.7 parcours complet + revue Lead. `pnpm vitest run src/features/temoignage` → 5/5. `pnpm typecheck` global en échec sur WIP partages préexistant (tâche 16).
+
+## Session thr-design 08 — polish UI témoignages (2026-10-05)
+
+- S8.3/S8.4 (étape 17.4) : formulaire public (shadcn Textarea + focus visible vérifié + placeholder + hint), confirmation Dialog pour Supprimer (parcours réel : dialogue → suppression → état vide → toast « Témoignage supprimé. »), toasts par action, état vide admin, `whitespace-pre-wrap`. Contraste primary/destructive light corrigé à 4.58:1/4.52:1 (`contrast-check.py`). Captures avant/après : `.agents/output/gestion-benevole/outputs/17-testimonials-pwa/`. Cible tactile 44 px non atteinte (36–40 px) : routée à thr-planning (design-system global).

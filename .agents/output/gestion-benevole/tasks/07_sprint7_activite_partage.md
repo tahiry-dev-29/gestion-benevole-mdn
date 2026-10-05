@@ -1,8 +1,8 @@
 Status: IN_PROGRESS
 
-> Parcours local brouillon → publication → visite publique → dépublication vérifié pour Activité et Partage le 2026-10-02. Le parcours complet depuis les écrans admin et les critères de revue restent à clôturer; voir [`STATUS-01-17.md`](./STATUS-01-17.md).
+> Parcours local brouillon → publication → visite publique → dépublication vérifié pour Activité et Partage le 2026-10-02. Le parcours complet depuis les écrans admin et les critères de revue restent à clôturer; voir [`STATUS-01-17.md`](../.archives/tasks/STATUS-01-17.md).
 
-> **Suivi de remise en état:** modération et visibilité publique sont suivies dans [`16_activities_shares.md`](16_activities_shares.md), Plan `plan-001`.
+> **Suivi de remise en état:** modération et visibilité publique sont suivies dans [`16_activities_shares.md`](../.archives/tasks/16_activities_shares.md), Plan `plan-001`.
 
 # Tâche 07 — Sprint 7 : Public — Activité & Partage
 

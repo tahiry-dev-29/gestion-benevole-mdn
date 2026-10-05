@@ -1,12 +1,12 @@
-Status: IN_PROGRESS
+Status: DONE
 
 > Parcours USER → certificat → approbation → connexion vérifié le 2026-10-02. Voir [`STATUS-01-17.md`](./STATUS-01-17.md); les critères historiques non prouvés restent ouverts.
 
-> **Suivi de remise en état:** l'audit correctif des comptes USER et de la conversion est suivi dans [`12_user_management.md`](12_user_management.md), Plan `plan-001`.
+> **Suivi de remise en état:** l'audit correctif des comptes USER et de la conversion est suivi dans [`12_user_management.md`](../../tasks/12_user_management.md), Plan `plan-001`.
 
 # Tâche 03 — Sprint 3 : Gestion USER & conversion en VOLUNTEER
 
-**Sprint:** 3 · **Durée:** 2 semaines · **Priorité:** Haute · **Dépend de:** Tâche 01, Tâche 02 · **Plan:** [`prd.md`](../prd.md) §4 · **Archi:** [`archi.md`](../archi.md)
+**Sprint:** 3 · **Durée:** 2 semaines · **Priorité:** Haute · **Dépend de:** Tâche 01, Tâche 02 · **Plan:** [`prd.md`](../../prd.md) §4 · **Archi:** [`archi.md`](../../archi.md)
 
 ---
 
@@ -78,4 +78,4 @@ Comptes `USER` complets (propriétés du PRD), pages `/admin/users`, `/admin/use
 - Fiche USER inclut les champs contact et disponibilités horaires en plus de Gravatar et des champs déjà affichés.
 - Base locale confirmée (`gestion_benevole_sprint06` sur `localhost:5432`) : `pnpm prisma migrate status` confirme les 13 migrations appliquées. Aucun changement de schéma n’était nécessaire.
 - La page `[id]` et `getUserDetailsAction` incluent les propriétés USER, pièces jointes, consentement/règles, disponibilités et Gravatar. La compilation passe; le rendu réel navigateur n’a pas été rejoué car Playwright n’est pas disponible dans cet environnement.
-- Statut `IN_PROGRESS` conservé uniquement pour le contrôle visuel navigateur du détail; le reste des critères de cette tâche est couvert par les tests et validations listés ci-dessus.
+- Contrôle Chromium effectué le 2026-10-05 : liste USER, fiche détaillée avec Gravatar, formulaire de modification et viewport 390×844. Captures : [`users-list.png`](../../outputs/task-12/users-list.png), [`user-detail.png`](../../outputs/task-12/user-detail.png), [`user-update.png`](../../outputs/task-12/user-update.png), [`users-list-mobile.png`](../../outputs/task-12/users-list-mobile.png), [`user-detail-mobile.png`](../../outputs/task-12/user-detail-mobile.png). Aucun formulaire soumis. La tâche 03 est clôturée; le suivi correctif plus large de la tâche 12 reste IN_PROGRESS.

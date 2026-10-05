@@ -1,0 +1,22 @@
+{
+  "base": "http://localhost:3108",
+  "phase": "warm",
+  "steps": [
+    {
+      "name": "SW active + controller",
+      "ok": true,
+      "detail": "{\"active\":true,\"controller\":true}"
+    },
+    {
+      "name": "public-pages warmed",
+      "ok": true,
+      "detail": "[\"/temoignages\",\"/activites\",\"/partages\",\"/partages\",\"/partages\",\"/activites\",\"/activites\"]"
+    },
+    {
+      "name": "precache contains /~offline",
+      "ok": true,
+      "detail": "{\"hasOffline\":true}"
+    }
+  ],
+  "ok": true
+}

@@ -1,10 +1,10 @@
 Status: DONE
 
-> **Suivi de remise en état:** le CRUD et l'UX Volunteer Management sont suivis dans [`11_volunteer_management.md`](11_volunteer_management.md), Plan `plan-001`.
+> **Suivi de remise en état:** le CRUD et l'UX Volunteer Management sont suivis dans [`11_volunteer_management.md`](../../tasks/11_volunteer_management.md), Plan `plan-001`.
 
 # Tâche 02 — Sprint 2 : Volunteer Management (sous-liste + CRUD sécurisé)
 
-**Sprint:** 2 · **Durée:** 2 semaines · **Priorité:** Haute · **Dépend de:** Tâche 01 · **Plan:** [`prd.md`](../prd.md) §3 · **Archi:** [`archi.md`](../archi.md)
+**Sprint:** 2 · **Durée:** 2 semaines · **Priorité:** Haute · **Dépend de:** Tâche 01 · **Plan:** [`prd.md`](../../prd.md) §3 · **Archi:** [`archi.md`](../../archi.md)
 
 ---
 
