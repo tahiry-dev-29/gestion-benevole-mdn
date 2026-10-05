@@ -9,13 +9,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type LoginInput, loginSchema } from "@/features/auth/auth.schema";
@@ -64,13 +58,10 @@ export function LoginForm({
     <div className={className} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Connexion Administration</CardTitle>
-          <CardDescription>
-            Entrez vos identifiants pour accéder à l&apos;espace admin
-          </CardDescription>
+          <CardTitle className="text-xl">Connexion</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-6">
-          <form onSubmit={onSubmit} className="grid gap-6">
+        <CardContent>
+          <form onSubmit={onSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -102,21 +93,19 @@ export function LoginForm({
                 </p>
               ) : null}
             </div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="rememberMe"
-                className="flex cursor-pointer items-center gap-2 text-sm"
-              >
-                <input
-                  id="rememberMe"
-                  type="checkbox"
-                  className="size-4 rounded border-input bg-background"
-                  checked={rememberMe}
-                  {...register("rememberMe")}
-                />
-                Se souvenir de moi (7 jours)
-              </label>
-            </div>
+            <label
+              htmlFor="rememberMe"
+              className="flex cursor-pointer items-center gap-2 text-sm"
+            >
+              <input
+                id="rememberMe"
+                type="checkbox"
+                className="size-4 rounded border-input bg-background"
+                checked={rememberMe}
+                {...register("rememberMe")}
+              />
+              Se souvenir de moi
+            </label>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="size-4 animate-spin" />

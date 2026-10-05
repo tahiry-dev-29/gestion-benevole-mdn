@@ -73,8 +73,7 @@ function HoverDropdownItem({ item }: { item: NavItem }) {
               "w-full rounded-lg px-3 py-2 text-sm font-medium transition-colors",
               item.isActive
                 ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
-                : "text-sidebar-foreground/85 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground",
-              isCollapsed && "justify-center px-0"
+                : "text-sidebar-foreground/85 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
             )}
           >
             {item.icon && <item.icon className="size-4 shrink-0" />}
@@ -158,8 +157,7 @@ export function NavMain({
                   "w-full rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   item.isActive
                     ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
-                    : "text-sidebar-foreground/85 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground",
-                  isCollapsed && "justify-center px-0"
+                    : "text-sidebar-foreground/85 hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
                 )}
               >
                 <Link href={item.url}>

@@ -70,8 +70,7 @@ export function GestionGroup() {
                   "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                   Boolean(activeItem)
                     ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
-                    : "text-sidebar-foreground/90",
-                  isCollapsed && "justify-center px-0"
+                    : "text-sidebar-foreground/90"
                 )}
               >
                 <FolderClosed className="size-4 shrink-0 text-sidebar-primary" />

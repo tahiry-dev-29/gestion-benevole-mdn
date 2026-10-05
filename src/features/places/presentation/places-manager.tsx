@@ -113,7 +113,7 @@ export function PlacesManager({
       ) : null}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {tables.map((table) => (
-          <Card key={table.tableNumber}>
+          <Card key={table.tableNumber} className="glass-sm">
             <CardHeader className="flex-row items-center justify-between">
               <CardTitle>Table {table.tableNumber}</CardTitle>
               <div className="flex gap-2">

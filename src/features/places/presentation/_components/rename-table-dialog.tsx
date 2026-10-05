@@ -72,7 +72,7 @@ function RenameTableForm({
   }
 
   return (
-    <DialogContent>
+    <DialogContent className="glass-xl">
       <DialogHeader>
         <DialogTitle>Renommer la table {tableNumber}</DialogTitle>
         <DialogDescription>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { MoreHorizontal, Send, ShieldAlert, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { moderateTemoignage } from "./temoignage.action";
 
@@ -39,27 +46,54 @@ export function TemoignageModerationActions({ id }: { id: number }) {
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button size="sm" disabled={pending} onClick={() => moderate("publier")}>
-        Publier
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        disabled={pending}
-        onClick={() => moderate("rejeter")}
-      >
-        Rejeter
-      </Button>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-10"
+            disabled={pending}
+            aria-label="Actions du témoignage"
+          >
+            <MoreHorizontal aria-hidden="true" className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            disabled={pending}
+            onSelect={() => void moderate("publier")}
+          >
+            <Send aria-hidden="true" /> Publier
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={pending}
+            onSelect={() => void moderate("rejeter")}
+          >
+            <X aria-hidden="true" /> Rejeter
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={pending}
+            className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            onSelect={() => setConfirmOpen(true)}
+          >
+            <Trash2 aria-hidden="true" /> Supprimer
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogTrigger
-          render={<Button size="sm" variant="destructive" disabled={pending} />}
-        >
-          Supprimer
+        <DialogTrigger className="sr-only">
+          Confirmer la suppression
         </DialogTrigger>
-        <DialogContent showCloseButton={false}>
+        <DialogContent showCloseButton={false} className="glass-xl">
           <DialogHeader>
-            <DialogTitle>Supprimer ce témoignage ?</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <ShieldAlert
+                aria-hidden="true"
+                className="size-5 text-destructive"
+              />
+              Supprimer ce témoignage ?
+            </DialogTitle>
             <DialogDescription>
               L&apos;action est irréversible : le témoignage sera définitivement
               retiré, y compris de la liste publique.
@@ -79,6 +113,6 @@ export function TemoignageModerationActions({ id }: { id: number }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
