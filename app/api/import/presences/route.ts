@@ -1,12 +1,9 @@
 import { hasExcelAdminAccess } from "@/features/excel/excel.access";
 import { importPresences } from "@/features/excel/excel.import";
+import { importFromMultipartRequest } from "@/features/excel/excel.import.shared";
 
 export async function POST(request: Request) {
   if (!(await hasExcelAdminAccess()))
     return Response.json({ error: "Accès interdit." }, { status: 403 });
-  const formData = await request.formData();
-  const result = await importPresences(formData.get("file"));
-  return Response.json(result, {
-    status: result.success || result.imported > 0 ? 200 : 400,
-  });
+  return importFromMultipartRequest(request, importPresences);
 }

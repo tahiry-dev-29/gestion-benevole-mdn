@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Download, FileUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { ImportErrorsTable } from "./import-errors-table";
 
@@ -45,6 +46,8 @@ export function ImportExportButtons({
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<ImportError[]>([]);
   const [imported, setImported] = useState<number | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const label = dataset === "users" ? "utilisateurs" : "présences";
 
@@ -66,7 +69,7 @@ export function ImportExportButtons({
       anchor.href = objectUrl;
       anchor.download = filename;
       anchor.click();
-      URL.revokeObjectURL(objectUrl);
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
     },
     onError: () => toast.error("Impossible de télécharger le fichier."),
   });
@@ -97,6 +100,7 @@ export function ImportExportButtons({
       }
       if (result.success) {
         setFile(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
     onError: (error) =>
@@ -118,7 +122,7 @@ export function ImportExportButtons({
   }
 
   function handleImport() {
-    if (!file) return;
+    if (!file || fileError) return;
     setErrors([]);
     importMutation.mutate(file);
   }
@@ -162,16 +166,58 @@ export function ImportExportButtons({
           >
             <Download /> Télécharger le modèle
           </Button>
-          <Input
-            type="file"
-            accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            disabled={importMutation.isPending}
-            onChange={(event) => {
-              setFile(event.target.files?.[0] ?? null);
-              setImported(null);
-              setErrors([]);
-            }}
-          />
+          <div className="space-y-2">
+            <Label htmlFor={`excel-file-${dataset}`}>Fichier XLSX</Label>
+            <Input
+              ref={fileInputRef}
+              id={`excel-file-${dataset}`}
+              type="file"
+              accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              aria-describedby={`excel-file-help-${dataset}`}
+              aria-invalid={Boolean(fileError)}
+              disabled={importMutation.isPending}
+              onChange={(event) => {
+                const selected = event.target.files?.[0] ?? null;
+                const issue = selected
+                  ? !selected.name.toLowerCase().endsWith(".xlsx")
+                    ? "Le fichier doit être au format .xlsx."
+                    : selected.size === 0 || selected.size > 5 * 1024 * 1024
+                      ? "Le fichier doit peser entre 1 octet et 5 Mo."
+                      : null
+                  : null;
+                setFile(selected);
+                setFileError(issue);
+                setImported(null);
+                setErrors([]);
+              }}
+            />
+            <p
+              id={`excel-file-help-${dataset}`}
+              className="text-xs text-muted-foreground"
+            >
+              XLSX uniquement, 5 Mo maximum.
+            </p>
+            {file ? (
+              <p className="text-sm text-muted-foreground">
+                {file.name} · {(file.size / (1024 * 1024)).toFixed(2)} Mo
+              </p>
+            ) : null}
+            {fileError ? (
+              <p role="alert" className="text-sm text-destructive">
+                {fileError}
+              </p>
+            ) : null}
+          </div>
+          {importMutation.isPending ? (
+            <p
+              role="status"
+              aria-live="polite"
+              className="flex items-center gap-2 text-sm"
+            >
+              <Loader2 className="size-4 animate-spin" />
+              Import en cours, validation et enregistrement des lignes…
+            </p>
+          ) : null}
           {downloadMutation.isPending ? (
             <p role="status" aria-live="polite" className="text-sm">
               Préparation du téléchargement…
@@ -185,7 +231,7 @@ export function ImportExportButtons({
           {errors.length > 0 ? <ImportErrorsTable errors={errors} /> : null}
           <DialogFooter>
             <Button
-              disabled={!file || importMutation.isPending}
+              disabled={!file || Boolean(fileError) || importMutation.isPending}
               onClick={handleImport}
             >
               {importMutation.isPending ? (

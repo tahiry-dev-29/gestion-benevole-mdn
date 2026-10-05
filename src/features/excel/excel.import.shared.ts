@@ -55,3 +55,29 @@ export async function readXlsxUpload(
 export function failedImport(errors: ExcelRowError[]) {
   return { success: false, imported: 0, errors };
 }
+
+export async function importFromMultipartRequest(
+  request: Request,
+  importer: (file: FormDataEntryValue | null) => Promise<{
+    success: boolean;
+    imported: number;
+    errors: ExcelRowError[];
+  }>
+) {
+  try {
+    const formData = await request.formData();
+    const result = await importer(formData.get("file"));
+    return Response.json(result, {
+      status: result.success || result.imported > 0 ? 200 : 400,
+    });
+  } catch {
+    const errors = [
+      {
+        ligne: 0,
+        champ: "fichier",
+        message: "La requête multipart est invalide ou illisible.",
+      },
+    ];
+    return Response.json(failedImport(errors), { status: 400 });
+  }
+}

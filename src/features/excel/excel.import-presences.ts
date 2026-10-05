@@ -17,14 +17,19 @@ export async function importPresences(fileValue: FormDataEntryValue | null) {
   for (const { ligne, value: presence } of parsed.data) {
     try {
       const user = await prisma.user.findUnique({
-        where: { email: presence.email },
+        where: {
+          email: presence.email,
+          role: "VOLUNTEER",
+          statut: "ACTIF",
+          deletedAt: null,
+        },
         select: { id: true },
       });
       if (!user) {
         errors.push({
           ligne,
           champ: "email",
-          message: "Aucun utilisateur ne correspond à cet email.",
+          message: "Aucun bénévole actif ne correspond à cet email.",
         });
         continue;
       }

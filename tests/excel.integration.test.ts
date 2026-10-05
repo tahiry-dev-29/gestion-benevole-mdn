@@ -33,7 +33,10 @@ const isDedicatedLocalDatabase = (() => {
 })();
 
 const email = `test.excel.${Date.now()}@mdn.local`;
+// A separate VOLUNTEER account is needed because importPresences requires role=VOLUNTEER.
+const volunteerEmail = `test.excel.volunteer.${Date.now()}@mdn.local`;
 let importedUserId: number | undefined;
+let importedVolunteerId: number | undefined;
 let importedSeatId: number | undefined;
 
 async function workbookFile(name: string) {
@@ -96,11 +99,18 @@ describe.skipIf(!isDedicatedLocalDatabase)(
         await prisma.attendance.deleteMany({
           where: { user_id: importedUserId },
         });
+      if (importedVolunteerId)
+        await prisma.attendance.deleteMany({
+          where: { user_id: importedVolunteerId },
+        });
       if (importedUserId)
         await prisma.user.deleteMany({ where: { id: importedUserId } });
+      if (importedVolunteerId)
+        await prisma.user.deleteMany({ where: { id: importedVolunteerId } });
       if (importedSeatId)
         await prisma.seat.deleteMany({ where: { id: importedSeatId } });
       await prisma.user.deleteMany({ where: { email } });
+      await prisma.user.deleteMany({ where: { email: volunteerEmail } });
       await prisma.$disconnect();
     });
 
@@ -166,15 +176,30 @@ describe.skipIf(!isDedicatedLocalDatabase)(
     });
 
     it("réimporte les présences avec table et siège sans doublon", async () => {
-      expect(importedUserId).toBeDefined();
+      // Create a dedicated VOLUNTEER fixture (importPresences requires role=VOLUNTEER, statut=ACTIF).
+      const volunteer = await prisma.user.create({
+        data: {
+          nom: "Bénévole",
+          prenom: "Excel",
+          email: volunteerEmail,
+          role: "VOLUNTEER",
+          statut: "ACTIF",
+          matricule: `MAT-VOL-${Date.now()}`,
+          telephone: "0340000000",
+          password: null,
+        },
+      });
+      importedVolunteerId = volunteer.id;
+
       const seat = await prisma.seat.create({
         data: { tableNumber: 9876, seatNumber: 9876, label: "Test XLSX" },
       });
       importedSeatId = seat.id;
+
       const row: ExcelPresence = {
         date: "2026-10-02",
-        email,
-        nom: "Mis à jour",
+        email: volunteerEmail,
+        nom: "Bénévole",
         prenom: "Excel",
         statut: "PRESENT",
         heure_arrivee: "09:00",
@@ -187,7 +212,7 @@ describe.skipIf(!isDedicatedLocalDatabase)(
       const second = await importPresences(await presenceWorkbookFile(row));
       const attendance = await prisma.attendance.findMany({
         where: {
-          user_id: importedUserId,
+          user_id: importedVolunteerId,
           date: new Date("2026-10-02T00:00:00.000Z"),
         },
         include: { seat: true },

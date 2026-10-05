@@ -121,6 +121,14 @@ export const excelPresenceSchema = z
     ({ tableNumber, seatNumber }) =>
       (tableNumber === undefined) === (seatNumber === undefined),
     { message: "La table et le siège doivent être renseignés ensemble." }
+  )
+  .refine(
+    ({ heure_arrivee, heure_depart }) =>
+      !heure_arrivee || !heure_depart || heure_depart >= heure_arrivee,
+    {
+      message: "L’heure de départ doit être après l’heure d’arrivée.",
+      path: ["heure_depart"],
+    }
   );
 
 export type ExcelUserInput = z.infer<typeof excelUserSchema>;

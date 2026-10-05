@@ -21,9 +21,15 @@ export function validateXlsxUpload(file: File): string | null {
   return null;
 }
 
-function cellString(value: ExcelJS.CellValue | undefined): string {
+function cellString(
+  value: ExcelJS.CellValue | undefined,
+  header?: string
+): string {
   if (value === null || value === undefined) return "";
-  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  if (value instanceof Date)
+    return header === "reglesAccepteesAt"
+      ? value.toISOString()
+      : value.toISOString().slice(0, 10);
   if (typeof value === "object" && "text" in value) return String(value.text);
   if (typeof value === "object" && "richText" in value)
     return value.richText.map((part) => part.text).join("");
@@ -79,7 +85,7 @@ async function parseRows<T>(
     const values = Object.fromEntries(
       headers.map((header, index) => [
         header,
-        cellString(row.getCell(index + 1).value),
+        cellString(row.getCell(index + 1).value, header),
       ])
     );
     const result = parse(values);
