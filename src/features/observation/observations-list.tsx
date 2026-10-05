@@ -164,15 +164,21 @@ export function ObservationsList({
             <>
               <SheetHeader className="pr-8 text-left">
                 <SheetTitle className="flex items-center gap-2">
-                  <ShieldAlert className="size-5 text-primary" aria-hidden="true" />
+                  <ShieldAlert
+                    className="size-5 text-primary"
+                    aria-hidden="true"
+                  />
                   Observation de {viewingObs.benevole}
                 </SheetTitle>
                 <SheetDescription>
                   <span className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline">
-                      {new Intl.DateTimeFormat("fr-FR", { month: "long" }).format(
+                      {new Intl.DateTimeFormat("fr-FR", {
+                        month: "long",
+                      }).format(
                         new Date(viewingObs.annee, viewingObs.mois - 1, 1)
-                      )} {viewingObs.annee}
+                      )}{" "}
+                      {viewingObs.annee}
                     </Badge>
                     <span>Rédigée par {viewingObs.auteur ?? "—"}</span>
                   </span>

@@ -3,10 +3,12 @@ import { AlertCircle, CalendarCheck, CalendarDays, Users } from "lucide-react";
 import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { DashboardAreaChart } from "@/features/admin/dashboard-area-chart";
 import { getAdminDashboardMetrics } from "@/features/admin/metrics";
 import { RecentUsersTable } from "@/features/admin/recent-users-table";
 import { StatCard } from "@/features/admin/stat-card";
 import { TableCard } from "@/features/admin/table-card";
+
 
 export default async function AdminPage() {
   const metrics = await getAdminDashboardMetrics();
@@ -75,6 +77,8 @@ export default async function AdminPage() {
           />
         ))}
       </section>
+
+      <DashboardAreaChart data={metrics.chartData} />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <TableCard

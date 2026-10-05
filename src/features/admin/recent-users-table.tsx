@@ -1,6 +1,6 @@
 "use client";
 
-import type { Role } from "@prisma/client";
+import type { Role, UserStatut } from "@prisma/client";
 import type { ColumnDef } from "@tanstack/react-table";
 
 import { DataTable } from "@/components/shared/data-table";
@@ -12,6 +12,8 @@ export interface RecentUser {
   prenom: string;
   email: string;
   role: Role;
+  statut: UserStatut;
+  createdAt: Date;
 }
 
 const ROLE_LABELS: Record<Role, string> = {
@@ -55,6 +57,25 @@ const columns: ColumnDef<RecentUser>[] = [
         {ROLE_LABELS[row.original.role]}
       </Badge>
     ),
+  },
+  {
+    accessorKey: "statut",
+    header: "Statut",
+    cell: ({ row }) => (
+      <Badge
+        variant={row.original.statut === "ACTIF" ? "outline" : "secondary"}
+      >
+        {row.original.statut === "ACTIF" ? "Actif" : "Inactif"}
+      </Badge>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Inscrit le",
+    cell: ({ row }) =>
+      new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium" }).format(
+        row.original.createdAt
+      ),
   },
 ];
 

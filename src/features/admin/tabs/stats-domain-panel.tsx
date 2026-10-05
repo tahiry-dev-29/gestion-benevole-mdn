@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
@@ -66,13 +67,24 @@ export function StatsCard({
           {value}
         </p>
         {trendLabel !== undefined ? (
-          <p
-            className={`mt-2 text-xs font-medium ${trend === 0 ? "text-muted-foreground" : trend !== undefined && trend < 0 ? "text-destructive" : "text-primary"}`}
-            aria-label={caption}
-          >
-            {trend === 0 ? "→" : trend !== undefined && trend < 0 ? "↓" : "↑"}{" "}
-            {trendLabel}
-          </p>
+          <div className="mt-2 grid justify-items-start gap-1.5">
+            <Badge
+              variant={
+                trend === 0
+                  ? "secondary"
+                  : trend !== undefined && trend < 0
+                    ? "destructive"
+                    : "default"
+              }
+              aria-label={trendLabel}
+            >
+              {trend === 0 ? "→" : trend !== undefined && trend < 0 ? "↓" : "↑"}{" "}
+              {trendLabel}
+            </Badge>
+            {caption ? (
+              <p className="text-xs text-muted-foreground">{caption}</p>
+            ) : null}
+          </div>
         ) : caption ? (
           <p className="mt-1 text-xs text-muted-foreground">{caption}</p>
         ) : null}
