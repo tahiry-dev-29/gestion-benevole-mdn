@@ -21,6 +21,10 @@ function localDayRange(now = new Date()) {
 
 export async function getAdminDashboardMetrics() {
   const { start } = localDayRange();
+
+  const thirtyDaysAgo = new Date(start);
+  thirtyDaysAgo.setUTCDate(thirtyDaysAgo.getUTCDate() - 29);
+
   const [
     activeVolunteers,
     publishedActivities,
@@ -29,6 +33,8 @@ export async function getAdminDashboardMetrics() {
     adminCount,
     pendingUsers,
     recentUsers,
+    rawAttendanceDays,
+    rawUserCreationDays,
   ] = await Promise.all([
     prisma.user.count({
       where: { role: "VOLUNTEER", statut: "ACTIF", deletedAt: null },
@@ -48,11 +54,64 @@ export async function getAdminDashboardMetrics() {
     prisma.user.count({ where: { role: "USER", deletedAt: null } }),
     prisma.user.findMany({
       where: { deletedAt: null },
-      select: { id: true, nom: true, prenom: true, email: true, role: true },
+      select: {
+        id: true,
+        nom: true,
+        prenom: true,
+        email: true,
+        role: true,
+        statut: true,
+        createdAt: true,
+      },
       orderBy: { createdAt: "desc" },
       take: 5,
     }),
+    // Présences par jour (30 jours)
+    prisma.attendance.groupBy({
+      by: ["date"],
+      where: {
+        date: { gte: thirtyDaysAgo, lt: start },
+        statut: "PRESENT",
+      },
+      _count: { _all: true },
+      orderBy: { date: "asc" },
+    }),
+    // Inscriptions utilisateurs par jour (30 jours)
+    prisma.user.groupBy({
+      by: ["createdAt"],
+      where: {
+        createdAt: { gte: thirtyDaysAgo, lt: start },
+        deletedAt: null,
+      },
+      _count: { _all: true },
+      orderBy: { createdAt: "asc" },
+    }),
   ]);
+
+  // Indexer par date ISO (YYYY-MM-DD)
+  const attendanceByDay = new Map(
+    rawAttendanceDays.map((row) => [
+      row.date.toISOString().slice(0, 10),
+      row._count._all,
+    ])
+  );
+  const creationByDay = new Map<string, number>();
+  for (const row of rawUserCreationDays) {
+    const day = row.createdAt.toISOString().slice(0, 10);
+    creationByDay.set(day, (creationByDay.get(day) ?? 0) + row._count._all);
+  }
+
+  // Série de 30 jours
+  const chartData = Array.from({ length: 30 }, (_, index) => {
+    const date = new Date(thirtyDaysAgo);
+    date.setUTCDate(date.getUTCDate() + index);
+    const day = date.toISOString().slice(0, 10);
+    return {
+      date: day,
+      presences: attendanceByDay.get(day) ?? 0,
+      inscriptions: creationByDay.get(day) ?? 0,
+    };
+  });
 
   return {
     activeVolunteers,
@@ -62,8 +121,10 @@ export async function getAdminDashboardMetrics() {
     adminCount,
     pendingUsers,
     recentUsers,
+    chartData,
   };
 }
+
 
 export async function getAdminStatistics() {
   const { start, end } = localDayRange();
