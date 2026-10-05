@@ -1,5 +1,12 @@
 import { DistributionPanel, StatsCard } from "./stats-domain-panel";
 
+const CATEGORY_LABELS: Record<string, string> = {
+  PRIMAIRE: "Primaire",
+  COLLEGIEN: "Collégien",
+  UNIVERSITAIRE: "Universitaire",
+  SALARIE: "Salarié",
+};
+
 export function StatsVolunteerPanel({
   statuses,
   categories,
@@ -25,7 +32,10 @@ export function StatsVolunteerPanel({
         <DistributionPanel title="Répartition par statut" rows={statuses} />
         <DistributionPanel
           title="Répartition par catégorie"
-          rows={categories}
+          rows={categories.map((row) => ({
+            ...row,
+            label: CATEGORY_LABELS[row.label] ?? row.label,
+          }))}
         />
       </div>
     </div>
