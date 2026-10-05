@@ -39,9 +39,8 @@ export function NavUser({
     avatar?: string;
   };
 }) {
-  const { isMobile, state } = useSidebar();
+  const { isMobile } = useSidebar();
   const initials = getInitials(user.name);
-  const isCollapsed = state === "collapsed";
 
   return (
     <SidebarMenu>

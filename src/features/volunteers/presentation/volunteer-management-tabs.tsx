@@ -14,12 +14,12 @@ export function VolunteerManagementTabs() {
 
   return (
     <Tabs key={initialTab} defaultValue={initialTab} className="grid gap-5">
-      <TabsList className="glass-sm flex h-auto w-full justify-start gap-1 overflow-hidden p-1 sm:w-fit">
-        <TabsTrigger value="liste" className="min-h-10 gap-2 px-3">
+      <TabsList className="glass-sm flex h-auto w-full flex-wrap justify-start gap-1 p-1 sm:w-fit">
+        <TabsTrigger value="liste" className="min-h-10 flex-none gap-2 px-3">
           <UsersRound aria-hidden="true" />
           Liste
         </TabsTrigger>
-        <TabsTrigger value="roles" className="min-h-10 gap-2 px-3">
+        <TabsTrigger value="roles" className="min-h-10 flex-none gap-2 px-3">
           <ShieldCheck aria-hidden="true" />
           Rôles & permissions
         </TabsTrigger>

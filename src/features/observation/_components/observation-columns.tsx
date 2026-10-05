@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import type { ObservationItem } from "@/features/observation/observation-queries
 interface ObservationColumnsOptions {
   currentUserId: number;
   isAdmin: boolean;
+  onView: (item: ObservationItem) => void;
   onEdit: (item: ObservationItem) => void;
   onDelete: (id: number) => void;
 }
@@ -25,6 +26,7 @@ interface ObservationColumnsOptions {
 export function createObservationColumns({
   currentUserId,
   isAdmin,
+  onView,
   onEdit,
   onDelete,
 }: ObservationColumnsOptions): ColumnDef<ObservationItem>[] {
@@ -88,6 +90,10 @@ export function createObservationColumns({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => onView(obs)}>
+                  <Eye aria-hidden="true" /> Voir l’observation
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => onEdit(obs)}>
                   <Pencil aria-hidden="true" /> Modifier
                 </DropdownMenuItem>

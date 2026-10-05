@@ -162,6 +162,7 @@ export function ActivitesTable() {
           setPageIndex(next.pageIndex);
         }}
         isLoading={isLoading}
+        hiddenColumnsOnMobile={["description", "date"]}
         emptyMessage="Aucune activité trouvée."
         toolbar={
           <ActiviteToolbar

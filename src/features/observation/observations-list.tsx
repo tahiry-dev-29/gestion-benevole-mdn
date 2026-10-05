@@ -2,10 +2,18 @@
 
 import * as React from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, UserRound } from "lucide-react";
+import { ClipboardList, ShieldAlert, UserRound } from "lucide-react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/shared/confirm-delete-dialog";
+import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ObservationItem } from "@/features/observation/observation-queries.action";
 import {
@@ -43,6 +51,9 @@ export function ObservationsList({
     CURRENT_YEAR
   );
   const [editingObs, setEditingObs] = React.useState<ObservationItem | null>(
+    null
+  );
+  const [viewingObs, setViewingObs] = React.useState<ObservationItem | null>(
     null
   );
   const [deleteTarget, setDeleteTarget] = React.useState<number | null>(null);
@@ -116,6 +127,7 @@ export function ObservationsList({
             isLoading={observationsQuery.isPending}
             currentUserId={currentUserId}
             isAdmin={isAdmin}
+            onView={setViewingObs}
             onEdit={setEditingObs}
             onDelete={setDeleteTarget}
           />
@@ -129,6 +141,7 @@ export function ObservationsList({
               isLoading={observationsQuery.isPending}
               currentUserId={currentUserId}
               isAdmin={isAdmin}
+              onView={setViewingObs}
               onEdit={setEditingObs}
               onDelete={setDeleteTarget}
             />
@@ -141,6 +154,37 @@ export function ObservationsList({
         open={editingObs !== null}
         onOpenChange={(open) => !open && setEditingObs(null)}
       />
+
+      <Sheet
+        open={viewingObs !== null}
+        onOpenChange={(open) => !open && setViewingObs(null)}
+      >
+        <SheetContent className="glass-xl w-full overflow-y-auto sm:max-w-xl">
+          {viewingObs ? (
+            <>
+              <SheetHeader className="pr-8 text-left">
+                <SheetTitle className="flex items-center gap-2">
+                  <ShieldAlert className="size-5 text-primary" aria-hidden="true" />
+                  Observation de {viewingObs.benevole}
+                </SheetTitle>
+                <SheetDescription>
+                  <span className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline">
+                      {new Intl.DateTimeFormat("fr-FR", { month: "long" }).format(
+                        new Date(viewingObs.annee, viewingObs.mois - 1, 1)
+                      )} {viewingObs.annee}
+                    </Badge>
+                    <span>Rédigée par {viewingObs.auteur ?? "—"}</span>
+                  </span>
+                </SheetDescription>
+              </SheetHeader>
+              <p className="mt-6 whitespace-pre-wrap break-words rounded-xl border bg-card/60 p-4 text-sm leading-7">
+                {viewingObs.contenu}
+              </p>
+            </>
+          ) : null}
+        </SheetContent>
+      </Sheet>
 
       <ConfirmDeleteDialog
         open={deleteTarget !== null}

@@ -124,17 +124,26 @@ export function VolunteerDetail({ volunteer }: { volunteer: Volunteer }) {
   return (
     <div className="grid gap-5">
       <Tabs defaultValue="profil" className="grid gap-5">
-        <TabsList className="glass-sm flex h-auto w-full justify-start gap-1 overflow-hidden p-1 sm:w-fit">
-          <TabsTrigger value="profil" className="min-h-10 px-3">
+        <TabsList className="glass-sm flex h-auto w-full flex-wrap justify-start gap-1 p-1 sm:w-fit">
+          <TabsTrigger value="profil" className="min-h-10 flex-none px-3">
             Profil
           </TabsTrigger>
-          <TabsTrigger value="presences" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="presences"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <CalendarCheck aria-hidden="true" /> Présences
           </TabsTrigger>
-          <TabsTrigger value="credits" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="credits"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <WalletCards aria-hidden="true" /> Crédits
           </TabsTrigger>
-          <TabsTrigger value="observations" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="observations"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <MessageSquareText aria-hidden="true" /> Observations
           </TabsTrigger>
         </TabsList>

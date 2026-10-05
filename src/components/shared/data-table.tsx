@@ -45,9 +45,18 @@ interface DataTableProps<TData, TValue> {
   toolbar?: React.ReactNode;
   emptyMessage?: string;
   compactColumns?: boolean;
+  hiddenColumnsOnMobile?: string[];
 }
 
-function getResponsiveColumnClass(columnId: string, compactColumns: boolean) {
+function getResponsiveColumnClass(
+  columnId: string,
+  compactColumns: boolean,
+  hiddenColumnsOnMobile: string[]
+) {
+  if (hiddenColumnsOnMobile.includes(columnId)) return "hidden sm:table-cell";
+  if (hiddenColumnsOnMobile.length > 0 && columnId === "actions") {
+    return "w-12 min-w-12";
+  }
   if (!compactColumns) return undefined;
   if (
     columnId === "organisation" ||
@@ -75,6 +84,7 @@ export function DataTable<TData, TValue>({
   toolbar,
   emptyMessage = "Aucune donnée.",
   compactColumns = false,
+  hiddenColumnsOnMobile = [],
 }: DataTableProps<TData, TValue>) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -111,7 +121,8 @@ export function DataTable<TData, TValue>({
                       key={header.id}
                       className={getResponsiveColumnClass(
                         header.column.id,
-                        compactColumns
+                        compactColumns,
+                        hiddenColumnsOnMobile
                       )}
                     >
                       {header.isPlaceholder
@@ -143,7 +154,8 @@ export function DataTable<TData, TValue>({
                         key={cell.id}
                         className={getResponsiveColumnClass(
                           cell.column.id,
-                          compactColumns
+                          compactColumns,
+                          hiddenColumnsOnMobile
                         )}
                       >
                         {flexRender(

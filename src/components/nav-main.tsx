@@ -35,10 +35,9 @@ export type NavItem = {
 };
 
 function HoverDropdownItem({ item }: { item: NavItem }) {
-  const { isMobile, state } = useSidebar();
+  const { isMobile } = useSidebar();
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
-  const isCollapsed = state === "collapsed";
 
   const openMenu = () => {
     if (closeTimer.current) {
@@ -133,11 +132,8 @@ export function NavMain({
   items: NavItem[];
   label?: string;
 }) {
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
-
   return (
-    <SidebarGroup className="py-1">
+    <SidebarGroup className="py-1 group-data-[collapsible=icon]:px-0">
       <SidebarGroupLabel className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/75 px-3 py-1.5 h-auto">
         {label}
       </SidebarGroupLabel>

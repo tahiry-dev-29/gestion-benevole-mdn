@@ -20,14 +20,32 @@ import {
 } from "@/components/ui/select";
 import type { CreateUserFormInput } from "@/features/user/user.schema";
 
+/**
+ * Calcule l'âge à partir d'une date de naissance `YYYY-MM-DD`.
+ *
+ * La date est lue champ par champ : `new Date("2000-05-15")` est interprété
+ * comme UTC minuit alors que `getFullYear()`/`getDate()` travaillent en heure
+ * locale, ce qui décale la naissance d'un jour selon le fuseau et fausse le
+ * calcul autour de l'anniversaire.
+ */
 function computeAge(dateStr: string | undefined): number | "" {
   if (!dateStr) return "";
-  const birth = new Date(dateStr);
-  if (isNaN(birth.getTime())) return "";
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr.trim());
+  if (!match) return "";
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return "";
+
+  const now = new Date();
+  let age = now.getFullYear() - year;
+  // Mois 0-based côté Date : on compare donc month-1 au mois courant.
+  const hasHadBirthdayThisYear =
+    now.getMonth() + 1 > month ||
+    (now.getMonth() + 1 === month && now.getDate() >= day);
+  if (!hasHadBirthdayThisYear) age--;
+
   return age >= 0 ? age : "";
 }
 
@@ -68,9 +86,7 @@ export function IdentitySection({
   const computedAge = computeAge(dateNaissance);
 
   useEffect(() => {
-    setValue("age", computedAge !== "" ? Number(computedAge) : undefined, {
-      shouldValidate: false,
-    });
+    setValue("age", computedAge === "" ? undefined : computedAge);
   }, [computedAge, setValue]);
 
   return (

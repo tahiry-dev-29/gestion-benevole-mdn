@@ -71,7 +71,7 @@ export function CreditFilters({
   onRefresh,
 }: CreditFiltersProps) {
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-2">
+    <div className="glass-sm flex flex-wrap items-center gap-2 rounded-xl p-2">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="h-9 gap-2">

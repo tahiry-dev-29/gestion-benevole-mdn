@@ -12,6 +12,7 @@ interface ObservationTableProps {
   isLoading: boolean;
   currentUserId: number;
   isAdmin: boolean;
+  onView: (item: ObservationItem) => void;
   onEdit: (item: ObservationItem) => void;
   onDelete: (id: number) => void;
 }
@@ -21,6 +22,7 @@ export function ObservationTable({
   isLoading,
   currentUserId,
   isAdmin,
+  onView,
   onEdit,
   onDelete,
 }: ObservationTableProps) {
@@ -29,10 +31,11 @@ export function ObservationTable({
       createObservationColumns({
         currentUserId,
         isAdmin,
+        onView,
         onEdit,
         onDelete,
       }),
-    [currentUserId, isAdmin, onEdit, onDelete]
+    [currentUserId, isAdmin, onView, onEdit, onDelete]
   );
 
   return (
@@ -40,6 +43,7 @@ export function ObservationTable({
       columns={columns}
       data={observations}
       isLoading={isLoading}
+      hiddenColumnsOnMobile={["auteur"]}
       emptyMessage="Aucune observation pour les filtres sélectionnés."
     />
   );

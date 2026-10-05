@@ -49,6 +49,12 @@ export function CreditsList({ benevoles }: CreditsListProps) {
 
   const credits = creditsQuery.data ?? [];
   const cumulData = totalsQuery.data ?? { parBenevole: [], totalGlobal: 0 };
+  const analyticsCumul = filterUserId
+    ? cumulData.parBenevole.filter((entry) => entry.userId === filterUserId)
+    : cumulData.parBenevole;
+  const analyticsTotal = filterUserId
+    ? analyticsCumul.reduce((total, entry) => total + entry.total, 0)
+    : cumulData.totalGlobal;
   const isFetching = creditsQuery.isFetching || totalsQuery.isFetching;
 
   function handleRefresh() {
@@ -113,8 +119,8 @@ export function CreditsList({ benevoles }: CreditsListProps) {
         </TabsContent>
         <TabsContent value="analytiques">
           <CreditsAnalyticsTab
-            cumul={cumulData.parBenevole}
-            totalGlobal={cumulData.totalGlobal}
+            cumul={analyticsCumul}
+            totalGlobal={analyticsTotal}
           />
         </TabsContent>
       </Tabs>

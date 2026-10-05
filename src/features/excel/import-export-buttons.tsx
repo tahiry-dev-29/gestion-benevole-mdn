@@ -142,8 +142,10 @@ export function ImportExportButtons({
         Exporter
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger render={<Button variant="outline" />}>
-          <FileUp /> Importer
+        <DialogTrigger asChild>
+          <Button variant="outline">
+            <FileUp /> Importer
+          </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>

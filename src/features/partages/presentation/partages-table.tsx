@@ -167,6 +167,7 @@ export function PartagesTable() {
           setPageIndex(next.pageIndex);
         }}
         isLoading={query.isLoading}
+        hiddenColumnsOnMobile={["contenu", "auteur", "datePublication"]}
         emptyMessage="Aucun partage trouvé."
         toolbar={
           <PartageToolbar

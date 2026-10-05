@@ -14,6 +14,10 @@ export function CreditsAnalyticsTab({
   const average = cumul.length > 0 ? totalGlobal / cumul.length : 0;
   const top = cumul.slice(0, 5);
   const topValue = top[0]?.total ?? 0;
+  const formatter = new Intl.NumberFormat("fr-FR", {
+    style: "currency",
+    currency: "EUR",
+  });
 
   return (
     <div className="grid gap-4">
@@ -21,17 +25,19 @@ export function CreditsAnalyticsTab({
         <MetricCard
           icon={Coins}
           label="Crédits attribués"
-          value={`${totalGlobal.toFixed(2)} €`}
+          value={formatter.format(totalGlobal)}
         />
         <MetricCard
           icon={UsersRound}
-          label="Moyenne par bénévole"
-          value={`${average.toFixed(2)} €`}
+          label="Moyenne par bénévole crédité"
+          value={formatter.format(average)}
         />
         <MetricCard
           icon={Trophy}
-          label="Bénévoles crédités"
-          value={String(cumul.length)}
+          label="Bénévole le mieux crédité"
+          value={top[0]?.benevole ?? "—"}
+          detail={top[0] ? formatter.format(top[0].total) : "Aucun crédit"}
+          valueClassName="text-lg leading-snug"
         />
       </div>
       <Card className="glass-sm">
@@ -57,7 +63,7 @@ export function CreditsAnalyticsTab({
                     {entry.benevole}
                   </span>
                   <span className="shrink-0 font-medium tabular-nums">
-                    {entry.total.toFixed(2)} €
+                    {formatter.format(entry.total)}
                   </span>
                 </div>
                 <div
@@ -88,10 +94,14 @@ function MetricCard({
   icon: Icon,
   label,
   value,
+  detail,
+  valueClassName,
 }: {
   icon: typeof Coins;
   label: string;
   value: string;
+  detail?: string;
+  valueClassName?: string;
 }) {
   return (
     <Card className="glass glass-gloss">
@@ -101,8 +111,15 @@ function MetricCard({
         </CardTitle>
         <Icon className="size-4 text-primary" aria-hidden="true" />
       </CardHeader>
-      <CardContent className="text-2xl font-semibold tracking-tight tabular-nums">
-        {value}
+      <CardContent>
+        <p
+          className={`font-semibold tracking-tight ${valueClassName ?? "text-2xl tabular-nums"}`}
+        >
+          {value}
+        </p>
+        {detail ? (
+          <p className="mt-1 text-sm text-muted-foreground">{detail}</p>
+        ) : null}
       </CardContent>
     </Card>
   );

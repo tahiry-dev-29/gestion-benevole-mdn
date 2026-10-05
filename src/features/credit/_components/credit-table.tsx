@@ -29,6 +29,7 @@ export function CreditTable({
       columns={columns}
       data={credits}
       isLoading={isLoading}
+      hiddenColumnsOnMobile={["motif"]}
       emptyMessage="Aucun crédit pour les filtres sélectionnés."
     />
   );

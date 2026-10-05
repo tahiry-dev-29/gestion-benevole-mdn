@@ -63,16 +63,22 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
     <div className="mx-auto grid w-full max-w-7xl gap-5 pb-8">
       <UsersTableHeader />
       <Tabs defaultValue="liste" className="gap-4">
-        <TabsList className="glass-sm flex h-auto w-full justify-start gap-1 overflow-hidden p-1 sm:w-fit">
-          <TabsTrigger value="liste" className="min-h-10 gap-2 px-3">
+        <TabsList className="glass-sm flex h-auto w-full flex-wrap justify-start gap-1 p-1 sm:w-fit">
+          <TabsTrigger value="liste" className="min-h-10 flex-none gap-2 px-3">
             <UsersRound aria-hidden="true" />
             Liste
           </TabsTrigger>
-          <TabsTrigger value="presences" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="presences"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <CalendarCheck aria-hidden="true" />
             Présences
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="min-h-10 gap-2 px-3">
+          <TabsTrigger
+            value="analytics"
+            className="min-h-10 flex-none gap-2 px-3"
+          >
             <BarChart3 aria-hidden="true" />
             Analytics
           </TabsTrigger>
