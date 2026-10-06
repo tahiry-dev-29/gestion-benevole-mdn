@@ -39,20 +39,20 @@
 
 | Tâche | Backlog | Statut |
 | ----- | ------- | ------ |
-| 19 — Design system & prérequis | [`tasks/19_design_system_glass.md`](./tasks/19_design_system_glass.md) | ⬜ TODO — `tabs` `breadcrumb` `popover` |
-| 20 — Users UI refonte | [`tasks/20_users_ui_refonte.md`](./tasks/20_users_ui_refonte.md) | ⬜ TODO — scrollbar fix + filter + Tabs |
-| 21 — Bénévoles UI refonte | [`tasks/21_volunteers_ui_refonte.md`](./tasks/21_volunteers_ui_refonte.md) | ⬜ TODO — Tabs + DropdownMenu + fiche |
-| 22 — Présences UI refonte | [`tasks/22_presences_ui_refonte.md`](./tasks/22_presences_ui_refonte.md) | ⬜ TODO — Tabs Pointage/Historique/Stats |
+| 19 — Design system & prérequis | [`.archives/tasks/19_design_system_glass.md`](../.archives/tasks/19_design_system_glass.md) | ✅ DONE · archivé |
+| 20 — Users UI refonte | [`.archives/tasks/20_users_ui_refonte.md`](../.archives/tasks/20_users_ui_refonte.md) | ✅ DONE · archivé |
+| 21 — Bénévoles UI refonte | [`.archives/tasks/21_volunteers_ui_refonte.md`](../.archives/tasks/21_volunteers_ui_refonte.md) | ✅ DONE · archivé |
+| 22 — Présences UI refonte | [`.archives/tasks/22_presences_ui_refonte.md`](../.archives/tasks/22_presences_ui_refonte.md) | ✅ DONE · archivé |
 | 23 — Activités, Crédits, Obs, Partages | [`tasks/23_activites_credits_ui.md`](./tasks/23_activites_credits_ui.md) | ⬜ TODO — Breadcrumb + DropdownMenu |
-| 24 — Dashboard & Statistiques | [`tasks/24_dashboard_stats_ui.md`](./tasks/24_dashboard_stats_ui.md) | ⬜ TODO — StatCards + DataTable + Tabs |
-| 25 — Observations, Partages, Places… | [`tasks/25_observations_partages_ui.md`](./tasks/25_observations_partages_ui.md) | ⬜ TODO — Breadcrumb + glass |
+| 24 — Dashboard & Statistiques | [`.archives/tasks/24_dashboard_stats_ui.md`](../.archives/tasks/24_dashboard_stats_ui.md) | ✅ DONE · archivé |
+| 25 — Observations, Partages, Places… | [`.archives/tasks/25_observations_partages_ui.md`](../.archives/tasks/25_observations_partages_ui.md) | ✅ DONE · archivé |
 
 ## ▶️ Workflow
 
 ```
 plan-001 → thr-plan / thr-archi / thr-tasks / thr-dev   ✅ fait (sprints 0–8)
 plan-002 → thr-plan (design) / thr-tasks (UI)            ✅ planifié (tâches 19–25)
-thr-dev  → exécute tasks/19_*.md → 25_*.md dans l'ordre ⬜ prochaine étape
+thr-dev  → exécute tasks/23_*.md (dernier TODO plan-002) dans l'ordre ✅ plan-002 terminé
 ```
 
 Reprendre par [`tasks/TASK-STATUS.md`](./tasks/TASK-STATUS.md) (index canonique unifié).

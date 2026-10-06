@@ -1,7 +1,7 @@
 # TASK-STATUS — Gestion Bénévole (toutes tâches)
 
-> Index canonique de toutes les tâches du projet. Source : `STATUS-01-17.md` (plan-001) + `STATUS-19-25.md` (plan-002), archivés dans `.archives/tasks/`.
-> Dernière mise à jour : 2026-10-05 — thr-memory -prune.
+> Index canonique de toutes les tâches du projet. Source : `STATUS-01-17.md` (plan-001, archivé) + `STATUS-19-25.md` (plan-002, archivé), canoniques dans `.archives/tasks/`.
+> Dernière mise à jour : 2026-10-06 — thr-memory -prune (volet 3).
 
 ---
 
@@ -32,13 +32,13 @@ Plan file: `../plans/plan-002_design_system_ui_refonte.md`
 
 | ID | Titre | Statut | Dépend de | Prochain point |
 |----|-------|--------|-----------|---------------|
-| 19 | Design system & prérequis globaux | ✅ DONE | — | Tabs/Breadcrumb déjà présents; Popover Radix ajouté; AdminBreadcrumb partagé; typecheck PASS |
-| 20 | Users UI refonte | ✅ DONE | 19 | Table responsive 768px, filtres menu, onglets, breadcrumb, tri/actions/quick view, fiches et Analytics vérifiés Chromium |
-| 21 | Bénévoles UI refonte | ✅ DONE | 19 | Tabs, breadcrumb, filtres groupés, actions contextuelles, fiche à onglets; TypeScript PASS |
-| 22 | Présences UI refonte | ✅ DONE | 19 | Pointage/Historique/Stats, filtres date+bénévole, KPIs + graphe 30j; typecheck et lint ciblé PASS |
+| 19 | Design system & prérequis globaux | ✅ DONE · archivé | — | Tabs/Breadcrumb déjà présents; Popover Radix ajouté; AdminBreadcrumb partagé; typecheck PASS → `.archives/tasks/19_design_system_glass.md` |
+| 20 | Users UI refonte | ✅ DONE · archivé | 19 | Table responsive 768px, filtres menu, onglets, breadcrumb, tri/actions/quick view, fiches et Analytics vérifiés Chromium → `.archives/tasks/20_users_ui_refonte.md` |
+| 21 | Bénévoles UI refonte | ✅ DONE · archivé | 19 | Tabs, breadcrumb, filtres groupés, actions contextuelles, fiche à onglets; TypeScript PASS → `.archives/tasks/21_volunteers_ui_refonte.md` |
+| 22 | Présences UI refonte | ✅ DONE · archivé | 19 | Pointage/Historique/Stats, filtres date+bénévole, KPIs + graphe 30j; typecheck et lint ciblé PASS → `.archives/tasks/22_presences_ui_refonte.md` |
 | 23 | Activités, Crédits, Observations, Partages UI | 🟡 IN_PROGRESS | 19 | Activités/Observations/Partages et analytics Crédits alignés; reste édition crédit, absente du domaine/API et hors scope présentation |
-| 24 | Dashboard & Statistiques UI | ✅ DONE | 19 | Dashboard recent users complet; 4 tabs, progressions et badges de tendance; typecheck et lint ciblé PASS |
-| 25 | Observations, Partages, Temoignages, Places, Sprints, Paramètres | 🟡 IN_PROGRESS | 19 | Breadcrumbs et glass sur routes bonus, aperçu Sheet; typecheck/lint/build PASS; actions Témoignages faites (typecheck/lint ciblé PASS); reste revue visuelle |
+| 24 | Dashboard & Statistiques UI | ✅ DONE · archivé | 19 | Dashboard recent users complet; 4 tabs, progressions et badges de tendance; typecheck et lint ciblé PASS → `.archives/tasks/24_dashboard_stats_ui.md` |
+| 25 | Observations, Partages, Temoignages, Places, Sprints, Paramètres | ✅ DONE · archivé | 19 | Dialogs observation ShieldAlert/glass, aperçu Sheet partages, actions témoignages, onglets paramètres; typecheck et lint ciblé PASS → `.archives/tasks/25_observations_partages_ui.md` |
 
 ---
 
@@ -65,7 +65,7 @@ Plan file: `../plans/plan-002_design_system_ui_refonte.md`
 
 ---
 
-## Tâches archivées (prune 2026-10-05)
+## Tâches archivées (prune 2026-10-05 + volet 3 2026-10-06)
 
 Déplacées — non supprimées — vers [`.archives/tasks/`](../.archives/tasks/). Plan lié conservé dans
 [`../plans/plan-001_sprints_00_08_functional_ux.md`](../plans/plan-001_sprints_00_08_functional_ux.md).
@@ -85,8 +85,14 @@ Déplacées — non supprimées — vers [`.archives/tasks/`](../.archives/tasks
 | 14 | Import/Export Excel | ✅ DONE | [`.archives/tasks/14_excel.md`](../.archives/tasks/14_excel.md) | — clôturée |
 | 16 | Activités & partages | ✅ DONE | [`.archives/tasks/16_activities_shares.md`](../.archives/tasks/16_activities_shares.md) | 23 (TODO, refonte UI) |
 | — | `STATUS-01-17.md` | fusionné | [`.archives/tasks/STATUS-01-17.md`](../.archives/tasks/STATUS-01-17.md) | ce `TASK-STATUS.md` |
+| 19 | Design system & prérequis globaux | ✅ DONE | [`.archives/tasks/19_design_system_glass.md`](../.archives/tasks/19_design_system_glass.md) | — clôturée |
+| 20 | Users UI refonte | ✅ DONE | [`.archives/tasks/20_users_ui_refonte.md`](../.archives/tasks/20_users_ui_refonte.md) | — clôturée |
+| 21 | Bénévoles UI refonte | ✅ DONE | [`.archives/tasks/21_volunteers_ui_refonte.md`](../.archives/tasks/21_volunteers_ui_refonte.md) | — clôturée |
+| 22 | Présences UI refonte | ✅ DONE | [`.archives/tasks/22_presences_ui_refonte.md`](../.archives/tasks/22_presences_ui_refonte.md) | — clôturée |
+| 24 | Dashboard & Statistiques UI | ✅ DONE | [`.archives/tasks/24_dashboard_stats_ui.md`](../.archives/tasks/24_dashboard_stats_ui.md) | — clôturée |
+| 25 | Observations, Partages, Temoignages, Places, Sprints, Paramètres | ✅ DONE | [`.archives/tasks/25_observations_partages_ui.md`](../.archives/tasks/25_observations_partages_ui.md) | — clôturée |
 | — | `STATUS-19-25.md` | fusionné | [`.archives/tasks/STATUS-19-25.md`](../.archives/tasks/STATUS-19-25.md) | ce `TASK-STATUS.md` |
 
 Règle appliquée : seules les tâches `DONE` **et** sans travail ouvert rattaché ont été archivées.
-Restent dans `tasks/` : 07, 08, 12, 15, 17, 18 (`IN_PROGRESS`), 09 et 19–25 (`TODO`).
-`decisions.md` n'a pas été résumé (22 entrées, contenu d'architecture load-bearing).
+Restent dans `tasks/` : 08, 12, 15, 17, 18 (`IN_PROGRESS`), 23 (`TODO`).
+`decisions.md` résumé le 2026-10-06 (×6 entrées 2026-10-01 groupées en un bloc).

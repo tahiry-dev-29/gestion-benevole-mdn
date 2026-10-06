@@ -2,7 +2,7 @@
 
 Plan-ID: plan-002
 Project: gestion-benevole
-Related task files: `../tasks/19_design_system_glass.md`, `../tasks/20_users_ui_refonte.md`, `../tasks/21_volunteers_ui_refonte.md`, `../tasks/22_presences_ui_refonte.md`, `../tasks/23_activites_credits_ui.md`, `../tasks/24_dashboard_stats_ui.md`, `../tasks/25_observations_partages_ui.md`
+Related task files: `../tasks/23_activites_credits_ui.md` (seule restante IN_PROGRESS); 19/20/21/22/24/25 archivés dans `.archives/tasks/`.
 Sprint / Reference: Sprint 9+ / Design System Glass Liquid Blue
 Date: 2026-10-05
 Status: IN_PROGRESS
@@ -158,10 +158,10 @@ Avatar colonne    : Popover quick-view (nom, email, statut)
 
 | Fichier tâche | Domaine |
 |--------------|---------|
-| `../tasks/19_design_system_glass.md` | Design system global + install composants |
-| `../tasks/20_users_ui_refonte.md` | Section Users complète |
-| `../tasks/21_volunteers_ui_refonte.md` | Section Bénévoles + Rôles |
-| `../tasks/22_presences_ui_refonte.md` | Section Présences |
+| `../tasks/19_design_system_glass.md` | Design system global + install composants | ✅ DONE — archivé dans `.archives/tasks/` |
+| `../tasks/20_users_ui_refonte.md` | Section Users complète | ✅ DONE — archivé dans `.archives/tasks/` |
+| `../tasks/21_volunteers_ui_refonte.md` | Section Bénévoles + Rôles | ✅ DONE — archivé dans `.archives/tasks/` |
+| `../tasks/22_presences_ui_refonte.md` | Section Présences | ✅ DONE — archivé dans `.archives/tasks/` |
 | `../tasks/23_activites_credits_ui.md` | Activités, Crédits, Observations, Partages |
-| `../tasks/24_dashboard_stats_ui.md` | Dashboard + Statistiques |
-| `../tasks/25_observations_partages_ui.md` | Observations + Partages |
+| `../tasks/24_dashboard_stats_ui.md` | Dashboard + Statistiques | ✅ DONE — archivé dans `.archives/tasks/` |
+| `../tasks/25_observations_partages_ui.md` | Observations + Partages | ✅ DONE — archivé dans `.archives/tasks/` |
