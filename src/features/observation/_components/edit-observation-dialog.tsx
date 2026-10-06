@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Pencil } from "lucide-react";
+import { Loader2, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -46,7 +46,6 @@ export function EditObservationDialog({
   const {
     register,
     handleSubmit,
-    reset,
     watch,
     formState: { errors },
   } = useForm<EditValues>({
@@ -79,7 +78,7 @@ export function EditObservationDialog({
       <DialogContent className="glass-xl sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Pencil className="size-5" />
+            <ShieldAlert className="size-5" />
             Modifier l&apos;observation
           </DialogTitle>
         </DialogHeader>
