@@ -25,8 +25,7 @@ export function VolunteerStatsCards() {
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
-        <div className="absolute top-0 left-0 h-1 w-full bg-primary" />
+      <Card className="glass-sm transition-shadow hover:shadow-md">
         <CardContent className="flex items-center justify-between p-4">
           <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">
@@ -40,8 +39,7 @@ export function VolunteerStatsCards() {
         </CardContent>
       </Card>
 
-      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
-        <div className="absolute top-0 left-0 h-1 w-full bg-primary" />
+      <Card className="glass-sm transition-shadow hover:shadow-md">
         <CardContent className="flex items-center justify-between p-4">
           <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">
@@ -57,8 +55,7 @@ export function VolunteerStatsCards() {
         </CardContent>
       </Card>
 
-      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
-        <div className="absolute top-0 left-0 h-1 w-full bg-muted-foreground" />
+      <Card className="glass-sm transition-shadow hover:shadow-md">
         <CardContent className="flex items-center justify-between p-4">
           <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">
@@ -74,8 +71,7 @@ export function VolunteerStatsCards() {
         </CardContent>
       </Card>
 
-      <Card className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md">
-        <div className="absolute top-0 left-0 h-1 w-full bg-accent" />
+      <Card className="glass-sm transition-shadow hover:shadow-md">
         <CardContent className="flex items-center justify-between p-4">
           <div className="grid gap-1">
             <p className="text-xs font-medium text-muted-foreground">

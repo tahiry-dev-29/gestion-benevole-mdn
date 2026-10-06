@@ -46,6 +46,7 @@ interface DataTableProps<TData, TValue> {
   emptyMessage?: string;
   compactColumns?: boolean;
   hiddenColumnsOnMobile?: string[];
+  hideRowCount?: boolean;
 }
 
 function getResponsiveColumnClass(
@@ -85,6 +86,7 @@ export function DataTable<TData, TValue>({
   emptyMessage = "Aucune donnée.",
   compactColumns = false,
   hiddenColumnsOnMobile = [],
+  hideRowCount = false,
 }: DataTableProps<TData, TValue>) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -182,11 +184,13 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
-        <span>
-          {total !== undefined
-            ? `${total} résultat${total > 1 ? "s" : ""}`
-            : `${table.getFilteredRowModel().rows.length} ligne(s)`}
-        </span>
+        {!hideRowCount ? (
+          <span>
+            {total !== undefined
+              ? `${total} résultat${total > 1 ? "s" : ""}`
+              : `${table.getFilteredRowModel().rows.length} ligne(s)`}
+          </span>
+        ) : null}
         <div className="flex items-center gap-2">
           <span>
             Page {table.getState().pagination.pageIndex + 1} sur{" "}

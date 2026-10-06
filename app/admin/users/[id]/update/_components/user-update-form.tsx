@@ -74,7 +74,7 @@ export function UserUpdateForm({
     handleSubmit,
     control,
     setValue,
-    formState: { errors },
+    formState: { errors, touchedFields, dirtyFields },
   } = useForm<FormValues, unknown, FormValues>({
     resolver: zodResolver<FormValues, unknown, FormValues>(
       userUpdateFormSchema,
@@ -114,8 +114,27 @@ export function UserUpdateForm({
   };
 
   const onSubmit = (data: FormValues) => {
+    const birthDate = data.dateNaissance;
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(birthDate ?? "");
+    const today = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Indian/Antananarivo",
+    });
+    const currentYear = Number(today.slice(0, 4));
+    const currentMonth = Number(today.slice(5, 7));
+    const currentDay = Number(today.slice(8, 10));
+    const birthYear = Number(match?.[1]);
+    const birthMonth = Number(match?.[2]);
+    const birthDay = Number(match?.[3]);
+    const computedAge = match
+      ? currentYear -
+        birthYear -
+        (currentMonth < birthMonth ||
+        (currentMonth === birthMonth && currentDay < birthDay)
+          ? 1
+          : 0)
+      : undefined;
     updateUser.mutate(
-      { id: userId, input: data },
+      { id: userId, input: { ...data, age: computedAge } },
       {
         onSuccess: () => {
           toast.success("Profil mis à jour avec succès.");
@@ -133,8 +152,14 @@ export function UserUpdateForm({
         register={register}
         setValue={setValue}
         errors={errors}
+        dirtyFields={dirtyFields}
+        touchedFields={touchedFields}
         onPendingChange={markUploadPending}
       />
+      <p className="sr-only" aria-live="polite">
+        {Object.keys(touchedFields).length} champs visités,{" "}
+        {Object.keys(dirtyFields).length} champs modifiés.
+      </p>
 
       <div className="flex flex-col-reverse gap-2 rounded-lg border bg-card p-3 sm:flex-row sm:justify-end">
         <Button

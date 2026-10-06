@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, PenLine } from "lucide-react";
+import { Loader2, PenLine, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -95,7 +95,7 @@ export function CreateObservationDialog({
         <DialogContent className="glass-xl sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <PenLine className="size-5" />
+              <ShieldAlert className="size-5" />
               Nouvelle observation mensuelle
             </DialogTitle>
           </DialogHeader>

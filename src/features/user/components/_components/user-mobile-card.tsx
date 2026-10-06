@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 
 import type { UserItem } from "../types";
@@ -20,16 +21,25 @@ export function UserMobileCard({ user }: { user: UserItem }) {
   return (
     <article className="glass-sm rounded-lg border bg-card p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="truncate font-semibold text-foreground">
-            {user.prenom} {user.nom}
-          </h3>
-          <p className="mt-1 truncate text-sm text-muted-foreground">
-            {organization}
-          </p>
+        <div className="flex min-w-0 items-center gap-3">
+          <Avatar className="size-11 shrink-0">
+            <AvatarImage src={user.photo ?? undefined} alt="" />
+            <AvatarFallback>
+              {`${user.prenom[0] ?? ""}${user.nom[0] ?? ""}`.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <h3 className="truncate font-semibold text-foreground">
+              {user.prenom} {user.nom}
+            </h3>
+            <p className="mt-1 truncate text-sm text-muted-foreground">
+              {organization}
+            </p>
+          </div>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
           <Badge
+            className="max-w-36 truncate text-[11px] sm:max-w-none sm:text-xs"
             variant={
               certificate === "EN_ATTENTE"
                 ? "secondary"

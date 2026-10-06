@@ -35,11 +35,11 @@ type ChartPoint = {
 const chartConfig = {
   presences: {
     label: "Présences",
-    color: "hsl(var(--chart-1))",
+    color: "var(--color-chart-1)",
   },
   inscriptions: {
     label: "Inscriptions",
-    color: "hsl(var(--chart-2))",
+    color: "var(--color-chart-2)",
   },
 } satisfies ChartConfig;
 
@@ -119,13 +119,7 @@ export function DashboardAreaChart({ data }: DashboardAreaChartProps) {
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient
-                id="fillInscriptions"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
+              <linearGradient id="fillInscriptions" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-inscriptions)"

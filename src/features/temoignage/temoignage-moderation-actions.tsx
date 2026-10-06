@@ -12,7 +12,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -82,9 +81,6 @@ export function TemoignageModerationActions({ id }: { id: number }) {
         </DropdownMenuContent>
       </DropdownMenu>
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogTrigger className="sr-only">
-          Confirmer la suppression
-        </DialogTrigger>
         <DialogContent showCloseButton={false} className="glass-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">

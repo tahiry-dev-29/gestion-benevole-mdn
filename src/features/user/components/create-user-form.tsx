@@ -35,7 +35,7 @@ export function CreateUserForm() {
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, touchedFields, dirtyFields },
   } = useForm<CreateUserFormInput, unknown, CreateUserInput>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
@@ -82,19 +82,30 @@ export function CreateUserForm() {
         errors={errors}
         control={control}
         setValue={setValue}
+        dirtyFields={dirtyFields}
+        touchedFields={touchedFields}
       />
       <OrganizationSection
         register={register}
         errors={errors}
         control={control}
       />
-      <AdditionalSection register={register} control={control} />
+      <AdditionalSection
+        register={register}
+        control={control}
+        dirtyFields={dirtyFields}
+        touchedFields={touchedFields}
+      />
       <AvailabilitySection control={control} />
       <DocumentsSection
         control={control}
         setValue={setValue}
         onPendingChange={markUploadPending}
       />
+      <p className="sr-only" aria-live="polite">
+        {Object.keys(touchedFields).length} champs visités,{" "}
+        {Object.keys(dirtyFields).length} champs modifiés.
+      </p>
 
       {errors.root?.message || submitError ? (
         <p

@@ -28,10 +28,13 @@ export const userUpdateFormSchema = z
     statut: z.enum(["ACTIF", "INACTIF"]).optional(),
   })
   .refine(
-    (data) => Boolean(data.etablissement?.trim() || data.societe?.trim()),
+    (data) =>
+      data.categorie === "SALARIE"
+        ? Boolean(data.societe?.trim())
+        : Boolean(data.etablissement?.trim()),
     {
-      message: "Une école ou une société est requise",
-      path: ["etablissement"],
+      message: "Ce champ est requis selon la catégorie choisie",
+      path: ["categorie"],
     }
   );
 

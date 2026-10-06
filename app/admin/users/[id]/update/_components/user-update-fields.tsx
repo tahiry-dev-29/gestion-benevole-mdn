@@ -3,6 +3,7 @@
 import type {
   Control,
   FieldErrors,
+  FieldNamesMarkedBoolean,
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
@@ -16,12 +17,16 @@ export function UserUpdateFields({
   register,
   setValue,
   errors,
+  dirtyFields,
+  touchedFields,
   onPendingChange,
 }: {
   control: Control<FormValues>;
   register: UseFormRegister<FormValues>;
   setValue: UseFormSetValue<FormValues>;
   errors: FieldErrors<FormValues>;
+  dirtyFields: FieldNamesMarkedBoolean<FormValues>;
+  touchedFields: FieldNamesMarkedBoolean<FormValues>;
   onPendingChange: (pending: boolean) => void;
 }) {
   return (
@@ -31,6 +36,8 @@ export function UserUpdateFields({
         register={register}
         setValue={setValue}
         errors={errors}
+        dirtyFields={dirtyFields}
+        touchedFields={touchedFields}
       />
       <UserUpdateExtraFields
         control={control}

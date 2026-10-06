@@ -26,8 +26,41 @@ const heuresSchema = z
     (heures) =>
       !heures.arrivee || !heures.depart || heures.depart >= heures.arrivee,
     {
-      message: "L’heure de départ doit être après l’heure d’arrivée.",
+      message: "L'heure de départ doit être après l'heure d'arrivée.",
       path: ["depart"],
+    }
+  );
+
+const bulkPointSchema = z
+  .object({
+    userIds: z.array(z.coerce.number().int().positive()).optional(),
+    assignments: z
+      .array(
+        z.object({
+          userId: z.coerce.number().int().positive(),
+          seatId: z.coerce.number().int().positive().nullable().optional(),
+        })
+      )
+      .optional(),
+    date: z.string().date(),
+    statut: z.enum(["PRESENT", "ABSENT", "RETARD"]).default("PRESENT"),
+    arrivee: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+      .nullable()
+      .optional(),
+    depart: z
+      .string()
+      .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+      .nullable()
+      .optional(),
+  })
+  .refine(
+    (data) =>
+      (data.userIds && data.userIds.length > 0) ||
+      (data.assignments && data.assignments.length > 0),
+    {
+      message: "Au moins un utilisateur doit être sélectionné.",
     }
   );
 
@@ -97,6 +130,7 @@ export async function pointAction(input: unknown) {
     });
     revalidatePath("/admin/presences");
     revalidatePath("/admin/users/presence");
+    revalidatePath("/admin/users");
     return { success: true, data: attendance };
   } catch (error) {
     if (isUniqueConstraintError(error)) {
@@ -106,6 +140,149 @@ export async function pointAction(input: unknown) {
       };
     }
     return { success: false, error: "Impossible d'enregistrer le pointage." };
+  }
+}
+
+/** Pointage en masse pour plusieurs utilisateurs le même jour */
+/** Pointage en masse ou individuel avec affectation de table/siège */
+export async function bulkPointAction(input: unknown) {
+  if (!(await hasAdminSession()))
+    return { success: false as const, error: "Accès refusé." };
+
+  const parsed = bulkPointSchema.safeParse(input);
+  if (!parsed.success)
+    return { success: false as const, error: "Données de pointage invalides." };
+
+  const { userIds, assignments, date, statut, arrivee, depart } = parsed.data;
+  const dateObj = dayFromString(date);
+
+  // Normalize items to point: Map from userId to seatId
+  const itemsToPoint: { userId: number; seatId: number | null }[] = [];
+  if (assignments && assignments.length > 0) {
+    for (const a of assignments) {
+      itemsToPoint.push({ userId: a.userId, seatId: a.seatId ?? null });
+    }
+  } else if (userIds && userIds.length > 0) {
+    for (const uid of userIds) {
+      itemsToPoint.push({ userId: uid, seatId: null });
+    }
+  }
+
+  const requestedUserIds = itemsToPoint.map((i) => i.userId);
+
+  try {
+    // Valider que tous les utilisateurs existent (VOLUNTEER ou USER actif)
+    const persons = await prisma.user.findMany({
+      where: {
+        id: { in: requestedUserIds },
+        statut: "ACTIF",
+        deletedAt: null,
+        role: { in: ["VOLUNTEER", "USER"] },
+      },
+      select: { id: true },
+    });
+
+    const validIdSet = new Set(persons.map((p) => p.id));
+    const validItems = itemsToPoint.filter((item) =>
+      validIdSet.has(item.userId)
+    );
+
+    if (validItems.length === 0) {
+      return {
+        success: false as const,
+        error: "Aucun utilisateur actif trouvé parmi la sélection.",
+      };
+    }
+
+    // Si des sièges sont spécifiés, vérifier qu'il n'y a pas de doublon dans la requête
+    const requestedSeats = validItems
+      .map((i) => i.seatId)
+      .filter((s): s is number => s !== null);
+    if (new Set(requestedSeats).size !== requestedSeats.length) {
+      return {
+        success: false as const,
+        error: "Deux utilisateurs ne peuvent pas avoir le même siège assigné.",
+      };
+    }
+
+    // Upsert pour chaque utilisateur
+    await Promise.all(
+      validItems.map((item) =>
+        prisma.attendance.upsert({
+          where: { user_id_date: { user_id: item.userId, date: dateObj } },
+          create: {
+            user_id: item.userId,
+            date: dateObj,
+            seat_id: statut === "PRESENT" ? item.seatId : null,
+            statut,
+            heure_arrivee: statut === "PRESENT" ? (arrivee ?? null) : null,
+            heure_depart: statut === "PRESENT" ? (depart ?? null) : null,
+          },
+          update: {
+            seat_id: statut === "PRESENT" ? item.seatId : null,
+            statut,
+            heure_arrivee: statut === "PRESENT" ? (arrivee ?? null) : null,
+            heure_depart: statut === "PRESENT" ? (depart ?? null) : null,
+          },
+        })
+      )
+    );
+
+    revalidatePath("/admin/presences");
+    revalidatePath("/admin/users");
+    revalidatePath("/admin/users/presence");
+
+    return {
+      success: true as const,
+      data: {
+        count: validItems.length,
+        skipped: requestedUserIds.length - validItems.length,
+      },
+    };
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return {
+        success: false as const,
+        error: "Un des sièges sélectionnés est déjà occupé pour aujourd'hui.",
+      };
+    }
+    return {
+      success: false as const,
+      error: "Impossible d'enregistrer les pointages.",
+    };
+  }
+}
+
+/** Liste les présences du jour pour une liste d'IDs avec table et siège */
+export async function getTodayAttendanceForUsersAction(userIds: number[]) {
+  if (!(await hasAdminSession()))
+    return { success: false as const, error: "Accès refusé." };
+
+  const today = dayFromString(new Date().toISOString().slice(0, 10));
+  try {
+    const rows = await prisma.attendance.findMany({
+      where: { user_id: { in: userIds }, date: today },
+      select: {
+        user_id: true,
+        statut: true,
+        heure_arrivee: true,
+        heure_depart: true,
+        seat_id: true,
+        seat: {
+          select: {
+            tableNumber: true,
+            seatNumber: true,
+            label: true,
+          },
+        },
+      },
+    });
+    return { success: true as const, data: rows };
+  } catch {
+    return {
+      success: false as const,
+      error: "Impossible de charger les présences.",
+    };
   }
 }
 

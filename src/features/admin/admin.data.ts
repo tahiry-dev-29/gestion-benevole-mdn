@@ -8,6 +8,7 @@ import {
   Eye,
   LayoutDashboard,
   type LucideIcon,
+  MapPin,
   MessageSquare,
   Package,
   Settings,
@@ -63,8 +64,15 @@ export const adminGestionItems: NavItem[] = [
     roles: ADMIN_ONLY,
     items: [
       { title: "Pointage journalier", url: "/admin/presences" },
-      { title: "Tables et places", url: "/admin/places", roles: ADMIN_ONLY },
+      { title: "Tables et sièges", url: "/admin/places", roles: ADMIN_ONLY },
     ],
+  },
+  {
+    title: "Tables & Sièges",
+    url: "/admin/places",
+    icon: MapPin,
+    roles: ADMIN_ONLY,
+    items: [{ title: "Gestion des tables", url: "/admin/places" }],
   },
   {
     title: "Activités",

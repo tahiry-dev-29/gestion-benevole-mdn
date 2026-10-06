@@ -59,7 +59,10 @@ export async function createUserAction(data: unknown) {
         sexe: parsed.data.sexe ?? "Non précisé",
         age: parsed.data.age ?? 18,
         categorie: parsed.data.categorie ?? "UNIVERSITAIRE",
-        etablissement: parsed.data.etablissement ?? "Non renseigné",
+        etablissement:
+          parsed.data.categorie === "SALARIE"
+            ? "Non renseigné"
+            : (parsed.data.etablissement ?? "Non renseigné"),
         reglesAccepteesAt: parsed.data.accepteRegles ? new Date() : null,
         contact: parsed.data.telephone,
       },
@@ -256,8 +259,11 @@ function buildUserUpdateData(
     accepteRegles: data.accepteRegles,
     reglesAccepteesAt: acceptedRulesTimestamp(data, existing),
     spinneret: data.spinneret ?? null,
-    etablissement: data.etablissement ?? "Non renseigné",
-    societe: data.societe ?? null,
+    etablissement:
+      data.categorie === "SALARIE"
+        ? "Non renseigné"
+        : (data.etablissement ?? "Non renseigné"),
+    societe: data.categorie === "SALARIE" ? (data.societe ?? null) : null,
     age: data.age ?? 18,
     dateNaissance: data.dateNaissance ? new Date(data.dateNaissance) : null,
     socialProfile: data.socialProfile ?? null,

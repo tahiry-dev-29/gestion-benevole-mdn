@@ -9,6 +9,8 @@ import {
   CalendarCheck,
   ChevronLeft,
   ChevronRight,
+  LayoutGrid,
+  List,
   Shield,
   UsersRound,
 } from "lucide-react";
@@ -40,6 +42,7 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
   const [certificateFilter, setCertificateFilter] = useState("ALL");
   const [mobilePage, setMobilePage] = useState(0);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [view, setView] = useState<"table" | "cards">("table");
 
   const users =
     usersQuery.data ?? initialUsers.filter((user) => user.role === "USER");
@@ -63,30 +66,60 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
     <div className="mx-auto grid w-full max-w-7xl gap-5 pb-8">
       <UsersTableHeader />
       <Tabs defaultValue="liste" className="gap-4">
-        <TabsList className="glass-sm flex h-auto w-full flex-wrap justify-start gap-1 p-1 sm:w-fit">
-          <TabsTrigger value="liste" className="min-h-10 flex-none gap-2 px-3">
-            <UsersRound aria-hidden="true" />
-            Liste
-          </TabsTrigger>
-          <TabsTrigger
-            value="presences"
-            className="min-h-10 flex-none gap-2 px-3"
+        <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <TabsList className="glass-sm grid h-auto w-full grid-cols-3 gap-1 p-1 sm:inline-flex sm:w-fit">
+            <TabsTrigger
+              value="liste"
+              className="min-h-10 min-w-0 gap-1 px-2 text-xs sm:flex-none sm:gap-2 sm:px-3 sm:text-sm"
+            >
+              <UsersRound aria-hidden="true" />
+              Liste
+            </TabsTrigger>
+            <TabsTrigger
+              value="presences"
+              className="min-h-10 min-w-0 gap-1 px-2 text-xs sm:flex-none sm:gap-2 sm:px-3 sm:text-sm"
+            >
+              <CalendarCheck aria-hidden="true" />
+              Présences
+            </TabsTrigger>
+            <TabsTrigger
+              value="analytics"
+              className="min-h-10 min-w-0 gap-1 px-2 text-xs sm:flex-none sm:gap-2 sm:px-3 sm:text-sm"
+            >
+              <BarChart3 aria-hidden="true" />
+              Analytics
+            </TabsTrigger>
+          </TabsList>
+          <div
+            className="flex w-fit gap-1 rounded-md border bg-card p-1 sm:ml-auto"
+            role="group"
+            aria-label="Mode d’affichage"
           >
-            <CalendarCheck aria-hidden="true" />
-            Présences
-          </TabsTrigger>
-          <TabsTrigger
-            value="analytics"
-            className="min-h-10 flex-none gap-2 px-3"
-          >
-            <BarChart3 aria-hidden="true" />
-            Analytics
-          </TabsTrigger>
-        </TabsList>
+            <Button
+              type="button"
+              size="icon"
+              variant={view === "table" ? "secondary" : "ghost"}
+              aria-label="Afficher en tableau"
+              aria-pressed={view === "table"}
+              onClick={() => setView("table")}
+            >
+              <List className="size-4" />
+            </Button>
+            <Button
+              type="button"
+              size="icon"
+              variant={view === "cards" ? "secondary" : "ghost"}
+              aria-label="Afficher en cartes"
+              aria-pressed={view === "cards"}
+              onClick={() => setView("cards")}
+            >
+              <LayoutGrid className="size-4" />
+            </Button>
+          </div>
+        </div>
 
         <TabsContent value="liste" className="grid gap-4">
           <UsersListToolbar
-            total={totalUsers}
             search={search}
             onSearchChange={(value) => {
               setSearch(value);
@@ -142,19 +175,22 @@ export function UsersTable({ initialUsers }: { initialUsers: UserItem[] }) {
           ) : null}
           {(filteredUsers.length > 0 || usersQuery.isPending) && (
             <>
-              <div className="hidden md:block min-w-0">
-                <DataTable
-                  columns={columns}
-                  data={filteredUsers}
-                  compactColumns
-                  isLoading={usersQuery.isPending}
-                  sorting={sorting}
-                  onSortingChange={setSorting}
-                  emptyMessage="Aucun compte trouvé."
-                />
-              </div>
+              {view === "table" ? (
+                <div className="min-w-0">
+                  <DataTable
+                    columns={columns}
+                    data={filteredUsers}
+                    compactColumns
+                    hideRowCount
+                    isLoading={usersQuery.isPending}
+                    sorting={sorting}
+                    onSortingChange={setSorting}
+                    emptyMessage="Aucun compte trouvé."
+                  />
+                </div>
+              ) : null}
               <section
-                className="grid gap-3 md:hidden"
+                className={`grid gap-3 ${view === "cards" ? "sm:grid-cols-2 lg:grid-cols-3" : "md:hidden"}`}
                 aria-label="Comptes USER"
               >
                 {usersQuery.isPending

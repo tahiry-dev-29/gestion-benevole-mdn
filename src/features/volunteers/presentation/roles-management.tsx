@@ -39,13 +39,6 @@ import {
   useVolunteers,
 } from "./use-volunteers";
 
-const ROLE_COLORS: Record<Role, string> = {
-  SUPER_ADMIN: "bg-primary",
-  ADMIN: "bg-secondary-foreground",
-  VOLUNTEER: "bg-accent",
-  USER: "bg-muted-foreground",
-};
-
 export function RolesManagement({ embedded = false }: { embedded?: boolean }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -100,11 +93,8 @@ export function RolesManagement({ embedded = false }: { embedded?: boolean }) {
         {ROLES.map((role) => (
           <Card
             key={role}
-            className="glass-sm relative overflow-hidden transition-shadow hover:shadow-md"
+            className="glass-sm transition-shadow hover:shadow-md"
           >
-            <div
-              className={`absolute top-0 left-0 h-1 w-full ${ROLE_COLORS[role]}`}
-            />
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {roleLabel(role)}

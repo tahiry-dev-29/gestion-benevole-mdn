@@ -54,6 +54,19 @@ export function UserUpdateExtraFields({
     <>
       <Section title="Disponibilités">
         <div className="flex flex-wrap gap-3">
+          <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-medium">
+            <Checkbox
+              checked={days.length === DAYS.length}
+              onCheckedChange={() =>
+                setValue(
+                  "joursDisponibles",
+                  days.length === DAYS.length ? [] : [...DAYS],
+                  { shouldDirty: true }
+                )
+              }
+            />
+            Tous les jours
+          </label>
           {DAYS.map((day) => (
             <label
               key={day}

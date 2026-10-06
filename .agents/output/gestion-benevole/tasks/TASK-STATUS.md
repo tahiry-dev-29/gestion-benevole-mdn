@@ -40,6 +40,14 @@ Plan file: `../plans/plan-002_design_system_ui_refonte.md`
 | 24 | Dashboard & Statistiques UI | ✅ DONE · archivé | 19 | Dashboard recent users complet; 4 tabs, progressions et badges de tendance; typecheck et lint ciblé PASS → `.archives/tasks/24_dashboard_stats_ui.md` |
 | 25 | Observations, Partages, Temoignages, Places, Sprints, Paramètres | ✅ DONE · archivé | 19 | Dialogs observation ShieldAlert/glass, aperçu Sheet partages, actions témoignages, onglets paramètres; typecheck et lint ciblé PASS → `.archives/tasks/25_observations_partages_ui.md` |
 
+## Plan-003 — Nettoyage du résumé Présences
+
+Plan file: `../plans/plan-003_presence_summary_cleanup.md`
+
+| ID | Titre | Statut | Dépend de | Prochain point |
+|----|-------|--------|-----------|---------------|
+| 26 | Déduplication du résumé Présences utilisateurs | 🟡 IN_PROGRESS | — | Code + typecheck/lint ciblé validés ; preuve navigateur après en attente d’une session admin → `../outputs/26-presence-summary/verification.md` |
+
 ---
 
 ## Gaps structurels détectés (thr-memory -check 2026-10-05)
@@ -96,3 +104,11 @@ Déplacées — non supprimées — vers [`.archives/tasks/`](../.archives/tasks
 Règle appliquée : seules les tâches `DONE` **et** sans travail ouvert rattaché ont été archivées.
 Restent dans `tasks/` : 08, 12, 15, 17, 18 (`IN_PROGRESS`), 23 (`TODO`).
 `decisions.md` résumé le 2026-10-06 (×6 entrées 2026-10-01 groupées en un bloc).
+
+## Plan-004 — Nettoyage de la liste utilisateurs
+
+Plan file: `../plans/plan-004_users_list_cleanup.md`
+
+| ID | Titre | Statut | Dépend de | Prochain point |
+|----|-------|--------|-----------|----------------|
+| 27 | Nettoyage liste USER | 🟡 IN_PROGRESS | — | Code + typecheck/lint PASS ; capture après en attente d’une session admin |

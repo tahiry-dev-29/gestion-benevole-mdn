@@ -9,7 +9,6 @@ import { RecentUsersTable } from "@/features/admin/recent-users-table";
 import { StatCard } from "@/features/admin/stat-card";
 import { TableCard } from "@/features/admin/table-card";
 
-
 export default async function AdminPage() {
   const metrics = await getAdminDashboardMetrics();
   const stats = [

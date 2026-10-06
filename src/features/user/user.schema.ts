@@ -67,10 +67,18 @@ export const createUserSchema = z
     categorie: CategoryEnum.optional(),
   })
   .refine(
-    (data) => Boolean(data.etablissement?.trim() || data.societe?.trim()),
+    (data) => {
+      if (data.categorie === "SALARIE") {
+        return Boolean(data.societe?.trim());
+      }
+      if (data.categorie) {
+        return Boolean(data.etablissement?.trim());
+      }
+      return Boolean(data.societe?.trim() || data.etablissement?.trim());
+    },
     {
-      message: "Une école ou une société est requise",
-      path: ["etablissement"],
+      message: "Un établissement ou une société est requis selon la catégorie",
+      path: ["categorie"],
     }
   );
 
@@ -115,10 +123,18 @@ export const updateUserSchema = z
     statut: z.enum(["ACTIF", "INACTIF"]).optional(),
   })
   .refine(
-    (data) => Boolean(data.etablissement?.trim() || data.societe?.trim()),
+    (data) => {
+      if (data.categorie === "SALARIE") {
+        return Boolean(data.societe?.trim());
+      }
+      if (data.categorie) {
+        return Boolean(data.etablissement?.trim());
+      }
+      return Boolean(data.societe?.trim() || data.etablissement?.trim());
+    },
     {
-      message: "Une école ou une société est requise",
-      path: ["etablissement"],
+      message: "Un établissement ou une société est requis selon la catégorie",
+      path: ["categorie"],
     }
   );
 

@@ -18,7 +18,6 @@ interface UsersTableFilterBarProps {
   onStatusFilterChange: (val: string | null) => void;
   certificateFilter: string;
   onCertificateFilterChange: (val: string | null) => void;
-  totalResults: number;
 }
 
 export function UsersTableFilterBar({
@@ -28,7 +27,6 @@ export function UsersTableFilterBar({
   onStatusFilterChange,
   certificateFilter,
   onCertificateFilterChange,
-  totalResults,
 }: UsersTableFilterBarProps) {
   const activeFilterCount =
     Number(statusFilter !== "ALL") + Number(certificateFilter !== "ALL");
@@ -141,13 +139,6 @@ export function UsersTableFilterBar({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <p
-        className="flex min-h-11 items-center justify-end text-sm text-muted-foreground"
-        aria-live="polite"
-      >
-        <span className="font-medium text-foreground">{totalResults}</span>
-        <span className="ml-1">résultat{totalResults === 1 ? "" : "s"}</span>
-      </p>
     </div>
   );
 }

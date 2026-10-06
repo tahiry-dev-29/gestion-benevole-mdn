@@ -22,8 +22,6 @@ import {
   Shield,
   UserCheck,
   UserMinus,
-  Users,
-  UsersRound,
   X,
 } from "lucide-react";
 import {
@@ -125,9 +123,12 @@ type RoleFilter = "ALL" | "USER" | "VOLUNTEER";
 type StatusFilter = "ALL" | "PRESENT" | "ABSENT" | "NON_POINTE";
 
 const PRESENCE_CHART_CONFIG = {
-  present: { label: "Présents", color: "#10b981" },
-  absent: { label: "Absents", color: "#ef4444" },
-  nonPointe: { label: "Non pointés", color: "#94a3b8" },
+  present: { label: "Présents", color: "var(--color-chart-2)" },
+  absent: { label: "Absents", color: "var(--color-destructive)" },
+  nonPointe: {
+    label: "Non pointés",
+    color: "var(--color-muted-foreground)",
+  },
 } satisfies ChartConfig;
 
 const STATUS_CONFIG: Record<
@@ -564,61 +565,48 @@ export function UsersPresenceTab() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(220px,280px)] md:items-center">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              <StatPill
-                label="Total actifs"
-                value={stats.total}
-                icon={<UsersRound className="size-4" />}
-                color="text-foreground"
-              />
-              <StatPill
-                label="Présents"
-                value={stats.present}
-                icon={<CheckCheck className="size-4" />}
-                color="text-emerald-600 dark:text-emerald-400"
-              />
-              <StatPill
-                label="Non pointés"
-                value={stats.nonPointe}
-                icon={<Users className="size-4" />}
-                color="text-muted-foreground"
-              />
-              <StatPill
-                label="Absents"
-                value={stats.absent}
-                icon={<UserMinus className="size-4" />}
-                color="text-destructive"
-              />
-            </div>
-            <div className="grid justify-items-center gap-2">
+          <div className="grid items-center gap-5 sm:grid-cols-[minmax(160px,210px)_minmax(0,1fr)]">
+            <div className="mx-auto w-full max-w-[200px]">
               <ChartContainer
                 config={PRESENCE_CHART_CONFIG}
-                className="aspect-square w-full max-w-[220px]"
+                className="aspect-square w-full"
               >
                 <RadialBarChart
                   data={[
-                    { name: "Présents", value: stats.present, fill: "#10b981" },
-                    { name: "Absents", value: stats.absent, fill: "#ef4444" },
                     {
-                      name: "Non pointés",
-                      value: stats.nonPointe,
-                      fill: "#94a3b8",
+                      present: stats.present,
+                      absent: stats.absent,
+                      nonPointe: stats.nonPointe,
                     },
                   ]}
-                  dataKey="value"
-                  nameKey="name"
                   startAngle={90}
                   endAngle={-270}
-                  innerRadius="65%"
-                  outerRadius="92%"
-                  barSize={22}
+                  innerRadius="68%"
+                  outerRadius="96%"
                 >
                   <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent hideLabel />}
                   />
-                  <RadialBar dataKey="value" background cornerRadius={8} />
+                  <RadialBar
+                    dataKey="present"
+                    stackId="attendance"
+                    fill="var(--color-present)"
+                    background
+                    cornerRadius={6}
+                  />
+                  <RadialBar
+                    dataKey="absent"
+                    stackId="attendance"
+                    fill="var(--color-absent)"
+                    cornerRadius={6}
+                  />
+                  <RadialBar
+                    dataKey="nonPointe"
+                    stackId="attendance"
+                    fill="var(--color-nonPointe)"
+                    cornerRadius={6}
+                  />
                   <PolarRadiusAxis
                     tick={false}
                     tickLine={false}
@@ -659,21 +647,40 @@ export function UsersPresenceTab() {
                   </PolarRadiusAxis>
                 </RadialBarChart>
               </ChartContainer>
-              <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                {[
-                  ["Présents", "bg-emerald-500"],
-                  ["Absents", "bg-red-500"],
-                  ["Non pointés", "bg-slate-400"],
-                ].map(([label, color]) => (
-                  <span
-                    key={label}
-                    className="inline-flex items-center gap-1.5"
-                  >
-                    <span className={`size-2 rounded-full ${color}`} />
-                    {label}
+            </div>
+            <div className="grid gap-1">
+              {[
+                {
+                  label: "Présents",
+                  value: stats.present,
+                  color: "bg-chart-2",
+                },
+                {
+                  label: "Absents",
+                  value: stats.absent,
+                  color: "bg-destructive",
+                },
+                {
+                  label: "Non pointés",
+                  value: stats.nonPointe,
+                  color: "bg-muted-foreground",
+                },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="flex min-h-12 items-center justify-between gap-4 border-b last:border-0"
+                >
+                  <span className="flex min-w-0 items-center gap-3 text-sm text-muted-foreground">
+                    <span
+                      className={`size-2.5 shrink-0 rounded-sm ${item.color}`}
+                    />
+                    {item.label}
                   </span>
-                ))}
-              </div>
+                  <span className="font-semibold tabular-nums">
+                    {item.value}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </CardContent>
@@ -981,10 +988,6 @@ export function UsersPresenceTab() {
                           <p className="truncate text-sm font-medium">
                             {user.prenom} {user.nom}
                           </p>
-                          <p className="truncate text-xs text-muted-foreground">
-                            {user.matricule ? `#${user.matricule} · ` : ""}
-                            {user.email}
-                          </p>
                         </div>
                       </div>
                     </TableCell>
@@ -1067,42 +1070,12 @@ export function UsersPresenceTab() {
                   >
                     <TableCell colSpan={7} className="p-0">
                       <div>
-                        <div className="grid gap-3 border-t bg-muted/20 px-5 py-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid gap-3 border-t bg-muted/20 px-5 py-4 sm:grid-cols-2">
                           <DetailItem label="Email" value={user.email} />
                           <DetailItem
                             label="Matricule"
                             value={user.matricule || "Non renseigné"}
                           />
-                          <DetailItem
-                            label="Arrivée"
-                            value={user.heure_arrivee || "Non enregistrée"}
-                          />
-                          <DetailItem
-                            label="Départ"
-                            value={user.heure_depart || "Non enregistré"}
-                          />
-                          <DetailItem
-                            label="Table"
-                            value={
-                              user.tableNumber
-                                ? `Table ${user.tableNumber}`
-                                : "Non attribuée"
-                            }
-                          />
-                          <DetailItem
-                            label="Siège"
-                            value={
-                              user.seatNumber
-                                ? `Siège ${user.seatNumber}`
-                                : "Non attribué"
-                            }
-                          />
-                          <div>
-                            <p className="text-xs text-muted-foreground">
-                              Statut du jour
-                            </p>
-                            <StatusBadge status={user.todayStatus} />
-                          </div>
                         </div>
                       </div>
                     </TableCell>
@@ -1434,28 +1407,6 @@ export function UsersPresenceTab() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </div>
-  );
-}
-
-function StatPill({
-  label,
-  value,
-  icon,
-  color,
-}: {
-  label: string;
-  value: number;
-  icon: React.ReactNode;
-  color: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 rounded-xl border bg-card px-3.5 py-2.5 shadow-2xs">
-      <span className={color}>{icon}</span>
-      <div>
-        <p className={`text-lg font-bold leading-none ${color}`}>{value}</p>
-        <p className="mt-1 text-xs text-muted-foreground">{label}</p>
-      </div>
     </div>
   );
 }

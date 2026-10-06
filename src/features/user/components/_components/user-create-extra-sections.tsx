@@ -2,6 +2,7 @@
 
 import type {
   Control,
+  FieldNamesMarkedBoolean,
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
@@ -18,9 +19,13 @@ import { Field } from "./user-create-sections";
 export function AdditionalSection({
   register,
   control,
+  dirtyFields,
+  touchedFields,
 }: {
   register: UseFormRegister<CreateUserFormInput>;
   control: Control<CreateUserFormInput>;
+  dirtyFields: FieldNamesMarkedBoolean<CreateUserFormInput>;
+  touchedFields: FieldNamesMarkedBoolean<CreateUserFormInput>;
 }) {
   return (
     <fieldset className="glass-sm rounded-lg p-4 sm:p-6">
@@ -28,7 +33,12 @@ export function AdditionalSection({
         Informations complémentaires
       </legend>
       <div className="grid gap-4 pt-2 sm:grid-cols-2">
-        <Field htmlFor="create-socialProfile" label="Profil social">
+        <Field
+          htmlFor="create-socialProfile"
+          label="Profil social"
+          dirty={dirtyFields.socialProfile}
+          touched={touchedFields.socialProfile}
+        >
           <Input
             type="url"
             placeholder="https://"
@@ -37,7 +47,12 @@ export function AdditionalSection({
             {...register("socialProfile")}
           />
         </Field>
-        <Field htmlFor="create-siteWeb" label="Site web">
+        <Field
+          htmlFor="create-siteWeb"
+          label="Site web"
+          dirty={dirtyFields.siteWeb}
+          touched={touchedFields.siteWeb}
+        >
           <Input
             type="url"
             placeholder="https://"
@@ -46,14 +61,24 @@ export function AdditionalSection({
             {...register("siteWeb")}
           />
         </Field>
-        <Field htmlFor="create-contactUrgence" label="Contact d’urgence">
+        <Field
+          htmlFor="create-contactUrgence"
+          label="Contact d’urgence"
+          dirty={dirtyFields.contactUrgence}
+          touched={touchedFields.contactUrgence}
+        >
           <Input
             className="min-h-11"
             id="create-contactUrgence"
             {...register("contactUrgence")}
           />
         </Field>
-        <Field htmlFor="create-facebook" label="Facebook">
+        <Field
+          htmlFor="create-facebook"
+          label="Facebook"
+          dirty={dirtyFields.facebook}
+          touched={touchedFields.facebook}
+        >
           <Input
             className="min-h-11"
             id="create-facebook"
@@ -118,6 +143,17 @@ export function AvailabilitySection({
         name="joursDisponibles"
         render={({ field }) => (
           <div className="grid gap-2 pt-2 sm:grid-cols-3">
+            <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border px-3 sm:col-span-3">
+              <Checkbox
+                checked={field.value?.length === AVAILABLE_DAYS.length}
+                onCheckedChange={(checked) =>
+                  field.onChange(
+                    checked ? AVAILABLE_DAYS.map(([value]) => value) : []
+                  )
+                }
+              />
+              <span className="text-sm font-medium">Tous les jours</span>
+            </label>
             {AVAILABLE_DAYS.map(([value, label]) => {
               const selected = field.value?.includes(value) ?? false;
               return (

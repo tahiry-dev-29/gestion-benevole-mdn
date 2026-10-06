@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { UsersTableFilterBar } from "./users-table-filter-bar";
 
 export function UsersListToolbar({
-  total,
   search,
   status,
   certificate,
@@ -15,7 +14,6 @@ export function UsersListToolbar({
   onRefresh,
   isRefreshing,
 }: {
-  total: number;
   search: string;
   status: string;
   certificate: string;
@@ -38,7 +36,6 @@ export function UsersListToolbar({
           onStatusFilterChange={onStatusChange}
           certificateFilter={certificate}
           onCertificateFilterChange={onCertificateChange}
-          totalResults={total}
         />
         <Button
           variant="outline"

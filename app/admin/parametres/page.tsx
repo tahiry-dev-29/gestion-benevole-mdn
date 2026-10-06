@@ -1,17 +1,21 @@
 import { AdminBreadcrumb } from "@/components/shared/admin-breadcrumb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/features/admin/page-header";
 
 const settings = [
   {
+    id: "general",
     title: "Général",
     items: ["Nom de l'association", "Logo et couleurs", "Langue (Français)"],
   },
   {
+    id: "presences",
     title: "Présences",
     items: ["Heure limite de pointage", "Tolérance de retard (minutes)"],
   },
   {
+    id: "notifications",
     title: "Notifications",
     items: ["Rappels de présence", "Alertes témoignages à modérer"],
   },
@@ -31,27 +35,40 @@ export default function ParametresPage() {
         description="Configuration de l'espace d'administration."
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <Tabs defaultValue={settings[0].id} className="gap-4">
+        <TabsList className="glass-sm h-auto max-w-full flex-wrap justify-start gap-1">
+          {settings.map((section) => (
+            <TabsTrigger
+              key={section.id}
+              value={section.id}
+              className="px-3 py-2"
+            >
+              {section.title}
+            </TabsTrigger>
+          ))}
+        </TabsList>
         {settings.map((section) => (
-          <Card key={section.title} className="glass-sm">
-            <CardHeader>
-              <CardTitle className="text-sm font-semibold">
-                {section.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {section.items.map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <span className="size-1.5 rounded-full bg-muted-foreground/40" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+          <TabsContent key={section.id} value={section.id}>
+            <Card className="glass-sm">
+              <CardHeader>
+                <CardTitle className="text-sm font-semibold">
+                  {section.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {section.items.map((item) => (
+                    <li key={item} className="flex items-center gap-2">
+                      <span className="size-1.5 rounded-full bg-muted-foreground/40" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
         ))}
-      </div>
+      </Tabs>
     </div>
   );
 }

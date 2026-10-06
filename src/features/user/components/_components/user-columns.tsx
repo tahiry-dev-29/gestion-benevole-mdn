@@ -26,13 +26,6 @@ import {
 
 import type { UserItem } from "../types";
 
-const CERTIFICATE_LABELS = {
-  NON_DEMANDE: "Non demandé",
-  EN_ATTENTE: "À vérifier",
-  APPROUVE: "Approuvé",
-  REJETE: "Rejeté",
-} as const;
-
 function SortableHeading({
   label,
   column,
@@ -114,16 +107,6 @@ export function createUserColumns({
                     <dd>{user.statut === "ACTIF" ? "Actif" : "Inactif"}</dd>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                    <dt className="text-muted-foreground">Certificat</dt>
-                    <dd>
-                      {
-                        CERTIFICATE_LABELS[
-                          user.certificatStatut ?? "NON_DEMANDE"
-                        ]
-                      }
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
                     <dt className="text-muted-foreground">Inscription</dt>
                     <dd>
                       {new Date(user.date_entree).toLocaleDateString("fr-FR")}
@@ -163,6 +146,27 @@ export function createUserColumns({
       ),
     },
     {
+      accessorKey: "categorie",
+      header: "Catégorie",
+      cell: ({ row }) => {
+        const category = row.original.categorie;
+        const categoryLabel = {
+          PRIMAIRE: "Primaire",
+          COLLEGIEN: "Collégien",
+          UNIVERSITAIRE: "Universitaire",
+          SALARIE: "Salarié",
+        } as const;
+
+        return category ? (
+          <Badge variant="secondary" className="font-normal">
+            {categoryLabel[category]}
+          </Badge>
+        ) : (
+          <span className="text-sm text-muted-foreground">Non renseignée</span>
+        );
+      },
+    },
+    {
       id: "organisation",
       header: "Organisation",
       cell: ({ row }) => (
@@ -170,28 +174,6 @@ export function createUserColumns({
           {row.original.societe || row.original.etablissement || "—"}
         </span>
       ),
-    },
-    {
-      accessorKey: "certificatStatut",
-      header: "Certificat",
-      cell: ({ row }) => {
-        const status = row.original.certificatStatut ?? "NON_DEMANDE";
-        return (
-          <Badge
-            variant={
-              status === "APPROUVE"
-                ? "default"
-                : status === "REJETE"
-                  ? "destructive"
-                  : status === "EN_ATTENTE"
-                    ? "secondary"
-                    : "outline"
-            }
-          >
-            {CERTIFICATE_LABELS[status]}
-          </Badge>
-        );
-      },
     },
     {
       accessorKey: "statut",
@@ -206,42 +188,44 @@ export function createUserColumns({
     },
     {
       id: "actions",
-      header: () => <span className="sr-only">Actions</span>,
+      header: "Actions",
       cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-10"
-              aria-label={`Actions pour ${row.original.prenom} ${row.original.nom}`}
-            >
-              <MoreHorizontal aria-hidden="true" className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href={`/admin/users/${row.original.id}`}>
-                <Eye aria-hidden="true" />
-                Voir la fiche
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/admin/users/${row.original.id}/update`}>
-                <Pencil aria-hidden="true" />
-                Modifier
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onSelect={() => onDelete(row.original)}
-            >
-              <UserRound aria-hidden="true" />
-              Désactiver
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-10"
+                aria-label={`Actions pour ${row.original.prenom} ${row.original.nom}`}
+              >
+                <MoreHorizontal aria-hidden="true" className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="bottom" sideOffset={4}>
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/users/${row.original.id}`}>
+                  <Eye aria-hidden="true" />
+                  Voir la fiche
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/users/${row.original.id}/update`}>
+                  <Pencil aria-hidden="true" />
+                  Modifier
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onSelect={() => onDelete(row.original)}
+              >
+                <UserRound aria-hidden="true" />
+                Désactiver
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       ),
     },
   ];
